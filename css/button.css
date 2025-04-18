@@ -1,0 +1,62 @@
+
+:root {
+  --primary: #333333;
+  --primary-light: #555555;
+  --primary-dark: #111111;
+  --radius: 8px;
+  --trans: 0.3s ease;
+  --trans-fast: 0.15s ease;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --gap-sm: 6px;
+}
+
+button {
+  padding: 12px 24px;
+  min-height: 44px;
+  border: none;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--trans), text-shadow var(--trans-fast);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  width: auto;
+  margin: var(--gap-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left var(--trans);
+  z-index: 1;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+

@@ -1,0 +1,831 @@
+# ==========================================
+# Mihomo / Clash.Meta 覆写文件 (Override)
+# 适用: Clash Verge Rev / Mihomo Party / Nyanpasu
+# 功能: 强制覆写端口、代理组、规则集、DNS、嗅探等
+# ==========================================
+
+# ---------- 1. 基础端口与全局设置 ----------
+mixed-port: 25480
+socks-port: 25481
+redir-port: 25482
+tproxy-port: 25483
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: warning
+ipv6: true
+
+# ---------- 2. 性能优化 ----------
+tcp-concurrent: true
+enable-process: true
+find-process-mode: strict
+keep-alive-interval: 30
+keep-alive-idle: 600
+unified-delay: true
+
+# ---------- 3. 控制面板 ----------
+external-controller: 0.0.0.0:9090
+secret: ""
+external-ui: ./UI
+external-ui-name: zashboard
+external-ui-url: "https://ghfast.top/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+
+# ---------- 4. 订阅源 (覆写 providers) ----------
+proxy-providers:
+  yuyun:
+    type: http
+    url: "https://api.v1.mk/sub?target=clash&url=https%3A%2F%2Fyuyun.mhlnf.cn%2Fyuyunsvip%3Ftoken%3D3e4c4d0a543c31ead9572ff8c80c0279"
+    interval: 3600
+    health-check:
+      enable: true
+      interval: 300
+      url: https://www.gstatic.com/generate_204
+      timeout: 5000
+      lazy: false
+    path: ./Providers/yuyun.yaml
+    proxy: DIRECT
+    header:
+      User-Agent: ["clash-verge/v1.5.0"]
+      Accept: ["*/*"]
+
+# ---------- 5. 代理组 (29个分组，完整覆写) ----------
+proxy-groups:
+  - name: 节点选择
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 自动选择
+      - 故障转移
+      - 负载均衡
+      - DIRECT
+
+  - name: 自动选择
+    type: url-test
+    use:
+      - yuyun
+    lazy: false
+    filter: "(?i)^(?!.*(GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置流量|到期|重置|套餐|剩余|永久|网站|地址|有效|国内|客服|售后|QQ|群|联系|使用|说明|导航|超时|失败|error|timeout|官网))"
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 30
+    timeout: 5000
+    max-failed-times: 2
+
+  - name: 故障转移
+    type: fallback
+    use:
+      - yuyun
+    lazy: false
+    filter: "(?i)^(?!.*(GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置|套餐|剩余|永久|网站|地址|有效|国内|客服|售后|QQ|群|联系|使用|说明|导航|超时|失败|error|timeout|官网))"
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    timeout: 5000
+    max-failed-times: 2
+
+  - name: 负载均衡
+    type: load-balance
+    use:
+      - yuyun
+    lazy: false
+    filter: "(?i)^(?!.*(GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置|套餐|剩余|永久|网站|地址|有效|国内|客服|售后|QQ|群|联系|使用|说明|导航|超时|失败|error|timeout|官网))"
+    strategy: consistent-hashing
+    max-failed-times: 2
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    timeout: 5000
+
+  - name: 全球直连
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: 全球拦截
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: 漏网之鱼
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: AI服务
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: 奈飞
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: YouTube
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: Disney+
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: HBO
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: Spotify
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: TikTok
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: 流媒体其他
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: 社交媒体
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: Steam
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: Epic
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: 其他游戏
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: Microsoft-cn
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: Microsoft-intl
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: Onedrive
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: Outlook-xbox
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: Apple-cn
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: Apple-intl
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: Devtools
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: Scholar
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: Crypto
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+  - name: 国外媒体
+    type: select
+    use:
+      - yuyun
+    proxies:
+      - 节点选择
+      - DIRECT
+
+# ---------- 6. 规则集提供者 (覆写 rule-providers) ----------
+rule-providers:
+  reject:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs"
+    path: ./Ruleset/reject.mrs
+    interval: 86400
+
+  Private:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/private.mrs"
+    Path: ./Ruleset/private.mrs
+    interval: 86400
+
+  cn:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.mrs"
+    Path: ./Ruleset/cn.mrs
+    interval: 86400
+
+  cn-IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.mrs"
+    Path: ./Ruleset/cn-ip.mrs
+    interval: 86400
+
+  cn-CDN:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-cdn-cn.mrs"
+    Path: ./Ruleset/cn-cdn.mrs
+    interval: 86400
+
+  openai:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/openai.mrs"
+    Path: ./Ruleset/openai.mrs
+    interval: 86400
+
+  anthropic:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/anthropic.mrs"
+    Path: ./Ruleset/anthropic.mrs
+    interval: 86400
+
+  perplexity:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/perplexity.mrs"
+    Path: ./Ruleset/perplexity.mrs
+    interval: 86400
+
+  netflix:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs"
+    Path: ./Ruleset/netflix.mrs
+    interval: 86400
+
+  netflix-IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/netflix.mrs"
+    Path: ./Ruleset/netflix-ip.mrs
+    interval: 86400
+
+  Youtube:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/youtube.mrs"
+    Path: ./Ruleset/youtube.mrs
+    interval: 86400
+
+  Youtube-IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/youtube.mrs"
+    Path: ./Ruleset/youtube-ip.mrs
+    interval: 86400
+
+  Disney:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/disney.mrs"
+    Path: ./Ruleset/disney.mrs
+    interval: 86400
+
+  HBO:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/hbo.mrs"
+    Path: ./Ruleset/hbo.mrs
+    interval: 86400
+
+  Spotify:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/spotify.mrs"
+    Path: ./Ruleset/spotify.mrs
+    interval: 86400
+
+  TikTok:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs"
+    Path: ./Ruleset/tiktok.mrs
+    interval: 86400
+
+  Streaming-Other:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geames.mrs"
+    Path: ./Ruleset/streaming-other.mrs
+    interval: 86400
+
+  Telegram:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs"
+    Path: ./Ruleset/telegram.mrs
+    interval: 86400
+
+  Telegram-IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/telegram.mrs"
+    Path: ./Ruleset/telegram-ip.mrs
+    interval: 86400
+
+  Twitter:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/twitter.mrs"
+    Path: ./Ruleset/twitter.mrs
+    interval: 86400
+
+  Facebook:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/facebook.mrs"
+    Path: ./Ruleset/facebook.mrs
+    interval: 86400
+
+  Instagram:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/instagram.mrs"
+    Path: ./Ruleset/instagram.mrs
+    interval: 86400
+
+  Whatsapp:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/whatsapp.mrs"
+    Path: ./Ruleset/whatsapp.mrs
+    interval: 86400
+
+  Steam:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/steam.mrs"
+    Path: ./Ruleset/steam.mrs
+    interval: 86400
+
+  Epic:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/epicgames.mrs"
+    Path: ./Ruleset/epic.mrs
+    interval: 86400
+
+  Blizzard:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/blizzard.mrs"
+    Path: ./Ruleset/blizzard.mrs
+    interval: 86400
+
+  EA:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/ea.mrs"
+    Path: ./Ruleset/ea.mrs
+    interval: 86400
+
+  Ubisoft:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/ubisoft.mrs"
+    Path: ./Ruleset/ubisoft.mrs
+    interval: 86400
+
+  Nintendo:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/nintendo.mrs
+    Path: ./Ruleset/nintendo.mrs
+    interval: 86400
+
+  Microsoft-Intl:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft.mrs"
+    Path: ./Ruleset/microsoft.mrs
+    interval: 86400
+
+  Microsoft-CN:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft-cn.mrs"
+    Path: ./Ruleset/microsoft-cn.mrs
+    interval: 86400
+
+  Onedrive:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/onedrive.mrs"
+    Path: ./Ruleset/onedrive.mrs
+    interval: 86400
+
+  Outlook:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/outlook.mrs"
+    Path: ./Ruleset/outlook.mrs
+    interval: 86400
+
+  Xbox:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/xbox.mrs"
+    Path: ./Ruleset/xbox.mrs
+    interval: 86400
+
+  Apple:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple.mrs"
+    Path: ./Ruleset/apple.mrs
+    interval: 86400
+
+  Apple-CN:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple-cn.mrs"
+    Path: ./Ruleset/apple-cn.mrs
+    interval: 86400
+
+  iCloud:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/icloud.mrs"
+    Path: ./Ruleset/icloud.mrs
+    interval: 86400
+
+  Github:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs"
+    Path: ./Ruleset/github.mrs
+    interval: 86400
+
+  Gitlab:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gitlab.mrs"
+    Path: ./Ruleset/gitlab.mrs
+    interval: 86400
+
+  Docker:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/docker.mrs"
+    Path: ./Ruleset/docker.mrs
+    interval: 86400
+
+  Scholar:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-scholar-!cn.mrs"
+    Path: ./Ruleset/scholar.mrs
+    interval: 86400
+
+  Crypto:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/binance.mrs"
+    Path: ./Ruleset/crypto.mrs
+    interval: 86400
+
+  Proxy:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/goproxy.mrs"
+    Path: ./Ruleset/proxy.mrs
+    interval: 86400
+
+  Google:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.mrs"
+    Path: ./Ruleset/google.mrs
+    interval: 86400
+
+  Geolocation-!cn:
+    type: http
+    behavior: Domain
+    format: mrs
+    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs"
+    Path: ./Ruleset/geolocation-!cn.mrs
+    interval: 86400
+
+# ---------- 7. 路由规则 (覆写 rules) ----------
+rules:
+  # 本地和私有网络
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,17.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+  - IP-CIDR,224.0.0.0/4,DIRECT,no-resolve
+  - IP-CIDR,fe80::/10,DIRECT,no-resolve
+  - IP-CIDR,240.0.0.0/4,DIRECT,no-resolve
+  
+  # 订阅源和关键域名直连
+  - DOMAIN,api.v1.mk,DIRECT
+  - DOMAIN,yuyun.mhlnf.cn,DIRECT
+  - DOMAIN,ghfast.top,DIRECT
+  
+  # 广告拦截
+  - RULE-SET,reject,全球拦截
+  
+  # 私有域名
+  - RULE-SET,private,DIRECT
+  
+  # 国内 CDN
+  - RULE-SET,cn-cdn,DIRECT
+  
+  # 微软服务 - 国内
+  - RULE-SET,microsoft-cn,Microsoft-cn
+  
+  # 苹果服务 - 国内
+  - RULE-SET,apple-cn,Apple-cn
+  
+  # AI 服务
+  - RULE-SET,openai,AI服务
+  - RULE-SET,anthropic,AI服务
+  - RULE-SET,perplexity,AI服务
+  
+  # 流媒体 - 奈飞
+  - RULE-SET,netflix,奈飞
+  - RULE-SET,netflix-ip,奈飞,no-resolve
+  
+  # 流媒体 - YouTube
+  - RULE-SET,youtube,YouTube
+  - RULE-SET,youtube-ip,YouTube,no-resolve
+  
+  # 流媒体 - 其他平台
+  - RULE-SET,disney,Disney+
+  - RULE-SET,hbo,HBO
+  - RULE-SET,spotify,Spotify
+  - RULE-SET,tiktok,TikTok
+  
+  # 流媒体兜底
+  - RULE-SET,streaming-other,流媒体其他
+  
+  # 社交媒体
+  - RULE-SET,telegram,社交媒体
+  - RULE-SET,telegram-ip,社交媒体,no-resolve
+  - RULE-SET,twitter,社交媒体
+  - RULE-SET,facebook,社交媒体
+  - RULE-SET,instagram,社交媒体
+  - RULE-SET,whatsapp,社交媒体
+  
+  # 游戏平台
+  - RULE-SET,steam,Steam
+  - RULE-SET,epic,Epic
+  - RULE-SET,blizzard,其他游戏
+  - RULE-SET,ea,其他游戏
+  - RULE-SET,ubisoft,其他游戏
+  - RULE-SET,nintendo,其他游戏
+  
+  # 微软服务 - 国际
+  - RULE-SET,microsoft-intl,Microsoft-intl
+  - RULE-SET,onedrive,Onedrive
+  - RULE-SET,outlook,Outlook-xbox
+  
+  # 苹果服务 - 国际
+  - RULE-SET,apple,Apple-intl
+  - RULE-SET,icloud,Apple-intl
+  
+  # 开发工具
+  - RULE-SET,github,Devtools
+  - RULE-SET,gitlab,Devtools
+  - RULE-SET,docker,Devtools
+  
+  # 学术资源
+  - RULE-SET,scholar,Scholar
+  
+  # 加密货币
+  - RULE-SET,crypto,Crypto
+  
+  # 国内域名和 IP
+  - RULE-SET,cn,DIRECT
+  - RULE-SET,cn-ip,DIRECT,no-resolve
+  
+  # 国际通用服务
+  - RULE-SET,google,国外媒体
+  - RULE-SET,proxy,国外媒体
+  - RULE-SET,geolocation-!cn,国外媒体
+  
+  # GEOIP 兜底
+  - GEOIP,CN,DIRECT,no-resolve
+  
+  # 最终匹配
+  - MATCH,漏网之鱼
+
+# ---------- 8. DNS 配置 (覆写 dns) ----------
+dns:
+  enable: true
+  listen: 0.0.0.0:1053
+  ipv6: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+    - 114.114.114.114
+    
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+    - 114.114.114.114
+    
+  fallback:
+    - 1.1.1.1
+    - 8.8.8.8
+    
+  proxy-server-nameserver:
+    - 223.5.5.5
+    
+  nameserver-policy:
+    "geosite:cn,private":
+      - 223.5.5.5
+      - 119.29.29.29
+    "geosite:geolocation-!cn":
+      - 1.1.1.1
+      - 8.8.8.8
+    "geosite:gfw":
+      - 1.1.1.1
+      - 8.8.8.8
+      
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+      - 240.0.0.0/4
+
+# ---------- 9. 流量嗅探 (覆写 sniffer) ----------
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080, 8880, 2052, 2082, 2086, 2095]
+      override-destination: true
+    TLS:
+      ports: [443, 8443, 2053, 2083, 2087, 2096]
+    QUIC:
+      ports: [443, 8443]
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: false
+
+# ---------- 10. 实验性功能与 Geo 数据库 ----------
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+geox-url:
+  geoip: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
+  geosite: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
+  
+geo-auto-update: true
+geo-update-interval: 24
