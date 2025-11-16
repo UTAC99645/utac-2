@@ -3,7 +3,7 @@
         <main>关于</main>
     </h2>
     <p>
-        <img hspace="25%" width="50%" src="/about/128961378_p0.png">
+        <img hspace="25%" width="50%" src="/public/128961378_p0.png">
     <h1 class="name">
         NAME
     </h1>
