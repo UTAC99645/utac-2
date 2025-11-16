@@ -5,12 +5,4 @@ import { resolve } from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, './index.html'),
-        about: resolve(__dirname, './about/index.html'),
-      }
-    }
-  }
 })
