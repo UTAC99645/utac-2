@@ -12,12 +12,12 @@
 <script setup>
 import { ref } from 'vue';
 const source = ref([{
-    img:'src/assets/128961378_p0.png',
+    img:'/public/assets/128961378_p0.png',
     name: 'UTAC99645',
     mail: 'utac@utac996465.top',
 },
 {
-    img:'src/assets/20251116120114_232_4.jpg',
+    img:'/public/assets/20251116120114_232_4.jpg',
     name: 'DDXGYFF',
     mail: '114514@114514.114514',
 },
