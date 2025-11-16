@@ -1,12 +1,13 @@
 <template>
-  <header>
-    <ul>
-      <li><router-link to="/" class="active">Home</router-link></li>
-      <li><router-link to="/about">About</router-link></li>
-    </ul>
-  </header>
+  <div id="header">
+    <header>
+      <ul>
+        <li><router-link to="/" class="active">Home</router-link></li>
+        <li><router-link to="/about">About</router-link></li>
+      </ul>
+    </header>
+  </div>
   <div>
-
     <router-view />
   </div>
 </template>

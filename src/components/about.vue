@@ -4,42 +4,30 @@
     </h2>
     <p></p>
     <div v-for="item in source">
-        <image :src="item.img" alt="UTAC99645"/><br>
+        <img :src="item.img" alt="UTAC99645"/><br>
         NAME:<span class="name">{{ item.name }}</span><br>
-        mail:<span class="driver">{{ item.mail }}</span><br>
+        mail:<span class="mail">{{ item.mail }}</span><br>
     </div>
 </template>
 <script setup>
 import { ref } from 'vue';
 const source = ref([{
-    img:'assets/128961378_p0.png',
+    img:'/public/128961378_p0.png',
     name: 'UTAC99645',
     mail: 'utac@utac996465.top',
 },
+{
+    img:'/public/20251116120114_232_4.jpg',
+    name: 'DDXGYFF',
+    mail: '114514@114514.114514',
+},
 ]);
+console.log(source.image);
 </script>
 <style scoped>
-.name {
-    text-align: center;
-    font-size: 30px;
-    color: #42b983;
-}
-
-.driver {
-    text-align: center;
-    font-size: 30px;
-    color: #42b983;
-}
-
-.mail {
-    text-align: center;
-    font-size: 30px;
-    color: #42b983;
-}
-
-.UTAC99645 {
-    text-align: center;
-    font-size: 25px;
+span {
+    font-weight: bold;
+    font-size: 40px;
     color: #42b983;
 }
 
@@ -68,11 +56,15 @@ body {
     }
 }
 
-image {
-    width: 300px;
+img {
+    width: 50%;
     height: auto;
-    border-radius: 15px;
+    border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s, box-shadow 0.3s;
+}
+image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 </style>
