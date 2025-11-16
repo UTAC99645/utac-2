@@ -4,7 +4,7 @@
     </h2>
     <p></p>
     <div v-for="item in source">
-        <img :src="item.img" alt="UTAC99645"/><br>
+        <img :src="item.img" :alt="item.name"/><br>
         NAME:<span class="name">{{ item.name }}</span><br>
         mail:<span class="mail">{{ item.mail }}</span><br>
     </div>
