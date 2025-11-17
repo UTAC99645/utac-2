@@ -4,6 +4,16 @@ templatete {
   position: absolute;
 }
 
+@font-face {
+  font-family: 'MapleMono';
+  src: local('MapleMono-NF-CN-ExtraBold'),
+       local('MapleMono NF CN ExtraBold'),
+       url('https://file.utac99645.top/font/MapleMono-NF-CN-ExtraBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   margin: 0;
   height: 100vh;
@@ -13,6 +23,7 @@ body {
   background: linear-gradient(45deg, #90e0f0, #feb47b, #ff7e5f);
   background-size: 600% 600%;
   animation: gradient 15s infinite linear;
+  font-family: 'MapleMono', monospace;
 }
 
 @keyframes gradient {
@@ -35,3 +46,4 @@ header {
   font-weight: bold;
   margin-bottom: 20px;
 }
+
