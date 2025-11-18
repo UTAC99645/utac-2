@@ -17,8 +17,6 @@ template {
 body {
   margin: 0;
   height: 100vh;
-  display: flex;
-  justify-content: right;
   background: linear-gradient(45deg, #90e0f0, #feb47b, #ff7e5f);
   background-size: 600% 600%;
   animation: gradient 10s infinite linear;
