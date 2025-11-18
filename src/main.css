@@ -19,10 +19,9 @@ body {
   height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
   background: linear-gradient(45deg, #90e0f0, #feb47b, #ff7e5f);
   background-size: 600% 600%;
-  animation: gradient 15s infinite linear;
+  animation: gradient 10s infinite linear;
   font-family: 'MapleMono', monospace !important ;
 }
 
