@@ -1,15 +1,11 @@
 <template>
-  <div id="header">
-    <header>
-      <ul>
-        <li><router-link to="/about">About</router-link></li>
-        <li><router-link to="/">Home</router-link></li>
-      </ul>
-    </header>
-  </div>
-  <div>
-    <router-view />
-  </div>
+  <nav>
+    <ul>
+      <li><router-link to="/about">About</router-link></li>
+      <li><router-link to="/">Home</router-link></li>
+    </ul>
+  </nav>
+  <router-view />
 </template>
 
 <script setup>
@@ -17,24 +13,7 @@
 
 <style scoped>
 /* 添加一些基础样式 */
-header {
-  background-color: #333;
-  color: #fff;
-  padding: 10px;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  display: inline;
-  margin-right: 10px;
-}
-
 a {
-  color: #fff;
   text-decoration: none;
 }
 
