@@ -12,12 +12,4 @@
 </script>
 
 <style scoped>
-/* 添加一些基础样式 */
-a {
-  text-decoration: none;
-}
-
-a.router-link-active {
-  font-weight: bold;
-}
 </style>

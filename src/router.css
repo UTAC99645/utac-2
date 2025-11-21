@@ -1,7 +1,7 @@
 /* 设计令牌：颜色与尺寸变量 */
 :root {
     --nav-bg: #9ef;
-    --nav-height: 48px;
+    --nav-height: 2dvh;
     --nav-radius: 12px;
     --nav-fz: 1.5dvh;
     --nav-gap: 0.75dvw;
