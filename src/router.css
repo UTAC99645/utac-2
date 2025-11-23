@@ -8,11 +8,14 @@
 }
 
 /* 重置 */
+nav {
+  display: flex;
+  margin-left: auto;
+}
 nav ul {
     margin-left: auto;
     padding: 0;
     list-style: none;
-    display: flex;
     justify-content: flex-end;
     align-items: center;
     height: var(--nav-height);
