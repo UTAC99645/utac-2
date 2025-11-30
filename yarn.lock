@@ -65,7 +65,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@devui-design/icons@npm:>=1.4.0, @devui-design/icons@npm:^1.3.0":
+"@devui-design/icons@npm:^1.3.0, @devui-design/icons@npm:^1.4.0":
   version: 1.4.0
   resolution: "@devui-design/icons@npm:1.4.0"
   checksum: 10c0/33f93cefa79224ca6b31bf142a8c6f57ccb38d63e8d17a10859fbfefba8ee7efc91cf71e024b2903cb9c335b91b2d185bab25d19dfb0258659fe83648bdbadc7
@@ -503,7 +503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-vue@npm:>=6.0.2":
+"@vitejs/plugin-vue@npm:^6.0.2":
   version: 6.0.2
   resolution: "@vitejs/plugin-vue@npm:6.0.2"
   dependencies:
@@ -753,7 +753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/pnpify@npm:>=4.1.6":
+"@yarnpkg/pnpify@npm:^4.1.6":
   version: 4.1.6
   resolution: "@yarnpkg/pnpify@npm:4.1.6"
   dependencies:
@@ -1799,17 +1799,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"devui-theme@npm:>=0.1.0":
-  version: 0.1.0
-  resolution: "devui-theme@npm:0.1.0"
-  checksum: 10c0/2e9d193c772788d65c9ba5d7118cdef5524285d1f01848ca09612e0739a3ea29a0042047129d4f86e2f938de32957dcec6786276c04b9893578d5e7d3514065c
-  languageName: node
-  linkType: hard
-
 "devui-theme@npm:^0.0.1":
   version: 0.0.1
   resolution: "devui-theme@npm:0.0.1"
   checksum: 10c0/d0f12547abaf36558872e2f70bf6c9730a12840ee8267faa4bec1774ba577873da9302e4651bf6b647dbab80fdc51f4837ab2af01999bc418bd95b8b3c4beb5c
+  languageName: node
+  linkType: hard
+
+"devui-theme@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "devui-theme@npm:0.1.0"
+  checksum: 10c0/2e9d193c772788d65c9ba5d7118cdef5524285d1f01848ca09612e0739a3ea29a0042047129d4f86e2f938de32957dcec6786276c04b9893578d5e7d3514065c
   languageName: node
   linkType: hard
 
@@ -2901,7 +2901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-clean@npm:>=1.2.0":
+"postcss-clean@npm:^1.2.2":
   version: 1.2.2
   resolution: "postcss-clean@npm:1.2.2"
   dependencies:
@@ -3360,15 +3360,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "utac-v2.0@workspace:."
   dependencies:
-    "@devui-design/icons": "npm:>=1.4.0"
-    "@vitejs/plugin-vue": "npm:>=6.0.2"
-    "@yarnpkg/pnpify": "npm:>=4.1.6"
-    devui-theme: "npm:>=0.1.0"
-    postcss-clean: "npm:>=1.2.0"
-    vite: "npm:>=7.2.4"
-    vue: "npm:>=3.5.25"
-    vue-devui: "npm:>=1.5.15"
-    vue-router: "npm:>=4.6.3"
+    "@devui-design/icons": "npm:^1.4.0"
+    "@vitejs/plugin-vue": "npm:^6.0.2"
+    "@yarnpkg/pnpify": "npm:^4.1.6"
+    devui-theme: "npm:^0.1.0"
+    postcss-clean: "npm:^1.2.2"
+    vite: "npm:^7.2.4"
+    vue: "npm:^3.5.25"
+    vue-devui: "npm:^1.6.34"
+    vue-router: "npm:^4.6.3"
   languageName: unknown
   linkType: soft
 
@@ -3453,7 +3453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-devui@npm:>=1.5.15":
+"vue-devui@npm:^1.6.34":
   version: 1.6.34
   resolution: "vue-devui@npm:1.6.34"
   dependencies:
@@ -3494,7 +3494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-router@npm:>=4.6.3, vue-router@npm:^4.0.3":
+"vue-router@npm:^4.0.3, vue-router@npm:^4.6.3":
   version: 4.6.3
   resolution: "vue-router@npm:4.6.3"
   dependencies:
@@ -3505,7 +3505,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:>=3.5.25":
+"vue@npm:^3.5.25":
   version: 3.5.25
   resolution: "vue@npm:3.5.25"
   dependencies:
