@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - 页面未找到</title>
+    <title>500 - 服务器内部错误</title>
     <style>
         * {
             margin: 0;
@@ -25,11 +25,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('background.jpg');
+            background-image: url('https://file.utac99645.top/BackGround/127766384_p0.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            filter: brightness(0.7) contrast(1.1);
+            filter: brightness(0.6) contrast(1.2) saturate(0.9);
             z-index: 1;
         }
 
@@ -39,7 +39,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%);
+            background: linear-gradient(225deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%);
             z-index: 2;
         }
 
@@ -62,7 +62,7 @@
             letter-spacing: -0.5rem;
             margin-bottom: 1rem;
             text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -153,11 +153,11 @@
     <div class="overlay"></div>
     
     <div class="content">
-        <h1 class="error-code">404</h1>
-        <h2 class="error-title">页面未找到</h2>
+        <h1 class="error-code">500</h1>
+        <h2 class="error-title">服务器内部错误</h2>
         <p class="error-description">
-            抱歉，您访问的页面不存在或已被移动。<br>
-            请检查网址是否正确，或返回首页继续浏览。
+            抱歉，服务器遇到了一个内部错误。<br>
+            我们的技术团队正在努力解决这个问题，请稍后再试。
         </p>
         <a href="/" class="home-button">返回首页</a>
     </div>
