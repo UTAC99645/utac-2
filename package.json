@@ -1,28 +1,14 @@
 {
-  "name": "utac-v2.0",
-  "private": true,
-  "version": "2.0.3",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "NODE_OPTIONS='--max-old-space-size=8192' vite build",
-    "preview": "vite preview"
-  },
+  "packageManager": "yarn@4.12.0",
   "dependencies": {
     "@devui-design/icons": "^1.4.0",
     "devui-theme": "^0.1.0",
-    "vue": "^3.5.25",
-    "vue-devui": "^1.6.34",
-    "vue-router": "^4.6.3"
+    "vite": "^7.3.1",
+    "vue": "^3.5.27",
+    "vue-devui": "^1.6.36",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.2",
-    "@yarnpkg/pnpify": "^4.1.6",
-    "postcss-clean": "^1.2.2",
-    "vite": "^7.2.4"
-  },
-  "resolutions": {
-    "vite": "npm:rolldown-vite@>=7.2.2"
-  },
-  "packageManager": "yarn@4.12.0"
+    "@vitejs/plugin-vue": "^6.0.3"
+  }
 }
