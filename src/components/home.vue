@@ -1,13 +1,9 @@
 <template>
-<title>UTAC'S Sesrch</title>
+  <title>UTAC'S Sesrch</title>
   <div class="page">
     <h1 class="title">UTAC'S Sesrch</h1>
     <div class="search-box">
-      <d-search
-        v-model="searchText"
-        @search="searchfin"
-        placeholder="Type to search with bing..."
-      />
+      <d-search v-model="searchText" @search="searchfin" placeholder="Type to search throgh bing..." />
     </div>
   </div>
 </template>
