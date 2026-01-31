@@ -2,17 +2,19 @@
   <title>UTAC'S Sesrch</title>
   <nav class="search-type">
     <ul>
-      <li><button :class="[bing ? 'active' : '']" @click="() =>{search_type = 'bing'}">bing</button></li>
-      <li><button :class="[google ? 'active' : '']" @click="() =>{search_type = 'google'}">google</button></li>
+      <li><button :class="[bing ? 'active' : '']" @click="() => { search_type = 'bing' }">bing</button></li>
+      <li><button :class="[google ? 'active' : '']" @click="() => { search_type = 'google' }">google</button></li>
     </ul>
   </nav>
   <div class="page">
     <h1 class="title">UTAC'S Sesrch</h1>
     <div class="search-box">
-    <form class="form">
-      <input type="text" id="Search" class="form__input" placeholder="">
-      <label for="Search" class="form__label">{{ search_type }}</label>
-    </form>
+      <form class="form" @submit.prevent="searchfin">
+        <input v-model="searchText" type="text" id="Search" class="form__input" placeholder="" />
+        <label for="Search" class="form__label">
+          {{ search_type }}
+        </label>
+      </form>
     </div>
   </div>
 </template>
@@ -38,7 +40,7 @@ onMounted(() => {
     search_change(search_type.value)
   }
 })
-watch(search_type, [search_change,makeUrl], {immediate:true, deep:true})
+watch(search_type, [search_change, makeUrl], { immediate: true, deep: true })
 
 function searchfin() {
   const query = encodeURIComponent(searchText.value);
