@@ -1,44 +1,45 @@
-/* 设计令牌：颜色与尺寸变量 */
-:root {
-    --nav-bg: #9ef;
-    --nav-height: 2dvh;
-    --nav-radius: 12px;
-    --nav-fz: 1.5dvh;
-    --nav-gap: 1vw;
-}
 
-/* 重置 */
 nav {
-  display: flex;
-  margin-left: auto;
-}
-nav ul {
-    margin-left: auto;
-    padding: 0;
-    list-style: none;
+    display: flex;
     justify-content: flex-end;
     align-items: center;
-    height: var(--nav-height);
-    background: var(--nav-bg);
-    border-radius: var(--nav-radius);
-    padding: 0 1dvh;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+    padding: 0 24px;
+    height: 56px;
+    background: linear-gradient(90deg, var(--bg-secondary, #1e293b), var(--bg-tertiary, #334155));
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 0 0 16px 16px;
 }
 
-li {
-    margin-left: var(--nav-gap);
-    display: inline;
+nav ul {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+    align-items: center;
+    margin: 0;
+    padding: 0;
 }
 
-nav a {
-    font-size: var(--nav-fz);
+nav li {
+    margin: 0;
+}
+
+nav a, nav button {
+    font-size: 1rem;
     font-weight: 700;
-    color: #002b4d;
+    color: var(--text-secondary, #cbd5e1);
     text-decoration: none;
-    transition: color .25s;
+    padding: 10px 16px;
+    border-radius: 10px;
+    transition: color var(--trans), background var(--trans);
+    background: none;
+    border: none;
+    cursor: pointer;
 }
-
-nav a:hover,
-nav a.router-link-active {
-    color: #ff7e5f;
+nav a.active, nav button.active {
+    color: var(--primary, #6366f1);
+    background: rgba(99,102,241,0.08);
+}
+nav a:hover, nav button:hover {
+    color: var(--text-primary, #f1f5f9);
+    background: rgba(255,255,255,0.06);
 }

@@ -1,0 +1,38 @@
+
+.name {
+  color: var(--primary, #6366f1);
+  font-weight: bold;
+  font-size: 1.2em;
+  letter-spacing: 0.04em;
+}
+
+.mail {
+  color: var(--success, #10b981);
+  font-family: monospace;
+  font-size: 1em;
+}
+
+img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  border: 3px solid var(--primary-light, #a5b4fc);
+  transition: transform 0.2s;
+}
+img:hover {
+  transform: scale(1.06) rotate(-2deg);
+}
+
+h2 {
+  margin: 6px 0;
+  font-size: 1.1em;
+}
+
+div {
+  text-align: center;
+  margin-bottom: 18px;
+  animation: fadeIn 0.7s;
+}
