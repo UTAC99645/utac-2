@@ -8,8 +8,6 @@
     </ul>
   </nav>
   <div class="page">
-    {{ search_type }}
-    {{ onMarkDown }}
     <h1 class="title">UTAC'S Sesrch</h1>
     <div v-if="!onMarkDown" class="search-box">
       <form class="form" @submit.prevent="searchfin">
