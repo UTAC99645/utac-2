@@ -47,13 +47,16 @@ const rute = useRoute()
 const roter = useRouter()
 
 onMounted(() => {
-  if (rute.query) {
+  if (rute.query.type) {
     checkUrl()
   } else {
     search_change(search_type.value)
   }
+  makeUrl()
 })
-watch(search_type, [search_change, makeUrl], { immediate: true, deep: true })
+watch(search_type,()=>{search_change(),makeUrl()}, { immediate: true, deep: true })
+
+watch(searchText,()=>{roter.replace({query:{...rute.query,q: searchText.value}})})
 
 function searchfin() {
   if (MarkDown.value) {
@@ -65,7 +68,7 @@ function searchfin() {
   }
 }
 
-function search_change() {
+async function search_change() {
   if (search_type.value === 'google') {
     google.value = true
     bing.value = false
@@ -83,18 +86,31 @@ function search_change() {
   }
 }
 
-function makeUrl() {
+async function makeUrl() {
+  let mtype = 'google'
   if (search_type.value === 'google') {
-    roter.replace({ query: { type: 'google' } })
+    mtype = 'google' 
   } else if (search_type.value === 'bing') {
-    roter.replace({ query: { type: 'bing' } })
+    mtype = 'bing'
   } else if (search_type.value === 'MarkDown') {
-  roter.replace({ query: { type: 'MarkDown' } })
+    mtype = 'MarkDown'
   }
+  await roter.replace({ query:{ ...rute.query,type: mtype } })
 }
 
-function checkUrl() {
-  search_type.value = rute.query.type
+async function checkUrl() {
+  if (rute.query.q) searchText.value = rute.query.q
+  let {type} = rute.query
+  let mtype = 'google'
+  if (type === 'google') {
+    mtype = 'google'
+  } else if (type === 'bing') {
+    mtype = 'bing'
+  } else if (type === 'MarkDown') {
+    mtype = 'MarkDown'
+  }
+  
+  search_type.value = mtype
 }
 </script>
 
