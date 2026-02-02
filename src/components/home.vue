@@ -1,37 +1,39 @@
 <template>
-  <title>UTAC'S Sesrch</title>
-  <nav class="search-type">
-    <ul>
-      <li><button :class="[bing ? 'active' : '']" @click="() => { search_type = 'bing' }">bing</button></li>
-      <li><button :class="[google ? 'active' : '']" @click="() => { search_type = 'google' }">google</button></li>
-      <li><button :class="[MarkDown ? 'active' : '']" @click="() => { search_type = 'MarkDown' }">MarkDown</button></li>
-    </ul>
-  </nav>
-  <div class="page">
-    <h1 class="title">UTAC'S Sesrch</h1>
-    <div v-if="!onMarkDown" class="search-box">
-      <form class="form" @submit.prevent="searchfin">
-        <input
-	v-model="searchText"
-	type="text"
-	id="Search"
-	class="form__input"
-	placeholder="" />
-        <label for="Search" class="form__label">
-          {{ search_type }}
-        </label>
-      </form>
+  <div v-if="!onMarkDown" >
+    <title>UTAC'S Sesrch</title>
+    <nav class="search-type">
+      <ul>
+        <li><button :class="[bing ? 'active' : '']" @click="() => { search_type = 'bing' }">bing</button></li>
+        <li><button :class="[google ? 'active' : '']" @click="() => { search_type = 'google' }">google</button></li>
+        <li><button :class="[MarkDown ? 'active' : '']" @click="() => { search_type = 'MarkDown' }">MarkDown</button></li>
+      </ul>
+    </nav>
+    <div class="page">
+      <h1 class="title">UTAC'S Sesrch</h1>
+      <div class="search-box">
+        <form class="form" @submit.prevent="searchfin">
+           <input
+             v-model="searchText"
+             type="text"
+             id="Search"
+             class="form__input"
+             placeholder="" />
+          <label for="Search" class="form__label">
+            {{ search_type }}
+          </label>
+        </form>
+      </div>
     </div>
-    <div v-else>
-      <button @click="() => { onMarkDown = false}">Back</button>
-      <Rader :url="searchText"/>
-    </div>
+  </div>
+  <div v-else >
+    <button @click="() => { typeMap.set('MarkDown',{...typeMap.get('MarkDown'),on: false})}">Back</button>
+   <Rader :url="searchText"/>
   </div>
 </template>
 
 
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, reactive, computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Rader from './MarkDown.vue'
 import "./home.css"
@@ -39,12 +41,26 @@ import './addon/input.css'
 const search_link = ref("")
 const searchText = ref('')
 const search_type = ref('google')
-const google = ref(true)
-const bing = ref(false)
-const MarkDown = ref(false)
-const onMarkDown = ref(false)
+const typeMap = reactive(new Map([
+['google',{ en: true, url: 'https://www.google.com/search?q='}],
+['bing',{ en: false, url: 'https://www.bing.com/search?q='}],
+['MarkDown',{ en: false,on: false, url: ''}]
+]))
+const keys = [...typeMap.keys()]
 const rute = useRoute()
 const roter = useRouter()
+const bing = computed(()=>{
+return typeMap.get('bing').en
+})
+const google = computed(()=>{
+  return typeMap.get('google').en
+})
+const MarkDown = computed(()=>{
+  return typeMap.get('MarkDown').en
+})
+const onMarkDown = computed(()=>{
+  return typeMap.get('MarkDown').on
+})
 
 onMounted(() => {
   if (rute.query.type) {
@@ -52,15 +68,14 @@ onMounted(() => {
   } else {
     search_change(search_type.value)
   }
-  makeUrl()
 })
 watch(search_type,()=>{search_change(),makeUrl()}, { immediate: true, deep: true })
 
-watch(searchText,()=>{roter.replace({query:{...rute.query,q: searchText.value}})})
+watch(searchText,()=>{roter.replace({query: {...rute.query,q: searchText.value}})})
 
 function searchfin() {
   if (MarkDown.value) {
-  onMarkDown.value = true
+  typeMap.set('MarkDown',{...typeMap.get('MarkDown'),on: true})
   return 0
   }else {
     const query = encodeURIComponent(searchText.value);
@@ -69,49 +84,31 @@ function searchfin() {
 }
 
 async function search_change() {
-  if (search_type.value === 'google') {
-    google.value = true
-    bing.value = false
-    MarkDown.value = false
-    search_link.value = "https://www.google.com/search?q="
-  } else if (search_type.value === 'bing') {
-    google.value = false
-    bing.value = true
-    MarkDown.value = false
-    search_link.value = "https://www.bing.com/search?q="
-  } else if (search_type.value === 'MarkDown') {
-    google.value = false
-    bing.value = false
-    MarkDown.value = true
-  }
+  keys.forEach(key=>{
+    if (key === search_type.value ){
+      typeMap.set(key,{...typeMap.get(search_type.value),en: true})
+    }else{
+      typeMap.set(key,{...typeMap.get(key),en: false})
+    }
+    search_link.value = typeMap.get(search_type.value).url
+  })
 }
 
 async function makeUrl() {
-  let mtype = 'google'
-  if (search_type.value === 'google') {
-    mtype = 'google' 
-  } else if (search_type.value === 'bing') {
-    mtype = 'bing'
-  } else if (search_type.value === 'MarkDown') {
-    mtype = 'MarkDown'
-  }
-  await roter.replace({ query:{ ...rute.query,type: mtype } })
+  await roter.replace({ query:{ ...rute.query,type: search_type.value } })
 }
 
-async function checkUrl() {
+function checkUrl() {
   if (rute.query.q) searchText.value = rute.query.q
-  let {type} = rute.query
-  let mtype = 'google'
-  if (type === 'google') {
-    mtype = 'google'
-  } else if (type === 'bing') {
-    mtype = 'bing'
-  } else if (type === 'MarkDown') {
-    mtype = 'MarkDown'
+  let {type,open} = rute.query
+  if (open) {
+    search_type.value = type
+    nextTick(()=>{
+      searchfin()
+    })
+    return
   }
-  
-  search_type.value = mtype
+
+  search_type.value = type
 }
 </script>
-
-<style scoped></style>

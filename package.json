@@ -3,6 +3,7 @@
   "dependencies": {
     "@devui-design/icons": "^1.4.0",
     "devui-theme": "^0.1.0",
+    "highlight.js": "^11.11.1",
     "marked": "^17.0.1",
     "vite": "^7.3.1",
     "vue": "^3.5.27",
