@@ -105,3 +105,18 @@ button:hover {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: none; }
 }
+
+img {
+  width: 100vw;
+  height: auto;
+  border-radius: 2.5%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  border: 3px solid var(--primary-light, #a5b4fc);
+  transition: transform 0.2s;
+}
+
+img:hover {
+  transform: scale(1.06) rotate(-2deg);
+}

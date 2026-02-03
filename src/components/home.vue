@@ -1,11 +1,11 @@
 <template>
-  <div v-if="!onMarkDown" >
+  <div v-if="!onLink" >
     <title>UTAC'S Sesrch</title>
     <nav class="search-type">
       <ul>
         <li><button :class="[bing ? 'active' : '']" @click="() => { search_type = 'bing' }">bing</button></li>
         <li><button :class="[google ? 'active' : '']" @click="() => { search_type = 'google' }">google</button></li>
-        <li><button :class="[MarkDown ? 'active' : '']" @click="() => { search_type = 'MarkDown' }">MarkDown</button></li>
+        <li><button :class="[Link ? 'active' : '']" @click="() => { search_type = 'Link' }">Link</button></li>
       </ul>
     </nav>
     <div class="page">
@@ -26,7 +26,7 @@
     </div>
   </div>
   <div v-else >
-    <button @click="() => { typeMap.set('MarkDown',{...typeMap.get('MarkDown'),on: false})}">Back</button>
+    <button @click="() => { typeMap.set('Link',{...typeMap.get('Link'),on: false})}">Back</button>
    <Rader :url="searchText"/>
   </div>
 </template>
@@ -35,16 +35,17 @@
 <script setup>
 import { onMounted, ref, watch, reactive, computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import Rader from './MarkDown.vue'
+import Rader from './Link.vue'
 import "./home.css"
 import './addon/input.css'
 const search_link = ref("")
 const searchText = ref('')
 const search_type = ref('google')
+const urlMatch = /^(http[s]?:\/\/)/
 const typeMap = reactive(new Map([
 ['google',{ en: true, url: 'https://www.google.com/search?q='}],
 ['bing',{ en: false, url: 'https://www.bing.com/search?q='}],
-['MarkDown',{ en: false,on: false, url: ''}]
+['Link',{ en: false,on: false, url: ''}]
 ]))
 const keys = [...typeMap.keys()]
 const rute = useRoute()
@@ -55,13 +56,12 @@ return typeMap.get('bing').en
 const google = computed(()=>{
   return typeMap.get('google').en
 })
-const MarkDown = computed(()=>{
-  return typeMap.get('MarkDown').en
+const Link = computed(()=>{
+  return typeMap.get('Link').en
 })
-const onMarkDown = computed(()=>{
-  return typeMap.get('MarkDown').on
+const onLink = computed(()=>{
+  return typeMap.get('Link').on
 })
-
 onMounted(() => {
   if (rute.query.type) {
     checkUrl()
@@ -74,12 +74,14 @@ watch(search_type,()=>{search_change(),makeUrl()}, { immediate: true, deep: true
 watch(searchText,()=>{roter.replace({query: {...rute.query,q: searchText.value}})})
 
 function searchfin() {
-  if (MarkDown.value) {
-  typeMap.set('MarkDown',{...typeMap.get('MarkDown'),on: true})
+  if (Link.value) {
+  typeMap.set('Link',{...typeMap.get('Link'),on: true})
   return 0
-  }else {
-    const query = encodeURIComponent(searchText.value);
-    window.open(`${search_link.value}${query}`, '_blank');
+  }else if (urlMatch.test(searchText.value)) {
+  window.open(searchText.value);
+  } else {
+  let query = encodeURIComponent(searchText.value)
+    window.open(`${search_link.value}${query}`, `_blank`);
   }
 }
 
@@ -90,7 +92,7 @@ async function search_change() {
     }else{
       typeMap.set(key,{...typeMap.get(key),en: false})
     }
-    search_link.value = typeMap.get(search_type.value).url
+    search_link.value = typeMap.get(search_type.value).u
   })
 }
 
