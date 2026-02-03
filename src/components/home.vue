@@ -80,7 +80,7 @@ function searchfin() {
   }else if (urlMatch.test(searchText.value)) {
   window.open(searchText.value);
   } else {
-  let query = encodeURIComponent(searchText.value)
+    let query = encodeURIComponent(searchText.value)
     window.open(`${search_link.value}${query}`, `_blank`);
   }
 }
@@ -92,7 +92,7 @@ async function search_change() {
     }else{
       typeMap.set(key,{...typeMap.get(key),en: false})
     }
-    search_link.value = typeMap.get(search_type.value).u
+    search_link.value = typeMap.get(search_type.value).url
   })
 }
 
