@@ -3,8 +3,10 @@ import main from './main.vue';
 import './main.css';
 import './router.css';
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from './components/home.vue';
-import About from './components/about.vue';
+
+// 核心优化：静态导入→动态导入
+const Home = () => import('./components/home.vue');
+const About = () => import('./components/about.vue');
 
 const router = createRouter({
   history: createWebHistory(),
@@ -17,3 +19,4 @@ const router = createRouter({
 createApp(main)
   .use(router)
   .mount('#main');
+
