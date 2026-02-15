@@ -16,5 +16,4 @@ const router = createRouter({
 
 createApp(main)
   .use(router)
-  .use(DevUI)
   .mount('#main');
