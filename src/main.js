@@ -6,8 +6,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from './components/home.vue';
 import About from './components/about.vue';
 
-import 'vue-devui/style.css';
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [

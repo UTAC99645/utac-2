@@ -1,16 +1,11 @@
 {
   "packageManager": "yarn@4.12.0",
   "dependencies": {
-    "@devui-design/icons": "^1.4.0",
-    "devui-theme": "^0.1.0",
+    "@vitejs/plugin-vue": "^6.0.4",
     "highlight.js": "^11.11.1",
-    "marked": "^17.0.1",
+    "marked": "^17.0.2",
     "vite": "^7.3.1",
-    "vue": "^3.5.27",
-    "vue-devui": "^1.6.36",
-    "vue-router": "^4.6.4"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.3"
+    "vue": "^3.5.28",
+    "vue-router": "^5.0.2"
   }
 }
