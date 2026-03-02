@@ -1,10 +1,27 @@
 <template>
-  <h1>关于</h1>
+  <n-gradient-text
+    type="warning"
+    :size="30"
+  >
+    关于
+  </n-gradient-text>
   <div v-if="source.length">
     <div v-for="item in source" :key="item.mail">
       <img :src="item.img" :alt="item.name" /><br>
-      <h2>NAME: <span class="name">{{ item.name }}</span></h2><br>
-      <h2>MAIL: <span class="mail">{{ item.mail }}</span></h2><br>
+      <n-gradient-text
+        type="success">
+        NAME: 
+        <span class="name">
+          {{ item.name }}
+        </span>
+      </n-gradient-text><br>
+      <n-gradient-text
+        type="success">
+        MAIL: 
+        <span class="mail">
+          {{ item.mail }}
+        </span>
+      </n-gradient-text><br>
     </div>
   </div>
   <div v-else>加载中...</div>
@@ -12,7 +29,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import "./about.css"
 
 const source = ref([])
 

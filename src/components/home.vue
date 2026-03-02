@@ -1,6 +1,6 @@
 <template>
   <div v-if="!onLink">
-    <title>UTAC'S Sesrch</title>
+    <title type="info">UTAC'S Sesrch</title>
     <nav class="search-type">
       <ul>
         <li><button :class="[bing ? 'active' : '']" @click="() => { search_type = 'bing' }">bing</button></li>
@@ -12,27 +12,36 @@
       <h1 class="title">UTAC'S Sesrch</h1>
       <div class="search-box">
         <form class="form" @submit.prevent="searchfin">
-          <input v-model="searchText" type="text" id="Search" class="form__input" placeholder="" />
-          <label for="Search" class="form__label">
-            {{ search_type }}
-          </label>
+          <n-input
+            round
+            status='info'
+            loading
+            clearable
+            size="large"
+            v-model="searchText"
+            type="text"
+            id="Search"
+            placeholder="Search" />
         </form>
       </div>
     </div>
   </div>
   <div v-else>
-    <button @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }">Back</button>
+    <n-button
+      size="large"
+      dashed
+      @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }"
+    >
+      Back
+    </n-button>
     <Rader :url="searchText" />
   </div>
 </template>
 
 
 <script setup>
-import { onMounted, ref, watch, reactive, computed, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import Rader from './Link.vue'
 import "./home.css"
-import './addon/input.css'
 const search_link = ref("")
 const searchText = ref('')
 const search_type = ref('google')

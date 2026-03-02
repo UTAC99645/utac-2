@@ -64,40 +64,6 @@ body {
   max-width: 1200px;
 }
 
-button {
-  padding: 12px 24px;
-  border: none;
-  border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
-  color: #fff;
-  cursor: pointer;
-  transition: transform var(--trans), box-shadow var(--trans), background 0.2s;
-  box-shadow: var(--shadow);
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-button.active,
-button:focus {
-  outline: 2px solid var(--accent);
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-}
-
-button:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.16);
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-}
-
-.cover {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
 @media (max-width: 900px) {
   .container { max-width: 98vw; }
   :root { --gap: 10px; }
