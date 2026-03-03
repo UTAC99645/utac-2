@@ -1,13 +1,16 @@
 <template>
   <div v-if="!onLink">
     <title type="info">UTAC'S Sesrch</title>
-    <nav class="search-type">
-      <ul>
-        <li><button :class="[bing ? 'active' : '']" @click="() => { search_type = 'bing' }">bing</button></li>
-        <li><button :class="[google ? 'active' : '']" @click="() => { search_type = 'google' }">google</button></li>
-        <li><button :class="[Link ? 'active' : '']" @click="() => { search_type = 'Link' }">Link</button></li>
-      </ul>
-    </nav>
+
+    <n-flex justify="space-around">
+      <div v-for="[key, item] in typeMap">
+        <n-button type="info" size="large" :class="[search_type === key ? 'active' : '']"
+          @click="() => { search_type = key }">
+          {{ key }}
+        </n-button>
+      </div>
+    </n-flex>
+
     <div class="page">
       <h1 class="title">UTAC'S Sesrch</h1>
       <div class="search-box">
@@ -19,9 +22,12 @@
     </div>
   </div>
   <div v-else>
-    <n-button size="large" dashed @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }">
-      Back
-    </n-button>
+    <n-flex justify="space-around">
+      <n-button type="warning" size="large" dashed
+        @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }">
+        Back
+      </n-button>
+    </n-flex>
     <Rader :url="searchText" />
   </div>
 </template>
@@ -44,12 +50,6 @@ const typeMap = reactive(new Map([
 const keys = [...typeMap.keys()]
 const rute = useRoute()
 const roter = useRouter()
-const bing = computed(() => {
-  return typeMap.get('bing').en
-})
-const google = computed(() => {
-  return typeMap.get('google').en
-})
 const Link = computed(() => {
   return typeMap.get('Link').en
 })
@@ -74,7 +74,7 @@ function searchfin() {
   }
   if (Link.value) {
     typeMap.set('Link', { ...typeMap.get('Link'), on: true })
-    message.success(`${searchText.value}`)
+    message.success(`Link to '${searchText.value}'`)
     return 0
   } else if (urlMatch.test(searchText.value)) {
     window.open(searchText.value);
