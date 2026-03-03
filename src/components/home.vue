@@ -11,27 +11,15 @@
     <div class="page">
       <h1 class="title">UTAC'S Sesrch</h1>
       <div class="search-box">
-        <form class="form" @submit.prevent="searchfin">
-          <n-input
-            round
-            status='info'
-            loading
-            clearable
-            size="large"
-            v-model="searchText"
-            type="text"
-            id="Search"
+        <form @submit.prevent="searchfin">
+          <n-input round status='info' loading clearable size="large" v-model:value="searchText" type="text" id="Search"
             placeholder="Search" />
         </form>
       </div>
     </div>
   </div>
   <div v-else>
-    <n-button
-      size="large"
-      dashed
-      @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }"
-    >
+    <n-button size="large" dashed @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }">
       Back
     </n-button>
     <Rader :url="searchText" />
@@ -40,11 +28,13 @@
 
 
 <script setup>
+import { useMessage } from 'naive-ui'
 import Rader from './Link.vue'
 import "./home.css"
 const search_link = ref("")
 const searchText = ref('')
 const search_type = ref('google')
+const message = useMessage()
 const urlMatch = /^(http[s]?:\/\/)/
 const typeMap = reactive(new Map([
   ['google', { en: true, url: 'https://www.google.com/search?q=' }],
@@ -78,8 +68,13 @@ watch(search_type, () => { search_change(), makeUrl() }, { immediate: true, deep
 watch(searchText, () => { roter.replace({ query: { ...rute.query, q: searchText.value } }) })
 
 function searchfin() {
+  if (!searchText.value.trim()) {
+    message.warning('Nothing to search');
+    return;
+  }
   if (Link.value) {
     typeMap.set('Link', { ...typeMap.get('Link'), on: true })
+    message.success(`${searchText.value}`)
     return 0
   } else if (urlMatch.test(searchText.value)) {
     window.open(searchText.value);

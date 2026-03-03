@@ -8,7 +8,9 @@
     </nav>
   </div>
   <n-config-provider :theme="darkTheme">
-    <router-view />
+    <n-message-provider>
+      <router-view />
+    </n-message-provider>
   </n-config-provider>
 </template>
 
@@ -16,5 +18,4 @@
 import { darkTheme } from 'naive-ui'
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
