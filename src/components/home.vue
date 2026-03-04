@@ -4,8 +4,7 @@
 
     <n-flex justify="space-around">
       <div v-for="[key, item] in typeMap">
-        <n-button type="info" size="large" :class="[search_type === key ? 'active' : '']"
-          @click="() => { search_type = key }">
+        <n-button :type="search_type === key ? 'info' : 'warning'" size="large" @click="() => { search_type = key }">
           {{ key }}
         </n-button>
       </div>
@@ -31,7 +30,6 @@
     <Rader :url="searchText" />
   </div>
 </template>
-
 
 <script setup>
 import { useMessage } from 'naive-ui'
