@@ -10,7 +10,6 @@
         </n-button>
       </div>
     </n-flex>
-
     <div class="page">
       <h1 class="title">UTAC'S Sesrch</h1>
       <div class="search-box">
@@ -44,6 +43,7 @@ const urlMatch = /^(http[s]?:\/\/)/
 const typeMap = reactive(new Map([
   ['google', { en: true, url: 'https://www.google.com/search?q=' }],
   ['bing', { en: false, url: 'https://www.bing.com/search?q=' }],
+  ['duckduckgo', { en: false, url: 'https://duckduckgo.com/?q=' }],
   ['Link', { en: false, on: false, url: '' }]
 ]))
 const keys = [...typeMap.keys()]
