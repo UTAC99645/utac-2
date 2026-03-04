@@ -4,7 +4,8 @@
 
     <n-flex justify="space-around">
       <div v-for="[key, item] in typeMap">
-        <n-button :type="search_type === key ? 'info' : 'warning'" size="large" @click="() => { search_type = key }">
+        <n-button :type="search_type === key ? 'info' : 'warning'" size="large"
+          @click="() => { search_type = key, message.warning(`Search with ${key}`) }">
           {{ key }}
         </n-button>
       </div>
