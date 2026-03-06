@@ -10,6 +10,7 @@
         </n-button>
       </div>
     </n-flex>
+    <n-divider />
     <div class="page">
       <h1 class="title">UTAC'S Sesrch</h1>
       <div class="search-box">
@@ -37,7 +38,7 @@ import Rader from './Link.vue'
 import "./home.css"
 const search_link = ref("")
 const searchText = ref('')
-const search_type = ref('google')
+const search_type = ref('duckduckgo')
 const message = useMessage()
 const urlMatch = /^(http[s]?:\/\/)/
 const typeMap = reactive(new Map([
@@ -47,8 +48,8 @@ const typeMap = reactive(new Map([
   ['Link', { en: false, on: false, url: '' }]
 ]))
 const keys = [...typeMap.keys()]
-const rute = useRoute()
-const roter = useRouter()
+const route = useRoute()
+const router = useRouter()
 const Link = computed(() => {
   return typeMap.get('Link').en
 })
@@ -56,7 +57,7 @@ const onLink = computed(() => {
   return typeMap.get('Link').on
 })
 onMounted(() => {
-  if (rute.query.type) {
+  if (route.query.type) {
     checkUrl()
   } else {
     search_change(search_type.value)
@@ -64,7 +65,7 @@ onMounted(() => {
 })
 watch(search_type, () => { search_change(), makeUrl() }, { immediate: true, deep: true })
 
-watch(searchText, () => { roter.replace({ query: { ...rute.query, q: searchText.value } }) })
+watch(searchText, () => { router.replace({ query: { ...route.query, q: searchText.value } }) })
 
 function searchfin() {
   if (!searchText.value.trim()) {
@@ -95,12 +96,12 @@ async function search_change() {
 }
 
 async function makeUrl() {
-  await roter.replace({ query: { ...rute.query, type: search_type.value } })
+  await router.replace({ query: { ...route.query, type: search_type.value } })
 }
 
 function checkUrl() {
-  if (rute.query.q) searchText.value = rute.query.q
-  let { type, open } = rute.query
+  if (route.query.q) searchText.value = route.query.q
+  let { type, open } = route.query
   if (open) {
     search_type.value = type
     nextTick(() => {
