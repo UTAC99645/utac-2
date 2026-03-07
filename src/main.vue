@@ -2,15 +2,18 @@
   <n-config-provider :theme="darkTheme">
     <n-message-provider>
       <n-flex justify="end">
-        <div v-for="item in way" :key="item.path">
-          <n-button :type="item.path === route.path ? 'info' : 'warning'" size="large"
-            @click="() => router.push(item.path)">
-            {{ item.name }}
-          </n-button>
-        </div>
+        <n-breadcrumb separator="<->">
+          <n-breadcrumb-item v-for="item in way" :key="item.path" @click="router.push(item.path)">
+            <n-text :type="route.path === item.path ? 'info' : 'default'">
+              {{ item.name }}
+            </n-text>
+          </n-breadcrumb-item>
+        </n-breadcrumb>
       </n-flex>
       <n-divider />
-      <router-view />
+      <n-flex justify="center">
+        <router-view />
+      </n-flex>
     </n-message-provider>
   </n-config-provider>
 </template>
@@ -21,8 +24,8 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute()
 const router = useRouter()
 const way = ref([
-  { name: Home, path: '/' },
-  { name: About, path: '/about' }
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' }
 ])
 </script>
 
