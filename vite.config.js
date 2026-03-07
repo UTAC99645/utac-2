@@ -24,6 +24,9 @@ export default defineConfig({
             'useMessage',
             'useNotification',
             'useLoadingBar'
+          ],
+          'js-cookie': [
+            ['default', 'Cookies']
           ]
         }
       ]

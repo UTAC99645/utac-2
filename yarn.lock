@@ -1192,6 +1192,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-cookie@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "js-cookie@npm:3.0.5"
+  checksum: 10c0/04a0e560407b4489daac3a63e231d35f4e86f78bff9d792011391b49c59f721b513411cd75714c418049c8dc9750b20fcddad1ca5a2ca616c3aca4874cce5b3a
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^9.0.1":
   version: 9.0.1
   resolution: "js-tokens@npm:9.0.1"
@@ -1705,6 +1712,7 @@ __metadata:
   dependencies:
     "@vitejs/plugin-vue": "npm:^6.0.4"
     highlight.js: "npm:^11.11.1"
+    js-cookie: "npm:^3.0.5"
     marked: "npm:^17.0.2"
     naive-ui: "npm:^2.43.2"
     unplugin-auto-import: "npm:^21.0.0"

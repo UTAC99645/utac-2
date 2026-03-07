@@ -11,9 +11,11 @@
         </n-breadcrumb>
       </n-flex>
       <n-divider />
-      <n-flex justify="center">
-        <router-view />
-      </n-flex>
+      <n-dialog-provider>
+        <n-flex justify="center">
+          <router-view />
+        </n-flex>
+      </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>
 </template>
