@@ -19,41 +19,73 @@
             placeholder="Search" />
         </form>
       </div>
+      {{ searchHistory }}
     </div>
-  </div>
-  <div v-else>
-    <n-flex justify="space-around">
-      <n-button type="warning" size="large" dashed
-        @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }">
-        Back
-      </n-button>
-    </n-flex>
     <n-divider />
     <n-flex justify="center">
-      <n-virtual-list :items="history" :item-size="50" item-resizable
-        style="height: 300px; width: 400px; overflow-y: auto;">
-        <template #default="{ item }">
-          <n-card :title="item.text" size="huge" :bordered="false" @click="() => { window.open(item.url) }">
-            <p>{{ encodeURIComponent(item.time) }}</p>
-            <p>{{ encodeURIComponent(item.text) }}</p>
-            <p>{{ encodeURIComponent(item.url) }}</p>
-          </n-card>
-        </template>
-      </n-virtual-list>
+      <div v-for="(item, index) in searchHistory">
+        <n-card>
+          <n-text strong>
+            {{ index + 1 }}
+          </n-text>
+          <n-divider />
+          <n-text type="info">{{ item.time }}</n-text>
+          <n-divider />
+          <n-text type="success" @click="() => {
+            if (urlMatch.test(item.url)) {
+              window.open(item.url);
+            } else {
+              searchText.value = item.url
+              search_type.value = 'Link'
+              typeMap.set('Link', { ...typeMap.get('Link'), on: true })
+            }
+          }">{{ item.url }}</n-text>
+          <n-divider />
+          <n-flex justify="space-around">
+            <n-button type="primary" size="small" @click="() => {
+              if (!urlMatch.test(item.url)) {
+                privateb.value = true
+                searchText.value = item.text
+                searchfin()
+              } else {
+                window.open(item.url);
+              }
+            }">
+              Open
+            </n-button>
+            <n-button type="error" size="small" @click="() => {
+              let arr = [...searchHistory]
+              arr.splice(index, 1)
+              Cookies.set('history', JSON.stringify(arr))
+            }">
+              Delete
+            </n-button>
+          </n-flex>
+        </n-card>
+      </div>
     </n-flex>
-    <Rader :url="searchText" />
+  </div>
+  <div v-if="onLink">
+    <n-button type="warning" size="large" dashed
+      @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }), message.warning('Back to search') }">
+      Back
+    </n-button>
+    <n-flex justify="space-around">
+      <Rader :url="searchText" />
+    </n-flex>
   </div>
 </template>
 
 <script setup>
 import { useMessage } from 'naive-ui'
 import Rader from './Link.vue'
-import "./home.css"
+//import "./home.css"
 const search_link = ref("")
 const searchText = ref('')
 const search_type = ref('duckduckgo')
 const message = useMessage()
 const dialog = useDialog()
+const privateb = ref(false)
 const urlMatch = /^(http[s]?:\/\/)/
 const typeMap = reactive(new Map([
   ['google', { en: true, url: 'https://www.google.com/search?q=' }],
@@ -61,11 +93,15 @@ const typeMap = reactive(new Map([
   ['duckduckgo', { en: false, url: 'https://duckduckgo.com/?q=' }],
   ['Link', { en: false, on: false, url: '' }]
 ]))
-const history = computed(() => {
-  const originhistory = Cookies.get('history')
-  if (originhistory === undefined) return []
-  const parsed = JSON.parse(originhistory)
-  return parsed
+const searchHistory = computed(() => {
+  const originsearchHistory = Cookies.get('history')
+  if (originsearchHistory === undefined) return []
+  try {
+    return JSON.parse(originsearchHistory)
+  } catch (err) {
+    console.error('Failed to parse search history:', err)
+    return []
+  }
 })
 const keys = [...typeMap.keys()]
 const route = useRoute()
@@ -102,7 +138,7 @@ function init() {
   if (Cookies.get('accepted') === undefined) {
     dialog.info({
       title: 'Welcome to UTAC\'S Sesrch',
-      content: 'This website uses cookies to save your search history and preferences. By using this website, you agree to our use of cookies.',
+      content: 'This website uses cookies to save your search searchHistory and preferences. By using this website, you agree to our use of cookies.',
       positiveText: 'I Agree',
       negativeText: 'I Disagree',
       onPositiveClick: () => {
@@ -114,13 +150,23 @@ function init() {
         message.warning('You have declined our cookies. Your preferences will not be saved, but we still will use it to save your chooise')
       }
     })
+  } else if (Cookies.get('accepted') === 'false') {
+    message.warning('You have declined our cookies. Your preferences will not be saved, but we still will use it to save your chooise')
+  }
+  if (Cookies.get('history') === undefined) {
+    Cookies.set('history', JSON.stringify([]))
   }
 }
 
 function searchfin() {
-  if (Cookies.get('accepted')) {
-    Cookies.set('history', JSON.stringify([...history.value, { text: searchText.value, url: Link.value ? searchText.value : `${search_link.value}${encodeURIComponent(searchText.value)}`, time: formatTime() }]))
+  if (Cookies.get('accepted') === 'true' && !privateb.value) {
+    Cookies.set('history', JSON.stringify([...searchHistory.value, { url: Link.value ? searchText.value : `${search_link.value}${encodeURIComponent(searchText.value)}`, time: formatTime() }]))
+  } else if (Cookies.get('accepted') === 'false') {
+    message.warning('You have declined our cookies. Your search history will not be saved.')
+  } else if (privateb.value) {
+    message.warning('Private mode is on. Your search history will not be saved.')
   }
+  privateb.value = false
   if (!searchText.value.trim()) {
     message.warning('Nothing to search');
     return;
