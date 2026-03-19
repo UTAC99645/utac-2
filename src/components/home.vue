@@ -36,6 +36,7 @@
 import { useMessage } from 'naive-ui'
 import Rader from './Link.vue'
 import "./home.css"
+import { nextTick } from 'vue'
 const search_link = ref("")
 const searchText = ref('')
 const search_type = ref('duckduckgo')
@@ -50,18 +51,24 @@ const typeMap = reactive(new Map([
 const keys = [...typeMap.keys()]
 const route = useRoute()
 const router = useRouter()
+const loadingBar = useLoadingBar()
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const Link = computed(() => {
   return typeMap.get('Link').en
 })
 const onLink = computed(() => {
   return typeMap.get('Link').on
 })
-onMounted(() => {
-  if (route.query.type) {
-    checkUrl()
-  } else {
-    search_change(search_type.value)
-  }
+onMounted(async () => {
+  loadingBar.start()
+  nextTick(() => {
+    if (route.query.type) {
+      checkUrl()
+    } else {
+      search_change(search_type.value)
+    }
+  })
+  loadingBar.finish()
 })
 watch(search_type, () => { search_change(), makeUrl() }, { immediate: true, deep: true })
 
@@ -85,6 +92,7 @@ function searchfin() {
 }
 
 async function search_change() {
+  loadingBar.start()
   keys.forEach(key => {
     if (key === search_type.value) {
       typeMap.set(key, { ...typeMap.get(search_type.value), en: true })
@@ -93,6 +101,8 @@ async function search_change() {
     }
     search_link.value = typeMap.get(search_type.value).url
   })
+  await sleep(500)
+  loadingBar.finish()
 }
 
 async function makeUrl() {

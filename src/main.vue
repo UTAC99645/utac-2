@@ -1,20 +1,22 @@
 <template>
   <n-config-provider :theme="darkTheme">
-    <n-message-provider>
-      <n-flex justify="end">
-        <n-breadcrumb separator="<->">
-          <n-breadcrumb-item v-for="item in way" :key="item.path" @click="router.push(item.path)">
-            <n-text :type="route.path === item.path ? 'info' : 'default'">
-              {{ item.name }}
-            </n-text>
-          </n-breadcrumb-item>
-        </n-breadcrumb>
-      </n-flex>
-      <n-divider />
-      <n-flex justify="center">
-        <router-view />
-      </n-flex>
-    </n-message-provider>
+    <n-loading-bar-provider>
+      <n-message-provider>
+        <n-flex justify="end">
+          <n-breadcrumb separator="<->">
+            <n-breadcrumb-item v-for="item in way" :key="item.path" @click="router.push(item.path)">
+              <n-text :type="route.path === item.path ? 'info' : 'default'">
+                {{ item.name }}
+              </n-text>
+            </n-breadcrumb-item>
+          </n-breadcrumb>
+        </n-flex>
+        <n-divider />
+        <n-flex justify="center">
+          <router-view />
+        </n-flex>
+      </n-message-provider>
+    </n-loading-bar-provider>
   </n-config-provider>
 </template>
 
