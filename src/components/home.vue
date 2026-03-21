@@ -1,34 +1,36 @@
 <template>
-  <div v-if="!onLink">
-    <title type="info">UTAC'S Sesrch</title>
-
-    <n-flex justify="space-around">
-      <div v-for="[key, item] in typeMap">
-        <n-button :type="search_type === key ? 'info' : 'warning'" size="large"
-          @click="() => { search_type = key, message.warning(`Search with ${key}`) }">
-          {{ key }}
-        </n-button>
-      </div>
-    </n-flex>
-    <n-divider />
-    <div class="page">
-      <h1 class="title">UTAC'S Sesrch</h1>
-      <div class="search-box">
-        <form @submit.prevent="searchfin">
-          <n-input round status='info' loading clearable size="large" v-model:value="searchText" type="text" id="Search"
-            placeholder="Search" />
-        </form>
+  <img v-if="spinShow" src="/assets/img/loading.gif" style="width: 100vw" alt="Loading">
+  <div v-else>
+    <div v-if="!onLink">
+      <title type="info">UTAC'S Sesrch</title>
+      <n-flex justify="space-around">
+        <div v-for="[key, item] in typeMap">
+          <n-button :type="search_type === key ? 'info' : 'warning'" size="large"
+            @click="() => { if (key === search_type) { return } else search_type = key, message.warning(`Search with ${key}`) }">
+            {{ key }}
+          </n-button>
+        </div>
+      </n-flex>
+      <n-divider />
+      <div class="page">
+        <h1 class="title">UTAC'S Sesrch</h1>
+        <div class="search-box">
+          <form @submit.prevent="searchfin">
+            <n-input round status='info' loading clearable size="large" v-model:value="searchText" type="text"
+              id="Search" placeholder="Search" />
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-  <div v-else>
-    <n-flex justify="space-around">
-      <n-button type="warning" size="large" dashed
-        @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }">
-        Back
-      </n-button>
-    </n-flex>
-    <Rader :url="searchText" />
+    <div v-else>
+      <n-flex justify="space-around">
+        <n-button type="warning" size="large" dashed
+          @click="() => { typeMap.set('Link', { ...typeMap.get('Link'), on: false }) }">
+          Back
+        </n-button>
+      </n-flex>
+      <Rader :url="searchText" />
+    </div>
   </div>
 </template>
 
@@ -39,6 +41,7 @@ import "./home.css"
 import { nextTick } from 'vue'
 const search_link = ref("")
 const searchText = ref('')
+const spinShow = ref(true)
 const search_type = ref('duckduckgo')
 const message = useMessage()
 const loadingBar = useLoadingBar()
@@ -60,15 +63,28 @@ const Link = computed(() => {
 const onLink = computed(() => {
   return typeMap.get('Link').on
 })
-onMounted(async () => {
+
+onMounted(() => {
+  init()
+})
+
+async function init() {
+  spinShow.value = true
   loadingBar.start()
   if (route.query.type) {
     checkUrl()
   } else {
     search_change(search_type.value)
   }
+  if (Random() > 25) {
+    await sleep(1000)
+    spinShow.value = false
+    loadingBar.error()
+    return
+  }
+  spinShow.value = false
   loadingBar.finish()
-})
+}
 watch(search_type, () => { search_change(), makeUrl() }, { immediate: true, deep: true })
 
 watch(searchText, () => { router.replace({ query: { ...route.query, q: searchText.value } }) })
