@@ -23,4 +23,3 @@ const router = createRouter({
 createApp(main)
   .use(router)
   .mount('#main');
-

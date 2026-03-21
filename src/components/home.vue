@@ -41,6 +41,7 @@ const search_link = ref("")
 const searchText = ref('')
 const search_type = ref('duckduckgo')
 const message = useMessage()
+const loadingBar = useLoadingBar()
 const urlMatch = /^(http[s]?:\/\/)/
 const typeMap = reactive(new Map([
   ['google', { en: true, url: 'https://www.google.com/search?q=' }],
@@ -50,8 +51,8 @@ const typeMap = reactive(new Map([
 ]))
 const keys = [...typeMap.keys()]
 const route = useRoute()
+const Random = () => Math.ceil(Math.random() * 100)
 const router = useRouter()
-const loadingBar = useLoadingBar()
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const Link = computed(() => {
   return typeMap.get('Link').en
@@ -61,13 +62,11 @@ const onLink = computed(() => {
 })
 onMounted(async () => {
   loadingBar.start()
-  nextTick(() => {
-    if (route.query.type) {
-      checkUrl()
-    } else {
-      search_change(search_type.value)
-    }
-  })
+  if (route.query.type) {
+    checkUrl()
+  } else {
+    search_change(search_type.value)
+  }
   loadingBar.finish()
 })
 watch(search_type, () => { search_change(), makeUrl() }, { immediate: true, deep: true })
@@ -101,8 +100,16 @@ async function search_change() {
     }
     search_link.value = typeMap.get(search_type.value).url
   })
-  await sleep(500)
-  loadingBar.finish()
+  let x = Random()
+  if (x > 50) {
+    await sleep(50)
+    loadingBar.error()
+    return
+  } else {
+    await sleep(500)
+    loadingBar.finish()
+    return
+  }
 }
 
 async function makeUrl() {
