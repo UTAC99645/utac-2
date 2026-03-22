@@ -25,6 +25,11 @@ export default defineConfig({
             'useNotification',
             'useLoadingBar'
           ]
+        },
+        {
+          'axios': [
+            'axios'
+          ]
         }
       ]
     }),

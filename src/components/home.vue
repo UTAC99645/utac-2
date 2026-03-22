@@ -45,7 +45,7 @@ const spinShow = ref(true)
 const search_type = ref('duckduckgo')
 const message = useMessage()
 const loadingBar = useLoadingBar()
-const urlMatch = /^(http[s]?:\/\/)/
+const urlMatch = /^https?:\/\/.+\..+/i
 const typeMap = reactive(new Map([
   ['google', { en: true, url: 'https://www.google.com/search?q=' }],
   ['bing', { en: false, url: 'https://www.bing.com/search?q=' }],
@@ -76,15 +76,23 @@ async function init() {
   } else {
     search_change(search_type.value)
   }
-  if (Random() > 25) {
+  initLaod()
+}
+
+async function initLaod(Num) {
+  spinShow.value = true
+  let x = Num ?? 25
+  if (x <= Random()) {
     await sleep(1000)
     spinShow.value = false
     loadingBar.error()
-    return
+  } else {
+    await sleep(250)
+    spinShow.value = false
+    loadingBar.finish()
   }
-  spinShow.value = false
-  loadingBar.finish()
 }
+
 watch(search_type, () => { search_change(), makeUrl() }, { immediate: true, deep: true })
 
 watch(searchText, () => { router.replace({ query: { ...route.query, q: searchText.value } }) })
@@ -116,16 +124,7 @@ async function search_change() {
     }
     search_link.value = typeMap.get(search_type.value).url
   })
-  let x = Random()
-  if (x > 50) {
-    await sleep(50)
-    loadingBar.error()
-    return
-  } else {
-    await sleep(500)
-    loadingBar.finish()
-    return
-  }
+  initLaod()
 }
 
 async function makeUrl() {
