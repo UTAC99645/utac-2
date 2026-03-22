@@ -1,6 +1,7 @@
 {
   "packageManager": "yarn@4.13.0",
   "dependencies": {
+    "@vicons/ionicons5": "^0.13.0",
     "@vitejs/plugin-vue": "^6.0.4",
     "axios": "^1.13.6",
     "highlight.js": "^11.11.1",

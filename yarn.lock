@@ -563,6 +563,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vicons/ionicons5@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@vicons/ionicons5@npm:0.13.0"
+  checksum: 10c0/3be530caf976bce192f8565c714b19a53b739a46b9de845fba5fad792b083439aa3fd4206c876e5eb28fe9c163a59ec41c9d4e44cc63d65a282d1d4b001ed84a
+  languageName: node
+  linkType: hard
+
 "@vitejs/plugin-vue@npm:^6.0.4":
   version: 6.0.4
   resolution: "@vitejs/plugin-vue@npm:6.0.4"
@@ -1937,6 +1944,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@vicons/ionicons5": "npm:^0.13.0"
     "@vitejs/plugin-vue": "npm:^6.0.4"
     axios: "npm:^1.13.6"
     highlight.js: "npm:^11.11.1"
