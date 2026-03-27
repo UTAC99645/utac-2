@@ -1,5 +1,7 @@
 <template>
-  <img v-if="spinShow" src="/assets/img/loading.gif" style="width: 100vw" alt="Loading">
+  <div v-if="spinShow">
+    <img src="/assets/img/loading.gif" style="width: 100vw" alt="Loading">
+  </div>
   <div v-else>
     <div v-if="!onLink">
       <title type="info">UTAC'S Sesrch</title>
