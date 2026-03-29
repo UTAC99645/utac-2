@@ -1,6 +1,6 @@
 <template>
   <div v-if="spinShow">
-    <img src="/assets/img/loading.gif" style="width: 100vw" alt="Loading">
+    <n-image :src="lodimg" style="width: 100vw" alt="Loading" />
   </div>
   <div v-else>
     <div v-if="!onLink">
@@ -40,7 +40,7 @@
 import { useMessage } from 'naive-ui'
 import Rader from './Link.vue'
 import "./home.css"
-import { nextTick } from 'vue'
+import { computed, nextTick, reactive } from 'vue'
 const search_link = ref("")
 const searchText = ref('')
 const spinShow = ref(true)
@@ -48,22 +48,36 @@ const search_type = ref('duckduckgo')
 const message = useMessage()
 const loadingBar = useLoadingBar()
 const urlMatch = /^https?:\/\/.+\..+/i
-const typeMap = reactive(new Map([
+const lodimg = computed(() => {
+  let x = Random()
+  if (x >= 50) {
+    return localmap.value.get('Evil').url
+  } else {
+    return localmap.value.get('Neuro').url
+  }
+})
+
+const localmap = ref(new Map([
+  ['Evil', { url: '/assets/img/lod/Evil.gif' }],
+  ['Neuro', { url: '/assets/img/lod/Neuro.gif' }]
+]))
+
+const typeMap = ref(new Map([
   ['google', { en: true, url: 'https://www.google.com/search?q=' }],
   ['bing', { en: false, url: 'https://www.bing.com/search?q=' }],
   ['duckduckgo', { en: false, url: 'https://duckduckgo.com/?q=' }],
   ['Link', { en: false, on: false, url: '' }]
 ]))
-const keys = [...typeMap.keys()]
+const keys = [...typeMap.value.keys()]
 const route = useRoute()
 const Random = () => Math.ceil(Math.random() * 100)
 const router = useRouter()
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const Link = computed(() => {
-  return typeMap.get('Link').en
+  return typeMap.value.get('Link').en
 })
 const onLink = computed(() => {
-  return typeMap.get('Link').on
+  return typeMap.value.get('Link').on
 })
 
 onMounted(() => {
@@ -83,13 +97,13 @@ async function init() {
 
 async function initLaod(Num) {
   spinShow.value = true
-  let x = Num ?? 25
+  let x = Num ?? 50
   if (x <= Random()) {
-    await sleep(1000)
+    await sleep(250)
     spinShow.value = false
     loadingBar.error()
   } else {
-    await sleep(250)
+    await sleep(1)
     spinShow.value = false
     loadingBar.finish()
   }
@@ -105,7 +119,7 @@ function searchfin() {
     return;
   }
   if (Link.value) {
-    typeMap.set('Link', { ...typeMap.get('Link'), on: true })
+    typeMap.value.set('Link', { ...typeMap.value.get('Link'), on: true })
     message.success(`Link to '${searchText.value}'`)
     return 0
   } else if (urlMatch.test(searchText.value)) {
@@ -120,11 +134,11 @@ async function search_change() {
   loadingBar.start()
   keys.forEach(key => {
     if (key === search_type.value) {
-      typeMap.set(key, { ...typeMap.get(search_type.value), en: true })
+      typeMap.value.set(key, { ...typeMap.value.get(search_type.value), en: true })
     } else {
-      typeMap.set(key, { ...typeMap.get(key), en: false })
+      typeMap.value.set(key, { ...typeMap.value.get(key), en: false })
     }
-    search_link.value = typeMap.get(search_type.value).url
+    search_link.value = typeMap.value.get(search_type.value).url
   })
   initLaod()
 }
