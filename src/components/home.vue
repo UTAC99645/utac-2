@@ -16,12 +16,46 @@
       <n-divider />
       <div class="page">
         <h1 class="title">UTAC'S Sesrch</h1>
-        <div class="search-box">
+        <div v-if="!QR" class="search-box">
           <form @submit.prevent="searchfin">
             <n-input round status='info' loading clearable size="large" v-model:value="searchText" type="text"
               id="Search" placeholder="Search" />
           </form>
         </div>
+        <div v-else>
+          <n-input round status='info' :type="inputtype" :loading="inputLod" clearable size="large"
+            v-model:value="searchText" type="text" id="Search" placeholder="context" />
+        </div>
+        <n-flex v-show="QR" justify="center" style="margin-top: 20px">
+          <n-button v-for="item in QRc" type="error" size="small"
+            @click="() => { QRck = item.value, message.warning(`Set QR code error correction level to ${item.value}`) }">
+            {{ item.label }}
+          </n-button>
+          <n-divider style="height: 3vh">
+            <n-divider vertical />
+            <n-switch id="1" v-model:value="extra_on" size="large">
+              <template #checked>N</template>
+              <template #unchecked>U</template>
+            </n-switch>
+            <n-divider vertical />
+            <n-button @click="QRdownload" type="success" size="small">
+              Download
+            </n-button>
+            <n-divider v-show="extra_on & searchLCfqt === 'QR'" vertical />
+            <n-switch v-show="extra_on & searchLCfqt === 'QR'" id="2" v-model:value="extra_1_on" size="large">
+              <template #checked>O</template>
+              <template #unchecked>NO</template>
+            </n-switch>
+            <n-divider v-show="extra_on & searchLCfqt === 'QR'" vertical />
+          </n-divider>
+          <n-flex v-show="extra_on">
+            <n-button :type="(key === searchLCfqt) ? 'primary' : 'default'" @click="() => { searchLCfqt = key }"
+              v-for="[key, item] in typeMap">
+              {{ key }}
+            </n-button>
+          </n-flex>
+          <n-qr-code id="qrcode" :padding="0" :value="searchLCfq" :error-correction-level="QRck" :size="100" />
+        </n-flex>
       </div>
     </div>
     <div v-else>
@@ -40,10 +74,20 @@
 import { useMessage } from 'naive-ui'
 import Rader from './Link.vue'
 import "./home.css"
-import { computed, nextTick, reactive } from 'vue'
+import { computed, nextTick } from 'vue'
 const search_link = ref("")
 const searchText = ref('')
-const spinShow = ref(true)
+const spinShow = ref(false)
+const QR = computed(() => {
+  return typeMap.value.get('QR').en
+})
+const QRc = ref([
+  { value: 'L', label: 'L' },
+  { value: 'M', label: 'M' },
+  { value: 'Q', label: 'Q' },
+  { value: 'H', label: 'H' }
+])
+const QRck = ref('L')
 const search_type = ref('duckduckgo')
 const message = useMessage()
 const loadingBar = useLoadingBar()
@@ -66,7 +110,8 @@ const typeMap = ref(new Map([
   ['google', { en: true, url: 'https://www.google.com/search?q=' }],
   ['bing', { en: false, url: 'https://www.bing.com/search?q=' }],
   ['duckduckgo', { en: false, url: 'https://duckduckgo.com/?q=' }],
-  ['Link', { en: false, on: false, url: '' }]
+  ['Link', { en: false, on: false, url: 'https://utac99645.top/?q=' }],
+  ['QR', { en: false, url: '' }]
 ]))
 const keys = [...typeMap.value.keys()]
 const route = useRoute()
@@ -79,33 +124,80 @@ const Link = computed(() => {
 const onLink = computed(() => {
   return typeMap.value.get('Link').on
 })
-
+const searchLC = computed(() => {
+  let x = ''
+  let type = typeMap.value?.get(search_type.value).url
+  if (search_type.value === 'QR') {
+    x = searchText.value
+  } else {
+    x = `${type}${searchText.value}`
+  }
+  return x
+})
+const searchLCfq = computed(() => {
+  let x = ''
+  x = `${extra.value}${searchLC.value}${extra_1.value}`
+  return x
+})
+const searchLCfqt = ref('DuckDuckGo')
+const extra_on = ref(false)
+const extra = computed(() => {
+  let x = typeMap?.value.get(searchLCfqt.value)?.url ?? ''
+  if (extra_on.value) {
+    return x
+  } else {
+    return ''
+  }
+})
+const extra_1_on = ref(false)
+const extra_1 = computed(() => {
+  if (extra_1_on.value & extra_on.value & searchLCfqt.value === 'QR') {
+    return "&open=true"
+  } else {
+    return ''
+  }
+})
+const inputtype = computed(() => {
+  if (search_type.value === 'QR') {
+    return 'textarea'
+  } else {
+    return 'text'
+  }
+})
+const inputLod = computed(() => {
+  if (search_type.value === 'QR') {
+    return false
+  } else {
+    return true
+  }
+})
 onMounted(() => {
   init()
 })
 
 async function init() {
-  spinShow.value = true
-  loadingBar.start()
+  initLaod()
   if (route.query.type) {
     checkUrl()
   } else {
     search_change(search_type.value)
   }
-  initLaod()
 }
 
 async function initLaod(Num) {
+  loadingBar.start()
   spinShow.value = true
   let x = Num ?? 50
   if (x <= Random()) {
-    await sleep(250)
+    await sleep(1)
     spinShow.value = false
     loadingBar.error()
+    return
   } else {
     await sleep(1)
     spinShow.value = false
     loadingBar.finish()
+    return
   }
 }
 
@@ -125,8 +217,7 @@ function searchfin() {
   } else if (urlMatch.test(searchText.value)) {
     window.open(searchText.value);
   } else {
-    let query = encodeURIComponent(searchText.value)
-    window.open(`${search_link.value}${query}`, `_blank`);
+    window.open(searchLC.value, `_blank`);
   }
 }
 
@@ -159,5 +250,19 @@ function checkUrl() {
   }
 
   search_type.value = type
+}
+
+function QRdownload() {
+  const canvas = document.querySelector('#qrcode')?.querySelector('canvas')
+  if (canvas) {
+    const link = canvas.toDataURL()
+    const a = document.createElement('a')
+    a.download = 'qrcode.png'
+    a.href = link
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    url.revokeObjectURL(link)
+  }
 }
 </script>
