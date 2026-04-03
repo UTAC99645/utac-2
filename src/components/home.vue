@@ -152,7 +152,7 @@ const extra = computed(() => {
 const extra_1_on = ref(false)
 const extra_1 = computed(() => {
   if (extra_1_on.value & extra_on.value & searchLCfqt.value === 'Link') {
-    return "&open=true"
+    return "&type=Link&open=true"
   } else {
     return ''
   }
