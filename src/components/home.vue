@@ -41,12 +41,12 @@
             <n-button @click="QRdownload" type="success" size="small">
               Download
             </n-button>
-            <n-divider v-show="extra_on & searchLCfqt === 'QR'" vertical />
-            <n-switch v-show="extra_on & searchLCfqt === 'QR'" id="2" v-model:value="extra_1_on" size="large">
+            <n-divider v-show="extra_on & searchLCfqt === 'Link'" vertical />
+            <n-switch v-show="extra_on & searchLCfqt === 'Link'" id="2" v-model:value="extra_1_on" size="large">
               <template #checked>O</template>
               <template #unchecked>NO</template>
             </n-switch>
-            <n-divider v-show="extra_on & searchLCfqt === 'QR'" vertical />
+            <n-divider v-show="extra_on & searchLCfqt === 'Link'" vertical />
           </n-divider>
           <n-flex v-show="extra_on">
             <n-button :type="(key === searchLCfqt) ? 'primary' : 'default'" @click="() => { searchLCfqt = key }"
@@ -151,7 +151,7 @@ const extra = computed(() => {
 })
 const extra_1_on = ref(false)
 const extra_1 = computed(() => {
-  if (extra_1_on.value & extra_on.value & searchLCfqt.value === 'QR') {
+  if (extra_1_on.value & extra_on.value & searchLCfqt.value === 'Link') {
     return "&open=true"
   } else {
     return ''
