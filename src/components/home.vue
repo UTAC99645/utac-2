@@ -58,7 +58,6 @@
           </n-flex>
           <n-qr-code id="qrcode" :padding="0" :value="searchLCfq" :error-correction-level="QRck" :size="100" />
         </n-flex>
-        {{ yiyandata }}
         <div v-if="yiyandata">
           <n-card size="small" hoverable>
             <template #header>
