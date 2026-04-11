@@ -15,7 +15,9 @@
       </n-flex>
       <n-divider />
       <div class="page">
-        <h1 class="title">UTAC'S Sesrch</h1>
+        <h1 class="title">
+          {{ Hello }}
+        </h1>
         <div v-if="!QR" class="search-box">
           <form @submit.prevent="searchfin">
             <n-input round status='info' loading clearable size="large" v-model:value="searchText" type="text"
@@ -56,6 +58,26 @@
           </n-flex>
           <n-qr-code id="qrcode" :padding="0" :value="searchLCfq" :error-correction-level="QRck" :size="100" />
         </n-flex>
+        {{ yiyandata }}
+        <div v-if="yiyandata">
+          <n-card size="small" hoverable>
+            <template #header>
+              <div v-if="!(yiyandata.from_who === null)">
+                by: {{ yiyandata.from_who }}
+              </div>
+              <div v-else>
+                ...
+              </div>
+            </template>
+            <template v-if="!(yiyandata.from === null)" #header-extra>
+              from: {{ yiyandata.from }}
+            </template>
+            {{ yiyandata.hitokoto }}
+            <template #action>
+              ID: {{ yiyandata.id }}
+            </template>
+          </n-card>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -74,7 +96,8 @@
 import { useMessage } from 'naive-ui'
 import Rader from './Link.vue'
 import "./home.css"
-import { computed, nextTick } from 'vue'
+import { computed, nextTick, ref } from 'vue'
+import axios from 'axios'
 const search_link = ref("")
 const searchText = ref('')
 const spinShow = ref(false)
@@ -171,8 +194,28 @@ const inputLod = computed(() => {
     return true
   }
 })
+const Hello = ref("UTAC's search")
+const yiyandata = ref({})
+
+async function yiyan() {
+  loadingBar.start()
+  let x = ""
+  await axios.get('https://v1.hitokoto.cn')
+    .then(res => {
+      x = res.data
+      console.log(x)
+      loadingBar.finish()
+    })
+    .catch(err => {
+      message.error(`Get yiyan error with:${err}`)
+      loadingBar.error()
+    })
+  return yiyandata.value = x
+}
+
 onMounted(() => {
   init()
+  yiyan()
 })
 
 async function init() {
