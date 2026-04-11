@@ -58,7 +58,7 @@
           </n-flex>
           <n-qr-code id="qrcode" :padding="0" :value="searchLCfq" :error-correction-level="QRck" :size="100" />
         </n-flex>
-        <div v-if="yiyandata">
+        <div v-if="yiyandata.uuid">
           <n-card size="small" hoverable>
             <template #header>
               <div v-if="!(yiyandata.from_who === null)">
@@ -110,7 +110,20 @@ const QRc = ref([
   { value: 'H', label: 'H' }
 ])
 const QRck = ref('L')
-const search_type = ref('duckduckgo')
+const search_type_cache = ref('duckduckgo')
+const search_type = computed({
+  get() {
+    return search_type_cache.value
+  },
+  set(value) {
+    if (value === 'rlyiyan') {
+      yiyan()
+      return 0
+    } else {
+      search_type_cache.value = value
+    }
+  }
+})
 const message = useMessage()
 const loadingBar = useLoadingBar()
 const urlMatch = /^https?:\/\/.+\..+/i
@@ -133,7 +146,8 @@ const typeMap = ref(new Map([
   ['bing', { en: false, url: 'https://www.bing.com/search?q=' }],
   ['duckduckgo', { en: false, url: 'https://duckduckgo.com/?q=' }],
   ['Link', { en: false, on: false, url: 'https://utac99645.top/?q=' }],
-  ['QR', { en: false, url: '' }]
+  ['QR', { en: false, on: null, url: '' }],
+  ['rlyiyan', { en: null, on: null, url: null }]
 ]))
 const keys = [...typeMap.value.keys()]
 const route = useRoute()
