@@ -6,8 +6,8 @@
     <div v-if="!onLink">
       <title type="info">UTAC'S Sesrch</title>
       <n-flex justify="space-around">
-        <div v-for="[key, item] in typeMap">
-          <n-button :type="search_type === key ? 'info' : 'warning'" size="large"
+        <div class="typekey" v-for="[key, item] in typeMap">
+          <n-button :dashed="!(search_type === key)" ghost type="error" size="large"
             @click="() => { if (key === search_type) { return } else search_type = key, message.warning(`Search with ${key}`) }">
             {{ key }}
           </n-button>
@@ -18,7 +18,7 @@
         <h1 class="title">
           {{ Hello }}
         </h1>
-        <div v-if="!QR" class="search-box">
+        <div v-if="!QR">
           <form @submit.prevent="searchfin">
             <n-input round status='info' loading clearable size="large" v-model:value="searchText" type="text"
               id="Search" placeholder="Search" />
@@ -28,11 +28,14 @@
           <n-input round status='info' :type="inputtype" :loading="inputLod" clearable size="large"
             v-model:value="searchText" type="text" id="Search" placeholder="context" />
         </div>
+        <n-divider />
         <n-flex v-show="QR" justify="center" style="margin-top: 20px">
-          <n-button v-for="item in QRc" type="error" size="small"
-            @click="() => { QRck = item.value, message.warning(`Set QR code error correction level to ${item.value}`) }">
-            {{ item.label }}
-          </n-button>
+          <div>
+            <n-button v-for="item in QRc" type="error" size="small"
+              @click="() => { QRck = item.value, message.warning(`Set QR code error correction level to ${item.value}`) }">
+              {{ item.label }}
+            </n-button>
+          </div>
           <n-divider style="height: 3vh">
             <n-divider vertical />
             <n-switch id="1" v-model:value="extra_on" size="large">
@@ -58,24 +61,25 @@
           </n-flex>
           <n-qr-code id="qrcode" :padding="0" :value="searchLCfq" :error-correction-level="QRck" :size="100" />
         </n-flex>
-        <div v-if="yiyandata.uuid">
-          <n-card size="small" hoverable>
+        <div v-if="yiyandata" v-for="(value, index) in yiyandata" :key="index">
+          <n-card class="n-card" embedded :bordered="false" size="small" hoverable>
             <template #header>
-              <div v-if="!(yiyandata.from_who === null)">
-                by: {{ yiyandata.from_who }}
+              <div v-if="!(value.from_who === null)">
+                by: {{ value.from_who }}
               </div>
               <div v-else>
                 ...
               </div>
             </template>
-            <template v-if="!(yiyandata.from === null)" #header-extra>
-              from: {{ yiyandata.from }}
+            <template v-if="!(value.from === null)" #header-extra>
+              from: {{ value.from }}
             </template>
-            {{ yiyandata.hitokoto }}
+            {{ value.hitokoto }}
             <template #action>
-              ID: {{ yiyandata.id }}
+              ID: {{ value.id }}
             </template>
           </n-card>
+          <n-divider v-if="!(index + 1 === yiyandata.length)" />
         </div>
       </div>
     </div>
@@ -208,7 +212,7 @@ const inputLod = computed(() => {
   }
 })
 const Hello = ref("UTAC's search")
-const yiyandata = ref({})
+const yiyandata = ref([])
 
 async function yiyan() {
   loadingBar.start()
@@ -223,7 +227,7 @@ async function yiyan() {
       message.error(`Get yiyan error with:${err}`)
       loadingBar.error()
     })
-  return yiyandata.value = x
+  return yiyandata.value.unshift(x)
 }
 
 onMounted(() => {

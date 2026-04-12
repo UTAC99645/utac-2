@@ -1,25 +1,4 @@
 
-/* 全局变量与主题色 */
-:root {
-  --primary: #6366f1;
-  --primary-light: #a5b4fc;
-  --primary-dark: #3730a3;
-  --secondary: #ec4899;
-  --accent: #f59e0b;
-  --success: #10b981;
-  --danger: #ef4444;
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --bg-hover: #475569;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --gap: 18px;
-  --radius: 14px;
-  --shadow: 0 6px 16px rgba(0,0,0,0.12);
-  --trans: 0.25s cubic-bezier(0.4,0,0.2,1);
-}
-
 @font-face {
   font-family: 'MapleMono';
   src: local('MapleMono-NF-CN-ExtraBold'),
@@ -28,12 +7,6 @@
   font-weight: normal;
   font-style: normal;
   font-display: swap;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 #app {
@@ -45,38 +18,20 @@ html,body{
   padding:0;
   width: 100vw;
   height:100%;
+  display: flex;
 }
 
 
 body {
   font-family: MapleMono, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-  color: var(--text-primary);
+  background-image: url("/assets/img/140342092_p0.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   min-height: 100vh;
   line-height: 1.7;
   letter-spacing: 0.02em;
-  transition: background 0.3s;
-}
-
-.container {
-  padding: var(--gap);
-  margin: 0 auto;
-  max-width: 1200px;
-}
-
-@media (max-width: 900px) {
-  .container { max-width: 98vw; }
-  :root { --gap: 10px; }
-}
-
-@media (max-width: 600px) {
-  .container { padding: 6px; }
-  body { font-size: 15px; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: none; }
 }
 
 img {
@@ -86,10 +41,14 @@ img {
   object-fit: cover;
   margin-bottom: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-  border: 3px solid var(--primary-light, #a5b4fc);
-  transition: transform 0.2s;
 }
 
-img:hover {
-  transform: scale(1.06) rotate(-2deg);
+title, h1 {
+  font-size: 2.8rem;
+  color: #CA4346;
+  text-align: center;
+  margin-bottom: 36px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 8px rgba(99,102,241,0.10);
 }
