@@ -2,17 +2,17 @@
   "packageManager": "yarn@4.13.0",
   "dependencies": {
     "@vicons/ionicons5": "^0.13.0",
-    "@vitejs/plugin-vue": "^6.0.4",
-    "axios": "^1.13.6",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "axios": "^1.15.0",
     "highlight.js": "^11.11.1",
-    "marked": "^17.0.2",
-    "naive-ui": "^2.43.2",
-    "vite": "^7.3.1",
-    "vue": "^3.5.28",
-    "vue-router": "^5.0.2"
+    "marked": "^18.0.0",
+    "naive-ui": "^2.44.1",
+    "vite": "^8.0.8",
+    "vue": "^3.5.32",
+    "vue-router": "^5.0.4"
   },
   "devDependencies": {
     "unplugin-auto-import": "^21.0.0",
-    "unplugin-vue-components": "^31.0.0"
+    "unplugin-vue-components": "^32.0.0"
   }
 }
