@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10c0
 
 "@babel/generator@npm:^7.28.6":
@@ -1411,12 +1411,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^18.0.0":
-  version: 18.0.0
-  resolution: "marked@npm:18.0.0"
+"marked@npm:^18.0.2":
+  version: 18.0.2
+  resolution: "marked@npm:18.0.2"
   bin:
     marked: bin/marked.js
-  checksum: 10c0/4a2ce60b9fd96a3092405e10c616a5cdf5375d031da1d44d3aa9d790971851fbca20628efd28db28cc91e84e18b9f5b95ec1e6fd1124a85d94abb1b6f6b409ae
+  checksum: 10c0/d04f58c0dee158a8069dad88de549b0039f2af7e1f0fd078aa783f360655e39296662f6c722dc6dd94c1c9ce9ba7ca9355ee1d8d77dd7b9a2f8162ebac6d9bbd
   languageName: node
   linkType: hard
 
@@ -1859,7 +1859,7 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^6.0.6"
     axios: "npm:^1.15.0"
     highlight.js: "npm:^11.11.1"
-    marked: "npm:^18.0.0"
+    marked: "npm:^18.0.2"
     naive-ui: "npm:^2.44.1"
     unplugin-auto-import: "npm:^21.0.0"
     unplugin-vue-components: "npm:^32.0.0"
