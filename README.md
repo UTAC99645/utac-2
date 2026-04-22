@@ -175,7 +175,7 @@ alias: {
 
 ## 📜 许可证
 
-[MIT](LICENSE)
+本项目采用 [MIT](LICENSE) 许可证开源。
 
 ---
 
