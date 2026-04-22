@@ -1,3 +1,6 @@
+/* 首页样式文件 */
+
+/* 搜索输入框 */
 n-input {
   width: 75vw;
   height: 5vh;
@@ -8,11 +11,13 @@ n-input {
   margin: 0;
 }
 
+/* 类型选择按钮 */
 .typekey {
   border-radius: 8px;
   backdrop-filter: blur(6px);
 }
 
+/* 卡片组件透明背景覆盖 */
 :deep(.n-card.embedded),
 :deep(.n-card--embedded),
 :deep(.n-card--embedded .n-card__content-wrapper),

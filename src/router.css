@@ -1,3 +1,6 @@
+/* 路由面包屑导航样式 */
+
+/* 面包屑容器 */
 .n-breadcrumb {
   font-size: 14px;
   height: 4vh;
@@ -7,16 +10,20 @@
   backdrop-filter: blur(6px);
 }
 
+/* 面包屑链接文字颜色 */
 .n-breadcrumb-item__link {
   color: #eee !important;
 }
+/* 面包屑链接悬停效果 */
 .n-breadcrumb-item__link:hover {
   color: #CA4346 !important;
 }
+/* 当前激活项样式 */
 .n-breadcrumb-item--active .n-breadcrumb-item__link {
   color: #CA4346 !important;
   font-weight: 600;
 }
+/* 面包屑分隔符颜色 */
 .n-breadcrumb-item__separator {
   color: #CA434688 !important;
 }

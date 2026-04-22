@@ -1,4 +1,6 @@
+/* 全局样式文件 */
 
+/* 自定义字体：MapleMono */
 @font-face {
   font-family: 'MapleMono';
   src: local('MapleMono-NF-CN-ExtraBold'),
@@ -9,10 +11,13 @@
   font-display: swap;
 }
 
+/* 应用根容器 */
 #app {
   width: 100%;
   min-height: 100vh;
 }
+
+/* 页面基础重置 */
 html,body{
   margin:0;
   padding:0;
@@ -22,18 +27,20 @@ html,body{
 }
 
 
+/*  body 全局样式：字体、背景图、排版 */
 body {
   font-family: MapleMono, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   background-image: url("/assets/img/140342092_p0.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-size: cover;           /* 背景图铺满 */
+  background-position: center;      /* 背景图居中 */
+  background-repeat: no-repeat;     /* 不重复 */
+  background-attachment: fixed;     /* 固定背景 */
   min-height: 100vh;
   line-height: 1.7;
   letter-spacing: 0.02em;
 }
 
+/* 图片全局样式 */
 img {
   width: 100vw;
   height: auto;
@@ -43,6 +50,7 @@ img {
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
 
+/* 标题样式 */
 title, h1 {
   font-size: 2.8rem;
   color: #CA4346;

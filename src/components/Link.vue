@@ -1,4 +1,5 @@
 <template>
+  <!-- 文件预览组件模板 -->
   <div class="hard-driver-container">
     <!-- 加载状态 -->
     <div v-if="loading" class="loading-state">
@@ -124,13 +125,17 @@
 </template>
 
 <script>
+// 引入 Markdown 解析器
 import { marked } from 'marked'
+// 引入代码高亮库
 import hljs from 'highlight.js'
+// 引入代码高亮主题样式
 import 'highlight.js/styles/atom-one-dark.css'
 
 export default {
   name: 'HardDriverViewer',
   
+  // 组件 props 定义
   props: {
     url: {
       type: String,
@@ -138,18 +143,24 @@ export default {
     }
   },
 
+  // 组件内部状态
   data() {
     return {
-      content: '',
-      loading: false,
-      error: null,
-      jsonExpanded: true,
-      iframeLoaded: false,
-      fileSize: ''
+      content: '',        // 文件内容
+      loading: false,     // 加载状态
+      error: null,        // 错误信息
+      jsonExpanded: true, // JSON 展开状态
+      iframeLoaded: false,// iframe 加载状态
+      fileSize: ''        // 文件大小
     }
   },
 
+  // 计算属性
   computed: {
+    /**
+     * 根据 URL 判断文件类型
+     * 支持：markdown, html, image, pdf, video, audio, json, code, text, web
+     */
     fileType() {
       if (!this.url) return 'unknown'
       
@@ -198,6 +209,7 @@ export default {
       return 'unknown'
     },
     
+    // 渲染后的内容（Markdown 需要解析）
     renderedContent() {
       if (this.fileType === 'markdown') {
         return marked.parse(this.content || '', { sanitize: false })
@@ -205,6 +217,7 @@ export default {
       return this.content
     },
     
+    // 解析后的 JSON 对象
     parsedJson() {
       try {
         return JSON.parse(this.content)
@@ -213,11 +226,13 @@ export default {
       }
     },
     
+    // 格式化后的 JSON 字符串
     formattedJson() {
       if (!this.parsedJson) return this.content
       return JSON.stringify(this.parsedJson, null, 2)
     },
     
+    // 根据文件扩展名获取代码语言
     codeLanguage() {
       const ext = this.url.split('.').pop().split('?')[0].toLowerCase()
       const langMap = {
@@ -252,6 +267,7 @@ export default {
       return langMap[ext] || 'plaintext'
     },
     
+    // 视频 MIME 类型
     videoMimeType() {
       const ext = this.url.split('.').pop().split('?')[0].toLowerCase()
       const mimeMap = {
@@ -263,6 +279,7 @@ export default {
       return mimeMap[ext] || 'video/mp4'
     },
     
+    // 音频 MIME 类型
     audioMimeType() {
       const ext = this.url.split('.').pop().split('?')[0].toLowerCase()
       const mimeMap = {
@@ -275,6 +292,7 @@ export default {
       return mimeMap[ext] || 'audio/mpeg'
     },
     
+    // PDF 嵌入 URL
     pdfUrl() {
       // 使用Google Docs Viewer或本地嵌入
       if (this.url.includes('google.com') || this.url.includes('docs.google.com')) {
@@ -286,7 +304,9 @@ export default {
     }
   },
 
+  // 监听器
   watch: {
+    // URL 变化时重新加载文件
     url: {
       immediate: true,
       handler(newUrl) {
@@ -296,6 +316,7 @@ export default {
       }
     },
     
+    // 内容变化时触发代码高亮
     content: {
       immediate: false,
       handler(newContent) {
@@ -308,7 +329,9 @@ export default {
     }
   },
 
+  // 方法定义
   methods: {
+    // 异步加载文件内容
     async loadFile() {
       this.loading = true
       this.error = null
@@ -355,12 +378,14 @@ export default {
       }
     },
     
+    // 代码高亮处理
     highlightCode() {
       if (this.$refs.codeBlock) {
         hljs.highlightElement(this.$refs.codeBlock)
       }
     },
     
+    // 复制内容到剪贴板
     copyCode() {
       navigator.clipboard.writeText(this.content).then(() => {
         // 可以添加临时提示
@@ -373,6 +398,7 @@ export default {
       })
     },
     
+    // 判断字符串是否为 JSON
     isJsonContent(str) {
       try {
         JSON.parse(str)
@@ -382,10 +408,12 @@ export default {
       }
     },
     
+    // 判断字符串是否为 HTML
     isHtmlContent(str) {
       return str.trim().match(/^<(!doctype|html|head|body|div|span|p|a|img|br|hr|table|ul|ol|li|h[1-6]|header|footer|nav|section|article|main|aside|figure|figcaption|code|pre|blockquote)/i)
     },
     
+    // 格式化文件大小
     formatFileSize(bytes) {
       if (bytes === 0) return '0 Bytes'
       const k = 1024
@@ -394,10 +422,12 @@ export default {
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     },
     
+    // 媒体加载成功回调
     handleMediaLoad() {
       console.log('Media loaded successfully')
     },
     
+    // 媒体加载失败回调
     handleMediaError() {
       this.error = 'Failed to load media resource'
     }
