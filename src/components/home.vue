@@ -3,6 +3,7 @@
   <!-- 加载动画 -->
   <div v-if="spinShow">
     <n-image :src="lodimg" style="width: 100vw" alt="Loading" />
+    <!-- <n-empty description="无数据" /> -->
   </div>
   <!-- 主内容区域 -->
   <div v-else>
@@ -119,7 +120,7 @@ import { useMessage } from 'naive-ui'
 // 引入文件预览组件
 import Rader from './Link.vue'
 // 引入首页样式
-import "./home.css"
+import "../css/home.css"
 // 引入 Vue 组合式 API
 import { computed, nextTick, ref } from 'vue'
 // 引入 Axios

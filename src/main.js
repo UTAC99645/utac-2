@@ -3,9 +3,9 @@ import { createApp } from 'vue';
 // 引入根组件
 import main from './main.vue';
 // 引入全局样式文件
-import './main.css';
+import './css/main.css';
 // 引入路由相关样式
-import './router.css';
+import './css/router.css';
 // 引入 Vue Router 相关函数
 import { createRouter, createWebHistory } from 'vue-router';
 
