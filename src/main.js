@@ -14,7 +14,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/',           // 首页路径
+      path: '/:type?',           // 首页路径
       name: 'Home',        // 路由名称
       component: () => import('$/home.vue')  // 懒加载首页组件
     },

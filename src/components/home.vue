@@ -12,8 +12,7 @@
       <!-- 搜索类型选择 -->
       <n-flex justify="space-around">
         <div class="typekey" v-for="[key, item] in typeMap">
-          <n-button :dashed="!(search_type === key)" ghost type="error" size="large"
-            @click="() => { if (key === search_type) { return } else search_type = key, message.warning(`Search with ${key}`) }">
+          <n-button :dashed="!(search_type === key)" ghost type="error" size="large" @click="search_type = key">
             {{ key }}
           </n-button>
         </div>
@@ -157,8 +156,14 @@ const search_type = computed({
       yiyan()
       return 0
     } else {
-      search_type_cache.value = value
+      if (value === search_type_cache) {
+        return 0
+      } else {
+        search_type_cache.value = value
+        message.info(`search with ${value}`)
+      }
     }
+
   }
 })
 // 消息提示实例
@@ -297,10 +302,8 @@ onMounted(() => {
 // 初始化函数
 async function init() {
   initLaod()
-  if (route.query.type) {
+  if (route.params.type) {
     checkUrl()
-  } else {
-    search_change(search_type.value)
   }
 }
 
@@ -361,13 +364,19 @@ async function search_change() {
 
 // 更新 URL 参数
 async function makeUrl() {
-  await router.replace({ query: { ...route.query, type: search_type.value } })
+  router.push({
+    name: 'Home',
+    params: {
+      type: search_type.value
+    }
+  })
 }
 
 // 检查 URL 参数
 function checkUrl() {
   if (route.query.q) searchText.value = route.query.q
-  let { type, open } = route.query
+  let { open } = route.query
+  let type = route.params.type
   if (open) {
     search_type.value = type
     nextTick(() => {
