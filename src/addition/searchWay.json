@@ -1,0 +1,47 @@
+[
+  [
+    "google",
+    {
+      "en": true,
+      "url": "https://www.google.com/search?q="
+    }
+  ],
+  [
+    "bing",
+    {
+      "en": false,
+      "url": "https://www.bing.com/search?q="
+    }
+  ],
+  [
+    "duckduckgo",
+    {
+      "en": false,
+      "url": "https://duckduckgo.com/?q="
+    }
+  ],
+  [
+    "Link",
+    {
+      "en": false,
+      "on": false,
+      "url": "https://utac99645.top/?q="
+    }
+  ],
+  [
+    "QR",
+    {
+      "en": false,
+      "on": null,
+      "url": ""
+    }
+  ],
+  [
+    "rlyiyan",
+    {
+      "en": null,
+      "on": null,
+      "url": null
+    }
+  ]
+]

@@ -1,33 +1,65 @@
-// 引入 Vue 核心函数，用于创建应用实例
+// ============================================================
+// 应用入口文件
+// 职责：创建 Vue 应用实例、配置路由、挂载到 DOM
+// ============================================================
+
+// ---------- Vue 核心 ----------
 import { createApp } from 'vue';
-// 引入根组件
+
+// ---------- 根组件 ----------
 import main from './main.vue';
-// 引入全局样式文件
+import typeMap_src from './addition/searchWay.json'
+
+// ---------- 全局样式 ----------
 import './css/main.css';
-// 引入路由相关样式
 import './css/router.css';
-// 引入 Vue Router 相关函数
+
+// ---------- Vue Router ----------
 import { createRouter, createWebHistory } from 'vue-router';
 
-// 创建路由实例，使用 history 模式
+// ============================================================
+// 路由配置
+// ============================================================
+
+const typeArr = computed(() => {
+  let a = ""
+  let first = true
+  for (let [item] of typeMap_src) {
+    a += first ? `${item}` : `|${item}`
+    first = false
+  }
+  a += "|"
+  return a
+})
+
+console.log(typeArr.value)
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/:type?',           // 首页路径
-      name: 'Home',        // 路由名称
-      component: () => import('$/home.vue')  // 懒加载首页组件
+      path: `/:type(${typeArr.value})?`,                        // 首页（可选 type 参数）
+      name: 'Home',
+      component: () => import('$/home.vue')  // 懒加载
     },
     {
-      path: '/about',      // 关于页面路径
-      name: 'About',       // 路由名称
-      component: () => import('$/about.vue') // 懒加载关于组件
+      path: '/about',
+      name: 'About',
+      component: () => import('$/about.vue') // 懒加载
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: '404',
+      component: () => import('$/404.vue')   // 懒加载 404 页
+    }
   ]
 });
 
-// 创建 Vue 应用实例，使用路由并挂载到 DOM
-// 挂载点 ID 为 #main
+// ============================================================
+// 挂载应用
+// 挂载点：index.html 中的 #main
+// ============================================================
+
 createApp(main)
   .use(router)
   .mount('#main');
