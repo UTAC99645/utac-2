@@ -1,5 +1,15 @@
 <template>
+  <!-- ========================================================== -->
+  <!-- 404 页面
+       视觉元素：
+       1. 全屏背景图 + 缓慢缩放动画
+       2. 飘落粒子装饰
+       3. 毛玻璃卡片（含故障艺术字 404）
+       4. 猫爪印装饰
+  -->
+  <!-- ========================================================== -->
   <div class="not-found-page">
+
     <!-- 背景图 -->
     <div class="bg-image" :style="{ backgroundImage: `url(${bgUrl})` }" />
 
@@ -13,7 +23,7 @@
       <div class="glitch-wrapper">
         <h1 class="glitch" data-text="404">404</h1>
       </div>
-      
+
       <p class="subtitle">页面走丢啦 ~(=^‥^)/</p>
       <p class="desc">
         主人要找的页面好像被本喵藏起来了喵…<br>
@@ -105,6 +115,7 @@ const getParticleStyle = (n) => {
 </script>
 
 <style scoped>
+/* ==================== 页面容器 ==================== */
 .not-found-page {
   position: fixed;
   inset: 0;
@@ -115,7 +126,7 @@ const getParticleStyle = (n) => {
   font-family: 'Maple Mono NF', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* 背景图 */
+/* ==================== 背景图 ==================== */
 .bg-image {
   position: absolute;
   inset: 0;
@@ -127,7 +138,7 @@ const getParticleStyle = (n) => {
 }
 
 @keyframes bgZoom {
-  0% { transform: scale(1.1); }
+  0%   { transform: scale(1.1); }
   100% { transform: scale(1.2); }
 }
 
@@ -144,7 +155,7 @@ const getParticleStyle = (n) => {
   );
 }
 
-/* 粒子 */
+/* ==================== 粒子 ==================== */
 .particles {
   position: absolute;
   inset: 0;
@@ -162,13 +173,13 @@ const getParticleStyle = (n) => {
 }
 
 @keyframes fall {
-  0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
+  0%   { transform: translateY(-10px) rotate(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-/* 毛玻璃卡片 */
+/* ==================== 毛玻璃卡片 ==================== */
 .glass-card {
   position: relative;
   z-index: 2;
@@ -177,18 +188,18 @@ const getParticleStyle = (n) => {
   text-align: center;
   max-width: 480px;
   width: 90%;
-  
+
   /* 核心毛玻璃效果 */
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  
+
   /* 边框高光 */
   border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  
+
   /* 入场动画 */
   opacity: 0;
   transform: translateY(30px) scale(0.95);
@@ -213,10 +224,10 @@ const getParticleStyle = (n) => {
     rgba(255, 255, 255, 0) 50%,
     rgba(255, 255, 255, 0.4) 100%
   );
-  -webkit-mask: 
+  -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
-  mask: 
+  mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -224,7 +235,7 @@ const getParticleStyle = (n) => {
   pointer-events: none;
 }
 
-/* 404 故障艺术字 */
+/* ==================== 404 故障艺术字 ==================== */
 .glitch-wrapper {
   position: relative;
   margin-bottom: 1rem;
@@ -235,7 +246,7 @@ const getParticleStyle = (n) => {
   font-weight: 900;
   line-height: 1;
   color: #fff;
-  text-shadow: 
+  text-shadow:
     0 0 10px rgba(255, 255, 255, 0.5),
     0 0 40px rgba(255, 255, 255, 0.3),
     0 0 80px rgba(144, 238, 144, 0.2);
@@ -269,32 +280,32 @@ const getParticleStyle = (n) => {
 }
 
 @keyframes glitch-anim {
-  0% { clip: rect(30px, 9999px, 10px, 0); }
-  20% { clip: rect(80px, 9999px, 90px, 0); }
-  40% { clip: rect(10px, 9999px, 50px, 0); }
-  60% { clip: rect(60px, 9999px, 20px, 0); }
-  80% { clip: rect(40px, 9999px, 70px, 0); }
+  0%   { clip: rect(30px, 9999px, 10px, 0); }
+  20%  { clip: rect(80px, 9999px, 90px, 0); }
+  40%  { clip: rect(10px, 9999px, 50px, 0); }
+  60%  { clip: rect(60px, 9999px, 20px, 0); }
+  80%  { clip: rect(40px, 9999px, 70px, 0); }
   100% { clip: rect(90px, 9999px, 30px, 0); }
 }
 
 @keyframes glitch-anim2 {
-  0% { clip: rect(60px, 9999px, 40px, 0); }
-  20% { clip: rect(20px, 9999px, 80px, 0); }
-  40% { clip: rect(70px, 9999px, 10px, 0); }
-  60% { clip: rect(10px, 9999px, 60px, 0); }
-  80% { clip: rect(50px, 9999px, 30px, 0); }
+  0%   { clip: rect(60px, 9999px, 40px, 0); }
+  20%  { clip: rect(20px, 9999px, 80px, 0); }
+  40%  { clip: rect(70px, 9999px, 10px, 0); }
+  60%  { clip: rect(10px, 9999px, 60px, 0); }
+  80%  { clip: rect(50px, 9999px, 30px, 0); }
   100% { clip: rect(30px, 9999px, 90px, 0); }
 }
 
 @keyframes glitch-skew {
-  0% { transform: skew(0deg); }
-  10% { transform: skew(-2deg); }
-  20% { transform: skew(2deg); }
-  30% { transform: skew(0deg); }
+  0%   { transform: skew(0deg); }
+  10%  { transform: skew(-2deg); }
+  20%  { transform: skew(2deg); }
+  30%  { transform: skew(0deg); }
   100% { transform: skew(0deg); }
 }
 
-/* 文字样式 */
+/* ==================== 文字样式 ==================== */
 .subtitle {
   font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.95);
@@ -311,7 +322,7 @@ const getParticleStyle = (n) => {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* 按钮 */
+/* ==================== 按钮 ==================== */
 .actions {
   display: flex;
   gap: 1rem;
@@ -363,7 +374,7 @@ const getParticleStyle = (n) => {
   font-size: 1.1rem;
 }
 
-/* 猫爪印装饰 */
+/* ==================== 猫爪印装饰 ==================== */
 .paw-prints {
   margin-top: 2rem;
   display: flex;
@@ -382,10 +393,10 @@ const getParticleStyle = (n) => {
 
 @keyframes pawBounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50%      { transform: translateY(-8px); }
 }
 
-/* 底部 */
+/* ==================== 底部 ==================== */
 .footer {
   position: absolute;
   bottom: 1.5rem;
@@ -397,26 +408,26 @@ const getParticleStyle = (n) => {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* 响应式 */
+/* ==================== 响应式 ==================== */
 @media (max-width: 640px) {
   .glass-card {
     padding: 2rem 1.5rem;
     border-radius: 20px;
   }
-  
+
   .glitch {
     font-size: 5rem;
   }
-  
+
   .subtitle {
     font-size: 1.2rem;
   }
-  
+
   .actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     width: 100%;
@@ -424,7 +435,7 @@ const getParticleStyle = (n) => {
   }
 }
 
-/* 减少动画偏好 */
+/* ==================== 减少动画偏好 ==================== */
 @media (prefers-reduced-motion: reduce) {
   .bg-image,
   .glitch,
@@ -434,7 +445,7 @@ const getParticleStyle = (n) => {
   .paw {
     animation: none !important;
   }
-  
+
   .glass-card {
     transition: none;
     opacity: 1;
@@ -442,4 +453,3 @@ const getParticleStyle = (n) => {
   }
 }
 </style>
-

@@ -1,29 +1,33 @@
-/* 关于页面样式 */
+/* ============================================================
+   关于页面样式
+   ============================================================ */
 
-/* 名称样式 */
+/* ---------- 名称 ---------- */
 .name {
-  color: var(--primary, #6366f1);
+  color: var(--color-info, #6366f1);
   font-weight: bold;
   font-size: 1.2em;
   letter-spacing: 0.04em;
 }
 
-/* 邮箱样式 */
+/* ---------- 邮箱 ---------- */
 .mail {
-  color: var(--success, #10b981);
-  font-family: monospace;
+  color: var(--color-success, #10b981);
+  font-family: var(--font-mono);
   font-size: 1em;
 }
 
-/* 副标题 */
+/* ---------- 副标题 ---------- */
 h2 {
   margin: 6px 0;
   font-size: 1.1em;
 }
 
-/* 内容容器 */
+/* ---------- 内容项容器 ----------
+   注意：全局 div 选择器会作用于 about 页面所有 div
+   ---------------------------------------------------------- */
 div {
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: var(--space-lg);
   animation: fadeIn 0.7s;
 }

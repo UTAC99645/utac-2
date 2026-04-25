@@ -1,6 +1,12 @@
-/* 首页样式文件 */
+/* ============================================================
+   首页样式文件
+   注意：部分选择器为全局范围，会作用于页面内所有匹配元素
+   ============================================================ */
 
-/* 搜索输入框 */
+/* ---------- 搜索输入框 ----------
+   警告：此规则为全局选择器，会作用于页面内所有 n-input 组件。
+   因位于全局 CSS 中，无法使用 scoped 限定范围。
+   ---------------------------------------------------------- */
 n-input {
   width: 75vw;
   height: 5vh;
@@ -11,13 +17,15 @@ n-input {
   margin: 0;
 }
 
-/* 类型选择按钮 */
+/* ---------- 引擎切换按钮 ---------- */
 .typekey {
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   backdrop-filter: blur(6px);
 }
 
-/* 卡片组件透明背景覆盖 */
+/* ---------- 卡片组件透明背景覆盖 ----------
+   合并所有 :deep(.n-card) 相关规则，避免重复定义
+   ---------------------------------------------------------- */
 :deep(.n-card.embedded),
 :deep(.n-card--embedded),
 :deep(.n-card--embedded .n-card__content-wrapper),
@@ -26,29 +34,20 @@ n-input {
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
-:deep(.n-card) {
-  background: transparent !important;
-}
-
-:deep(.n-card__main) {
-  background: transparent !important;
-}
-
-:deep(.n-card__content-wrapper) {
-  background: transparent !important;
-}
-
+:deep(.n-card),
+:deep(.n-card__main),
+:deep(.n-card__content-wrapper),
 :deep(.n-card__content) {
   background: transparent !important;
 }
 
 :deep(.n-card) {
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: none !important;

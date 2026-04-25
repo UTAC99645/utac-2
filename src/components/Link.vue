@@ -1,40 +1,70 @@
 <template>
-  <!-- 文件预览组件模板 -->
-  <div class="hard-driver-container">
-    <!-- 加载状态 -->
-    <div v-if="loading" class="loading-state">
-      <div class="terminal-cursor">LOADING...</div>
-    </div>
+  <!-- ========================================================== -->
+  <!-- 文件预览组件（LinkViewer）
+       功能：根据 URL 自动检测文件类型并渲染
+       支持：Markdown、HTML、图片、PDF、视频、音频、代码高亮、JSON、纯文本、网页 iframe
+  -->
+  <!-- ========================================================== -->
+  <div class="link-preview-container">
 
-    <!-- 错误状态 -->
-    <div v-else-if="error" class="error-state">
-      <div class="error-code">ERROR</div>
-      <div class="error-message">{{ error }}</div>
-    </div>
-
-    <!-- 内容区域 -->
-    <div v-else class="content-wrapper">
-      <div class="file-path">> {{ url }}</div>
-      <div class="file-meta" v-if="fileType !== 'unknown'">
-        [{{ fileType.toUpperCase() }}] {{ fileSize }}
+    <!-- ---------- 顶部操作栏 ---------- -->
+    <div class="glass-header">
+      <n-button
+        class="back-btn"
+        type="warning"
+        size="small"
+        dashed
+        @click="handleBack"
+      >
+        <template #icon>
+          <span>↩</span>
+        </template>
+        Back
+      </n-button>
+      <div class="file-path">
+        <span class="path-prompt">> </span>
+        <span class="path-url">{{ url }}</span>
       </div>
+      <div class="file-badge" v-if="fileType !== 'unknown'">
+        <n-tag :type="fileType === 'error' ? 'error' : 'info'" size="small" round>
+          {{ fileType.toUpperCase() }}
+        </n-tag>
+        <span v-if="fileSize" class="size-text">{{ fileSize }}</span>
+      </div>
+    </div>
+
+    <!-- ---------- 加载状态 ---------- -->
+    <div v-if="loading" class="state-card loading-state">
+      <n-spin size="large" />
+      <p class="state-text">加载资源中...</p>
+    </div>
+
+    <!-- ---------- 错误状态 ---------- -->
+    <div v-else-if="error" class="state-card error-state">
+      <n-icon size="48" :component="ErrorCircle" />
+      <p class="state-title">加载失败</p>
+      <p class="state-desc">{{ error }}</p>
+    </div>
+
+    <!-- ---------- 内容区域 ---------- -->
+    <div v-else class="glass-content">
 
       <!-- Markdown 渲染 -->
       <div v-if="fileType === 'markdown'" class="markdown-body" v-html="renderedContent"></div>
-      
+
       <!-- HTML 渲染 -->
       <div v-else-if="fileType === 'html'" class="html-body" v-html="renderedContent"></div>
-      
+
       <!-- 图片预览 -->
       <div v-else-if="fileType === 'image'" class="media-viewer">
         <img :src="url" alt="Preview" @load="handleMediaLoad" @error="handleMediaError" />
       </div>
 
       <!-- PDF 嵌入 -->
-      <div v-else-if="fileType === 'pdf'" class="pdf-viewer">
-        <iframe 
-          :src="pdfUrl" 
-          frameborder="0" 
+      <div v-else-if="fileType === 'pdf'" class="media-viewer pdf-viewer">
+        <iframe
+          :src="pdfUrl"
+          frameborder="0"
           sandbox="allow-scripts allow-same-origin allow-forms"
           allowfullscreen
         ></iframe>
@@ -58,20 +88,30 @@
 
       <!-- 代码文件 -->
       <div v-else-if="fileType === 'code'" class="code-viewer">
-        <div class="code-header">
-          <span class="lang-tag">{{ codeLanguage }}</span>
-          <button class="copy-btn" @click="copyCode">COPY</button>
+        <div class="viewer-header">
+          <n-tag type="success" size="small" round>{{ codeLanguage }}</n-tag>
+          <n-button size="tiny" secondary @click="copyCode">
+            <template #icon>
+              <span>📋</span>
+            </template>
+            COPY
+          </n-button>
         </div>
         <pre><code ref="codeBlock" :class="'language-' + codeLanguage" v-text="content"></code></pre>
       </div>
 
       <!-- JSON 格式化 -->
       <div v-else-if="fileType === 'json'" class="json-viewer">
-        <div class="json-header">
-          <button class="toggle-btn" @click="jsonExpanded = !jsonExpanded">
+        <div class="viewer-header">
+          <n-button size="tiny" secondary @click="jsonExpanded = !jsonExpanded">
             {{ jsonExpanded ? 'COLLAPSE' : 'EXPAND' }}
-          </button>
-          <button class="copy-btn" @click="copyCode">COPY</button>
+          </n-button>
+          <n-button size="tiny" secondary @click="copyCode">
+            <template #icon>
+              <span>📋</span>
+            </template>
+            COPY
+          </n-button>
         </div>
         <pre v-if="jsonExpanded" class="json-content"><code v-html="formattedJson"></code></pre>
         <pre v-else class="json-content collapsed">{{ JSON.stringify(parsedJson) }}</pre>
@@ -80,19 +120,20 @@
       <!-- 网页浏览 (iframe) -->
       <div v-else-if="fileType === 'web'" class="web-viewer">
         <div class="web-warning">
-          <span class="warning-icon">⚠</span>
+          <n-icon size="16" :component="Warning" />
           <span>EXTERNAL CONTENT - SANDBOXED</span>
         </div>
-        <iframe 
-          :src="url" 
-          frameborder="0" 
+        <iframe
+          :src="url"
+          frameborder="0"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
           allow="fullscreen; autoplay; clipboard-write"
           referrerpolicy="no-referrer"
           @load="iframeLoaded = true"
         ></iframe>
         <div v-if="!iframeLoaded" class="iframe-loading">
-          <span class="blink">LOADING EXTERNAL RESOURCE...</span>
+          <n-spin size="small" />
+          <span>LOADING EXTERNAL RESOURCE...</span>
         </div>
       </div>
 
@@ -103,39 +144,42 @@
 
       <!-- 未知格式提示 -->
       <div v-else class="unknown-type">
-        <div class="unknown-icon">?</div>
-        <div>[UNKNOWN FILE FORMAT]</div>
-        <div class="unknown-hint">Supported: md, html, js, css, py, json, jpg, png, gif, pdf, mp4, mp3, txt...</div>
-        <a :href="url" target="_blank" download class="download-link">> DOWNLOAD FILE</a>
+        <n-icon size="48" :component="HelpCircle" />
+        <p class="unknown-title">未知文件格式</p>
+        <p class="unknown-hint">Supported: md, html, js, css, py, json, jpg, png, gif, pdf, mp4, mp3, txt...</p>
+        <n-button type="primary" tag="a" :href="url" target="_blank" download>
+          DOWNLOAD FILE
+        </n-button>
       </div>
-      
-      <!-- 分隔线 -->
-      <div class="terminal-divider">* * *</div>
+
     </div>
 
-    <!-- 页脚 -->
-    <footer class="terminal-footer">
+    <!-- ---------- 页脚 ---------- -->
+    <footer class="preview-footer">
       <span>UTAC99645</span>
-      <span class="separator">|</span>
+      <span class="sep">|</span>
       <span>{{ fileType.toUpperCase() }}</span>
-      <span class="separator">|</span>
-      <span class="blink">_</span>
+      <span class="sep">|</span>
+      <span class="cursor-blink">_</span>
     </footer>
   </div>
 </template>
 
 <script>
-// 引入 Markdown 解析器
-import { marked } from 'marked'
-// 引入代码高亮库
-import hljs from 'highlight.js'
-// 引入代码高亮主题样式
-import 'highlight.js/styles/atom-one-dark.css'
+// ============================================================
+// 文件预览组件脚本（Options API）
+// ============================================================
+
+import { marked } from 'marked';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/atom-one-dark.css';
 
 export default {
-  name: 'HardDriverViewer',
-  
-  // 组件 props 定义
+  name: 'LinkViewer',
+
+  // ==========================================================
+  // Props
+  // ==========================================================
   props: {
     url: {
       type: String,
@@ -143,583 +187,536 @@ export default {
     }
   },
 
-  // 组件内部状态
+  // ==========================================================
+  // Emits
+  // ==========================================================
+  emits: ['back'],
+
+  // ==========================================================
+  // 内部状态
+  // ==========================================================
   data() {
     return {
-      content: '',        // 文件内容
-      loading: false,     // 加载状态
-      error: null,        // 错误信息
-      jsonExpanded: true, // JSON 展开状态
-      iframeLoaded: false,// iframe 加载状态
-      fileSize: ''        // 文件大小
-    }
+      content: '',
+      loading: false,
+      error: null,
+      jsonExpanded: true,
+      iframeLoaded: false,
+      fileSize: ''
+    };
   },
 
+  // ==========================================================
   // 计算属性
+  // ==========================================================
   computed: {
     /**
      * 根据 URL 判断文件类型
-     * 支持：markdown, html, image, pdf, video, audio, json, code, text, web
      */
     fileType() {
-      if (!this.url) return 'unknown'
-      
-      const lowerUrl = this.url.toLowerCase()
-      
-      // 直接网页浏览（以 http:// 或 https:// 开头且无文件扩展名，或是明确标记为网页）
+      if (!this.url) return 'unknown';
+
+      const lowerUrl = this.url.toLowerCase();
+
       if (lowerUrl.match(/^https?:\/\//) && !lowerUrl.match(/\.\w{2,5}($|\?)/)) {
-        return 'web'
+        return 'web';
       }
-      if (lowerUrl.match(/[?&]format=web/)) return 'web'
-      
-      // Markdown
-      if (lowerUrl.match(/\.(md|markdown)($|\?)/)) return 'markdown'
-      
-      // HTML
-      if (lowerUrl.match(/\.(html|htm|xhtml)($|\?)/)) return 'html'
-      
-      // 图片
-      if (lowerUrl.match(/\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)($|\?)/)) return 'image'
-      
-      // PDF
-      if (lowerUrl.match(/\.pdf($|\?)/)) return 'pdf'
-      
-      // 视频
-      if (lowerUrl.match(/\.(mp4|webm|ogg|mov)($|\?)/)) return 'video'
-      
-      // 音频
-      if (lowerUrl.match(/\.(mp3|wav|ogg|m4a|flac)($|\?)/)) return 'audio'
-      
-      // JSON
-      if (lowerUrl.match(/\.json($|\?)/)) return 'json'
-      
-      // 代码文件
-      const codeExts = ['js', 'ts', 'jsx', 'tsx', 'vue', 'py', 'rb', 'go', 'rs', 'java', 'c', 'cpp', 'h', 'cs', 'php', 'css', 'scss', 'sass', 'less', 'sql', 'sh', 'bash', 'zsh', 'yaml', 'yml', 'xml', 'toml']
-      if (codeExts.some(ext => lowerUrl.match(new RegExp(`\\.${ext}($|\\?)`)))) return 'code'
-      
-      // 纯文本
-      if (lowerUrl.match(/\.(txt|log|cfg|ini|conf)($|\?)/)) return 'text'
-      
-      // 尝试根据内容检测（如果已加载）
+      if (lowerUrl.match(/[?&]format=web/)) return 'web';
+      if (lowerUrl.match(/\.(md|markdown)($|\?)/)) return 'markdown';
+      if (lowerUrl.match(/\.(html|htm|xhtml)($|\?)/)) return 'html';
+      if (lowerUrl.match(/\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)($|\?)/)) return 'image';
+      if (lowerUrl.match(/\.pdf($|\?)/)) return 'pdf';
+      if (lowerUrl.match(/\.(mp4|webm|ogg|mov)($|\?)/)) return 'video';
+      if (lowerUrl.match(/\.(mp3|wav|ogg|m4a|flac)($|\?)/)) return 'audio';
+      if (lowerUrl.match(/\.json($|\?)/)) return 'json';
+
+      const codeExts = ['js', 'ts', 'jsx', 'tsx', 'vue', 'py', 'rb', 'go', 'rs', 'java', 'c', 'cpp', 'h', 'cs', 'php', 'css', 'scss', 'sass', 'less', 'sql', 'sh', 'bash', 'zsh', 'yaml', 'yml', 'xml', 'toml'];
+      if (codeExts.some(ext => lowerUrl.match(new RegExp(`\\.${ext}($|\\?)`)))) return 'code';
+      if (lowerUrl.match(/\.(txt|log|cfg|ini|conf)($|\?)/)) return 'text';
+
       if (this.content) {
-        if (this.isJsonContent(this.content)) return 'json'
-        if (this.isHtmlContent(this.content)) return 'html'
+        if (this.isJsonContent(this.content)) return 'json';
+        if (this.isHtmlContent(this.content)) return 'html';
       }
-      
-      return 'unknown'
+
+      return 'unknown';
     },
-    
-    // 渲染后的内容（Markdown 需要解析）
+
     renderedContent() {
       if (this.fileType === 'markdown') {
-        return marked.parse(this.content || '', { sanitize: false })
+        return marked.parse(this.content || '', { sanitize: false });
       }
-      return this.content
+      return this.content;
     },
-    
-    // 解析后的 JSON 对象
+
     parsedJson() {
       try {
-        return JSON.parse(this.content)
+        return JSON.parse(this.content);
       } catch {
-        return null
+        return null;
       }
     },
-    
-    // 格式化后的 JSON 字符串
+
     formattedJson() {
-      if (!this.parsedJson) return this.content
-      return JSON.stringify(this.parsedJson, null, 2)
+      if (!this.parsedJson) return this.content;
+      return JSON.stringify(this.parsedJson, null, 2);
     },
-    
-    // 根据文件扩展名获取代码语言
+
     codeLanguage() {
-      const ext = this.url.split('.').pop().split('?')[0].toLowerCase()
+      const ext = this.url.split('.').pop().split('?')[0].toLowerCase();
       const langMap = {
-        'js': 'javascript',
-        'ts': 'typescript',
-        'jsx': 'jsx',
-        'tsx': 'tsx',
-        'vue': 'xml', // highlight.js使用xml高亮vue
-        'py': 'python',
-        'rb': 'ruby',
-        'go': 'go',
-        'rs': 'rust',
-        'java': 'java',
-        'c': 'c',
-        'cpp': 'cpp',
-        'h': 'c',
-        'cs': 'csharp',
-        'php': 'php',
-        'css': 'css',
-        'scss': 'scss',
-        'sass': 'scss',
-        'less': 'less',
-        'sql': 'sql',
-        'sh': 'bash',
-        'bash': 'bash',
-        'zsh': 'bash',
-        'yaml': 'yaml',
-        'yml': 'yaml',
-        'xml': 'xml',
-        'toml': 'ini'
-      }
-      return langMap[ext] || 'plaintext'
+        'js': 'javascript', 'ts': 'typescript', 'jsx': 'jsx', 'tsx': 'tsx',
+        'vue': 'xml', 'py': 'python', 'rb': 'ruby', 'go': 'go', 'rs': 'rust',
+        'java': 'java', 'c': 'c', 'cpp': 'cpp', 'h': 'c', 'cs': 'csharp',
+        'php': 'php', 'css': 'css', 'scss': 'scss', 'sass': 'scss',
+        'less': 'less', 'sql': 'sql', 'sh': 'bash', 'bash': 'bash',
+        'zsh': 'bash', 'yaml': 'yaml', 'yml': 'yaml', 'xml': 'xml', 'toml': 'ini'
+      };
+      return langMap[ext] || 'plaintext';
     },
-    
-    // 视频 MIME 类型
+
     videoMimeType() {
-      const ext = this.url.split('.').pop().split('?')[0].toLowerCase()
-      const mimeMap = {
-        'mp4': 'video/mp4',
-        'webm': 'video/webm',
-        'ogg': 'video/ogg',
-        'mov': 'video/quicktime'
-      }
-      return mimeMap[ext] || 'video/mp4'
+      const ext = this.url.split('.').pop().split('?')[0].toLowerCase();
+      const mimeMap = { 'mp4': 'video/mp4', 'webm': 'video/webm', 'ogg': 'video/ogg', 'mov': 'video/quicktime' };
+      return mimeMap[ext] || 'video/mp4';
     },
-    
-    // 音频 MIME 类型
+
     audioMimeType() {
-      const ext = this.url.split('.').pop().split('?')[0].toLowerCase()
-      const mimeMap = {
-        'mp3': 'audio/mpeg',
-        'wav': 'audio/wav',
-        'ogg': 'audio/ogg',
-        'm4a': 'audio/mp4',
-        'flac': 'audio/flac'
-      }
-      return mimeMap[ext] || 'audio/mpeg'
+      const ext = this.url.split('.').pop().split('?')[0].toLowerCase();
+      const mimeMap = { 'mp3': 'audio/mpeg', 'wav': 'audio/wav', 'ogg': 'audio/ogg', 'm4a': 'audio/mp4', 'flac': 'audio/flac' };
+      return mimeMap[ext] || 'audio/mpeg';
     },
-    
-    // PDF 嵌入 URL
+
     pdfUrl() {
-      // 使用Google Docs Viewer或本地嵌入
       if (this.url.includes('google.com') || this.url.includes('docs.google.com')) {
-        return this.url
+        return this.url;
       }
-      // 对于跨域PDF，可以尝试使用mozilla的pdf.js viewer（需要额外部署）
-      // 这里使用原生嵌入
-      return this.url
+      return this.url;
     }
   },
 
+  // ==========================================================
   // 监听器
+  // ==========================================================
   watch: {
-    // URL 变化时重新加载文件
     url: {
       immediate: true,
       handler(newUrl) {
-        if (newUrl) {
-          this.loadFile()
-        }
+        if (newUrl) this.loadFile();
       }
     },
-    
-    // 内容变化时触发代码高亮
     content: {
       immediate: false,
       handler(newContent) {
         if (newContent && this.fileType === 'code') {
-          this.$nextTick(() => {
-            this.highlightCode()
-          })
+          this.$nextTick(() => this.highlightCode());
         }
       }
     }
   },
 
-  // 方法定义
+  // ==========================================================
+  // 方法
+  // ==========================================================
   methods: {
-    // 异步加载文件内容
+    handleBack() {
+      this.$emit('back');
+    },
+
     async loadFile() {
-      this.loading = true
-      this.error = null
-      this.iframeLoaded = false
-      
-      // 对于媒体和iframe类型，不需要fetch内容
+      this.loading = true;
+      this.error = null;
+      this.iframeLoaded = false;
+
       if (['image', 'video', 'audio', 'pdf', 'web'].includes(this.fileType)) {
-        this.loading = false
-        return
+        this.loading = false;
+        return;
       }
-      
+
       try {
-        const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 30000) // 30秒超时
-        
-        const response = await fetch(this.url, { 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+        const response = await fetch(this.url, {
           signal: controller.signal,
-          headers: {
-            'Accept': '*/*'
-          }
-        })
-        
-        clearTimeout(timeoutId)
-        
+          headers: { 'Accept': '*/*' }
+        });
+
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        
-        // 尝试获取文件大小
-        const contentLength = response.headers.get('content-length')
+
+        const contentLength = response.headers.get('content-length');
         if (contentLength) {
-          this.fileSize = this.formatFileSize(parseInt(contentLength))
+          this.fileSize = this.formatFileSize(parseInt(contentLength));
         }
-        
-        this.content = await response.text()
+
+        this.content = await response.text();
       } catch (err) {
         if (err.name === 'AbortError') {
-          this.error = 'Request timeout (30s)'
+          this.error = 'Request timeout (30s)';
         } else {
-          this.error = `Failed to load resource: ${err.message}`
+          this.error = `Failed to load resource: ${err.message}`;
         }
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
-    
-    // 代码高亮处理
+
     highlightCode() {
       if (this.$refs.codeBlock) {
-        hljs.highlightElement(this.$refs.codeBlock)
+        hljs.highlightElement(this.$refs.codeBlock);
       }
     },
-    
-    // 复制内容到剪贴板
+
     copyCode() {
       navigator.clipboard.writeText(this.content).then(() => {
-        // 可以添加临时提示
-        const btn = event.target
-        const originalText = btn.textContent
-        btn.textContent = 'COPIED!'
-        setTimeout(() => {
-          btn.textContent = originalText
-        }, 2000)
-      })
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = 'COPIED!';
+        setTimeout(() => { btn.textContent = originalText; }, 2000);
+      });
     },
-    
-    // 判断字符串是否为 JSON
+
     isJsonContent(str) {
-      try {
-        JSON.parse(str)
-        return true
-      } catch {
-        return false
-      }
+      try { JSON.parse(str); return true; } catch { return false; }
     },
-    
-    // 判断字符串是否为 HTML
+
     isHtmlContent(str) {
-      return str.trim().match(/^<(!doctype|html|head|body|div|span|p|a|img|br|hr|table|ul|ol|li|h[1-6]|header|footer|nav|section|article|main|aside|figure|figcaption|code|pre|blockquote)/i)
+      return str.trim().match(/^<(!doctype|html|head|body|div|span|p|a|img|br|hr|table|ul|ol|li|h[1-6]|header|footer|nav|section|article|main|aside|figure|figcaption|code|pre|blockquote)/i);
     },
-    
-    // 格式化文件大小
+
     formatFileSize(bytes) {
-      if (bytes === 0) return '0 Bytes'
-      const k = 1024
-      const sizes = ['Bytes', 'KB', 'MB', 'GB']
-      const i = Math.floor(Math.log(bytes) / Math.log(k))
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     },
-    
-    // 媒体加载成功回调
+
     handleMediaLoad() {
-      console.log('Media loaded successfully')
+      console.log('Media loaded successfully');
     },
-    
-    // 媒体加载失败回调
+
     handleMediaError() {
-      this.error = 'Failed to load media resource'
+      this.error = 'Failed to load media resource';
     }
   }
-}
+};
 </script>
 
 <style scoped>
-/* 基础重置 */
-.hard-driver-container {
-  min-height: 100vh;
-  background-color: #0a0a0a;
-  color: #c0c0c0;
-  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+/* ============================================================
+   LinkViewer 样式 - 与首页深色毛玻璃主题统一
+   ============================================================ */
+
+.link-preview-container {
+  min-height: 60vh;
+  color: var(--text-secondary, #eee);
+  font-family: var(--font-body, MapleMono, sans-serif);
   padding: 0;
   margin: 0;
   line-height: 1.6;
 }
 
-/* 内容区域 */
-.content-wrapper {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 60px 40px;
+/* ---------- 顶部操作栏 ---------- */
+.glass-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  margin-bottom: var(--space-lg);
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
 }
 
-/* 文件元信息 */
-.file-meta {
-  color: #666;
-  font-size: 11px;
-  margin-bottom: 20px;
-  letter-spacing: 2px;
+.back-btn {
+  flex-shrink: 0;
 }
 
-/* 文件路径显示 */
 .file-path {
-  color: #444;
-  font-size: 12px;
-  margin-bottom: 10px;
-  letter-spacing: 1px;
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  letter-spacing: 0.5px;
   word-break: break-all;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* Markdown 样式（保持原有） */
+.path-prompt {
+  color: var(--color-primary, #CA4346);
+  font-weight: bold;
+}
+
+.path-url {
+  color: var(--text-muted, #c0c0c0);
+}
+
+.file-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.size-text {
+  font-size: 12px;
+  color: var(--text-muted, #c0c0c0);
+  font-family: var(--font-mono);
+}
+
+/* ---------- 状态卡片 ---------- */
+.state-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: 60px 20px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: var(--space-lg);
+}
+
+.state-text {
+  color: var(--text-muted, #c0c0c0);
+  font-size: 14px;
+}
+
+.state-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-primary, #CA4346);
+}
+
+.state-desc {
+  font-size: 13px;
+  color: var(--text-muted, #c0c0c0);
+  text-align: center;
+  max-width: 80%;
+}
+
+/* ---------- 内容区域 ---------- */
+.glass-content {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+/* ---------- Markdown 样式 ---------- */
 .markdown-body {
-  color: #c0c0c0;
+  color: var(--text-secondary, #eee);
 }
 
 .markdown-body :deep(h1) {
-  color: #fff;
-  font-size: 32px;
-  border-bottom: 1px solid #333;
+  color: var(--text-primary, #fff);
+  font-size: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 10px;
-  margin-top: 40px;
-  letter-spacing: 1px;
+  margin-top: 32px;
 }
 
 .markdown-body :deep(h2) {
   color: #ddd;
-  font-size: 24px;
-  margin-top: 30px;
-  letter-spacing: 1px;
+  font-size: 22px;
+  margin-top: 24px;
 }
 
 .markdown-body :deep(h3) {
   color: #aaa;
-  font-size: 20px;
-  margin-top: 25px;
+  font-size: 18px;
+  margin-top: 20px;
 }
 
 .markdown-body :deep(p) {
-  margin: 16px 0;
+  margin: 14px 0;
   line-height: 1.8;
 }
 
 .markdown-body :deep(a) {
-  color: #fff;
-  text-decoration: underline;
-  text-decoration-color: #555;
+  color: var(--color-primary, #CA4346);
+  text-decoration: none;
 }
 
 .markdown-body :deep(a:hover) {
-  text-decoration-color: #fff;
+  text-decoration: underline;
 }
 
 .markdown-body :deep(code) {
-  background-color: #1a1a1a;
-  color: #0f0;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: var(--color-success, #10b981);
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-size: 0.9em;
 }
 
 .markdown-body :deep(pre) {
-  background-color: #111;
-  border: 1px solid #333;
-  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
   padding: 16px;
   overflow-x: auto;
 }
 
 .markdown-body :deep(pre code) {
   background: none;
-  color: #0f0;
+  color: var(--color-success, #10b981);
   padding: 0;
 }
 
 .markdown-body :deep(ul), .markdown-body :deep(ol) {
-  padding-left: 30px;
-  margin: 16px 0;
+  padding-left: 28px;
+  margin: 14px 0;
 }
 
 .markdown-body :deep(li) {
-  margin: 8px 0;
+  margin: 6px 0;
 }
 
 .markdown-body :deep(blockquote) {
-  border-left: 3px solid #444;
-  margin: 20px 0;
-  padding-left: 20px;
+  border-left: 3px solid var(--color-primary-50, #CA434688);
+  margin: 18px 0;
+  padding-left: 18px;
   color: #888;
   font-style: italic;
 }
 
 .markdown-body :deep(hr) {
   border: none;
-  border-top: 1px solid #333;
-  margin: 40px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 32px 0;
 }
 
 .markdown-body :deep(img) {
   max-width: 100%;
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
 }
 
 .markdown-body :deep(table) {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
+  margin: 18px 0;
 }
 
 .markdown-body :deep(th), .markdown-body :deep(td) {
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 8px 12px;
   text-align: left;
 }
 
 .markdown-body :deep(th) {
-  background-color: #1a1a1a;
-  color: #fff;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--text-primary, #fff);
 }
 
-/* HTML 内容样式 */
+/* ---------- HTML 内容 ---------- */
 .html-body {
-  color: #c0c0c0;
+  color: var(--text-secondary, #eee);
 }
 
 .html-body :deep(*) {
   max-width: 100%;
 }
 
-/* 图片查看器 */
+/* ---------- 媒体查看器 ---------- */
 .media-viewer {
-  margin: 20px 0;
+  margin: 16px 0;
   text-align: center;
-  background-color: #111;
-  border: 1px solid #333;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
   padding: 20px;
   position: relative;
 }
 
 .media-viewer img {
   max-width: 100%;
-  max-height: 80vh;
+  max-height: 70vh;
   display: block;
   margin: 0 auto;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
 }
 
-/* 视频播放器 */
 .video-viewer video {
   max-width: 100%;
-  max-height: 70vh;
+  max-height: 60vh;
   background-color: #000;
+  border-radius: var(--radius-sm);
 }
 
-/* 音频播放器 */
 .audio-viewer {
-  padding: 40px 20px;
+  padding: 32px 20px;
 }
 
 .audio-viewer audio {
   width: 100%;
-  filter: invert(1) hue-rotate(180deg); /* 让音频控件适配暗色主题 */
+  filter: invert(1) hue-rotate(180deg);
 }
 
-/* PDF 查看器 */
+/* ---------- PDF 查看器 ---------- */
 .pdf-viewer {
   width: 100%;
-  height: 80vh;
-  border: 1px solid #333;
-  background-color: #111;
+  height: 70vh;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .pdf-viewer iframe {
   width: 100%;
   height: 100%;
   border: none;
+  border-radius: var(--radius-sm);
 }
 
-/* 代码查看器 */
-.code-viewer {
-  background-color: #111;
-  border: 1px solid #333;
-  border-radius: 4px;
-  margin: 20px 0;
+/* ---------- 代码 / JSON 查看器 ---------- */
+.code-viewer, .json-viewer {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  margin: 16px 0;
   overflow: hidden;
 }
 
-.code-header {
+.viewer-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 16px;
-  background-color: #1a1a1a;
-  border-bottom: 1px solid #333;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.lang-tag {
-  color: #0f0;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.copy-btn, .toggle-btn {
-  background: transparent;
-  border: 1px solid #444;
-  color: #888;
-  padding: 4px 12px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 11px;
-  transition: all 0.3s;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.copy-btn:hover, .toggle-btn:hover {
-  border-color: #fff;
-  color: #fff;
-  background-color: #222;
-}
-
-.code-viewer pre {
+.code-viewer pre, .json-viewer pre {
   margin: 0;
   padding: 20px;
   overflow-x: auto;
-  background-color: #0d0d0d;
+  background: rgba(0, 0, 0, 0.2);
 }
 
-.code-viewer code {
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+.code-viewer code, .json-viewer code {
+  font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.6;
-}
-
-/* JSON 查看器 */
-.json-viewer {
-  background-color: #111;
-  border: 1px solid #333;
-  border-radius: 4px;
-  margin: 20px 0;
-  overflow: hidden;
-}
-
-.json-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 16px;
-  background-color: #1a1a1a;
-  border-bottom: 1px solid #333;
 }
 
 .json-content {
-  margin: 0;
-  padding: 20px;
-  overflow-x: auto;
-  color: #0f0;
-  font-size: 13px;
-  line-height: 1.6;
-  background-color: #0d0d0d;
+  color: var(--color-success, #10b981);
 }
 
 .json-content.collapsed {
@@ -729,20 +726,22 @@ export default {
   text-overflow: ellipsis;
 }
 
-/* 网页查看器 */
+/* ---------- 网页查看器 ---------- */
 .web-viewer {
   position: relative;
   width: 100%;
-  height: 80vh;
-  border: 1px solid #333;
-  background-color: #000;
+  height: 70vh;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  background: #000;
+  overflow: hidden;
 }
 
 .web-viewer iframe {
   width: 100%;
   height: 100%;
   border: none;
-  background-color: #fff; /* 网页通常是白底 */
+  background: #fff;
 }
 
 .web-warning {
@@ -750,9 +749,9 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  background-color: #ff6600;
+  background: var(--color-primary, #CA4346);
   color: #000;
-  padding: 8px;
+  padding: 6px;
   font-size: 11px;
   font-weight: bold;
   text-align: center;
@@ -760,11 +759,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-}
-
-.warning-icon {
-  font-size: 14px;
+  gap: 6px;
 }
 
 .iframe-loading {
@@ -772,138 +767,90 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #0f0;
-  font-size: 14px;
+  color: var(--color-primary, #CA4346);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* 文本查看器 */
+/* ---------- 纯文本 ---------- */
 .text-viewer {
-  background-color: #111;
-  border: 1px solid #333;
-  border-radius: 4px;
-  margin: 20px 0;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  margin: 16px 0;
   padding: 20px;
   overflow-x: auto;
 }
 
 .text-viewer pre {
   margin: 0;
-  color: #c0c0c0;
-  font-family: inherit;
+  color: var(--text-secondary, #eee);
+  font-family: var(--font-mono);
   white-space: pre-wrap;
   word-wrap: break-word;
   line-height: 1.8;
 }
 
-/* 未知格式 */
+/* ---------- 未知格式 ---------- */
 .unknown-type {
-  color: #ff0000;
+  color: var(--color-primary, #CA4346);
   text-align: center;
-  padding: 60px 40px;
-  border: 1px dashed #333;
+  padding: 48px 24px;
 }
 
-.unknown-icon {
-  font-size: 48px;
-  color: #333;
-  margin-bottom: 20px;
+.unknown-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 12px 0 8px;
 }
 
 .unknown-hint {
-  color: #666;
+  color: var(--text-muted, #c0c0c0);
   font-size: 12px;
-  margin-top: 20px;
+  margin: 12px 0 24px;
   line-height: 1.8;
 }
 
-.download-link {
-  display: inline-block;
-  margin-top: 30px;
-  color: #0f0;
-  text-decoration: none;
-  border: 1px solid #0f0;
-  padding: 10px 20px;
-  transition: all 0.3s;
-}
-
-.download-link:hover {
-  background-color: #0f0;
-  color: #000;
-}
-
-/* 状态提示 */
-.loading-state, .error-state {
+/* ---------- 页脚 ---------- */
+.preview-footer {
   text-align: center;
-  padding: 100px 20px;
-}
-
-.terminal-cursor {
-  color: #0f0;
-  font-size: 18px;
-  animation: blink 1s infinite;
-}
-
-.error-code {
-  font-size: 48px;
-  color: #f00;
-  margin-bottom: 20px;
-  letter-spacing: 5px;
-}
-
-.error-message {
-  color: #666;
-  font-size: 14px;
-}
-
-/* 终端分隔线 */
-.terminal-divider {
-  text-align: center;
+  padding: 24px;
   color: #444;
-  margin: 60px 0 40px;
-  letter-spacing: 10px;
-  font-size: 12px;
-}
-
-/* 页脚 */
-.terminal-footer {
-  text-align: center;
-  padding: 40px;
-  color: #444;
-  font-size: 14px;
-  border-top: 1px solid #1a1a1a;
+  font-size: 13px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
-.separator {
+.preview-footer .sep {
   color: #333;
 }
 
-.blink {
+.cursor-blink {
   animation: blink 1s infinite;
-  color: #0f0;
+  color: var(--color-primary, #CA4346);
 }
 
 @keyframes blink {
-  0%, 50% { opacity: 1; }
+  0%, 50%   { opacity: 1; }
   51%, 100% { opacity: 0; }
 }
 
-/* 响应式 */
+/* ---------- 响应式 ---------- */
 @media (max-width: 768px) {
-  .content-wrapper {
-    padding: 40px 20px;
+  .glass-content {
+    padding: var(--space-lg);
   }
-  
+
   .web-viewer, .pdf-viewer {
-    height: 60vh;
+    height: 55vh;
   }
-  
+
   .media-viewer img {
-    max-height: 60vh;
+    max-height: 55vh;
   }
 }
 </style>
-
