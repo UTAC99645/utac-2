@@ -34,18 +34,8 @@
 
       <!-- QR 模式输入框 -->
       <div v-else>
-        <n-input
-          round
-          status="info"
-          :type="inputtype"
-          :loading="inputLod"
-          clearable
-          size="large"
-          v-model:value="searchText"
-          type="text"
-          id="Search"
-          placeholder="context"
-        />
+        <n-input round status="info" :type="inputtype" :loading="inputLod" clearable size="large"
+          v-model:value="searchText" type="text" id="Search" placeholder="context" />
       </div>
 
       <n-divider />
@@ -53,17 +43,11 @@
       <!-- 搜索引擎快捷切换 -->
       <n-flex justify="space-around">
         <div class="typekey" v-for="[key, item] in keyMap" :key="key">
-          <n-button
-            :dashed="!(search_type === key)"
-            ghost
-            type="error"
-            size="large"
-            @click="() => {
-              if (key === search_type) {
-                search_type = 'duckduckgo'
-              } else { search_type = key }
-            }"
-          >
+          <n-button :dashed="!(search_type === key)" ghost type="error" size="large" @click="() => {
+            if (key === search_type) {
+              search_type = 'duckduckgo'
+            } else { search_type = key }
+          }">
             {{ key === search_type ? 'Back' : key }}
           </n-button>
         </div>
@@ -77,13 +61,8 @@
 
           <!-- 纠错等级 -->
           <div>
-            <n-button
-              v-for="item in QRc"
-              :key="item.value"
-              type="error"
-              size="small"
-              @click="() => { QRck = item.value; message.warning(`Set QR code error correction level to ${item.value}`); }"
-            >
+            <n-button v-for="item in QRc" :key="item.value" type="error" size="small"
+              @click="() => { QRck = item.value; message.warning(`Set QR code error correction level to ${item.value}`); }">
               {{ item.label }}
             </n-button>
           </div>
@@ -106,24 +85,14 @@
 
           <!-- 额外搜索类型选择 -->
           <n-flex v-show="extra_on">
-            <n-button
-              v-for="[key, item] in fullMap"
-              :key="key"
-              :type="(key === searchLCfqt) ? 'primary' : 'default'"
-              @click="() => { searchLCfqt = key }"
-            >
+            <n-button v-for="[key, item] in fullMap" :key="key" :type="(key === searchLCfqt) ? 'primary' : 'default'"
+              @click="() => { searchLCfqt = key }">
               {{ key }}
             </n-button>
           </n-flex>
 
           <!-- QR 码组件 -->
-          <n-qr-code
-            id="qrcode"
-            :padding="0"
-            :value="searchLCfq"
-            :error-correction-level="QRck"
-            :size="325"
-          />
+          <n-qr-code id="qrcode" :padding="0" :value="searchLCfq" :error-correction-level="QRck" :size="325" />
           <n-divider />
         </n-flex>
 
@@ -172,7 +141,7 @@ import axios from 'axios';
 
 // ---------- 搜索引擎 JSON 配置 ----------
 import typeMap_src from '../addition/searchWay.json';
-import keyMap_src  from '../addition/searchKey.json';
+import keyMap_src from '../addition/searchKey.json';
 
 // ============================================================
 // 常量 & 工具函数
@@ -189,10 +158,10 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 // ============================================================
 
 // --- 搜索相关 ---
-const search_link       = ref('');
-const searchText        = ref('');
+const search_link = ref('');
+const searchText = ref('');
 const search_type_cache = ref('duckduckgo');
-const searchLCfqt       = ref('DuckDuckGo');
+const searchLCfqt = ref('DuckDuckGo');
 
 // --- UI 状态 ---
 const spinShow = ref(false);
@@ -204,7 +173,7 @@ const heltoyi = ref(false);
 
 // --- 加载图片映射 ---
 const localmap = ref(new Map([
-  ['Evil',  { url: '/assets/img/lod/Evil.gif'  }],
+  ['Evil', { url: '/assets/img/lod/Evil.gif' }],
   ['Neuro', { url: '/assets/img/lod/Neuro.gif' }]
 ]));
 
@@ -215,7 +184,7 @@ const localmap = ref(new Map([
 //   - on:   Link 模式专用，是否进入预览（boolean | null）
 //   - url:  搜索前缀（string | null）
 const typeMap = ref(new Map(typeMap_src));
-const keyMap  = ref(new Map(keyMap_src));
+const keyMap = ref(new Map(keyMap_src));
 const fullMap = ref(new Map([...typeMap_src, ...keyMap_src]));
 
 const keys = [...fullMap.value.keys()];
@@ -242,10 +211,10 @@ const yiyan_lock_cache = ref(false);
 // naive-ui / Router 实例
 // ============================================================
 
-const message    = useMessage();
+const message = useMessage();
 const loadingBar = useLoadingBar();
-const route      = useRoute();
-const router     = useRouter();
+const route = useRoute();
+const router = useRouter();
 
 // ============================================================
 // 计算属性
