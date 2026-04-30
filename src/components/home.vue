@@ -246,14 +246,14 @@ const yiyan_word = computed(() => {
   return x;
 });
 
-// --- 下拉选择器选项（由 fullMap 动态生成） ---
+// --- 搜索类型下拉选项（由 fullMap 动态生成，供 n-select 使用） ---
 const searchkey = computed(() => {
   let x = Object.entries(Object.fromEntries(fullMap.value));
   let a = [];
   for (let [key, _item] of x) {
     a.push({
-      label: key,
-      value: key
+      value: key,
+      label: key
     });
   }
   return a;
@@ -339,6 +339,7 @@ const lodimg = computed(() => {
 
 /**
  * 获取一言（Hitokoto）数据并替换当前展示
+ * 冷却时间：2s（通过 yiyan_lock_cache 控制按钮状态）
  */
 async function yiyan() {
   yiyan_lock_cache.value = true;
@@ -356,21 +357,12 @@ async function yiyan() {
       loadingBar.error();
       return 0;
     });
+  await sleep(2000);
+  yiyan_lock_cache.value = false;
   yiyandata.value.unshift(x);
   if (yiyandata.value.length > 1) {
     yiyandata.value = yiyandata.value.slice(0, 1);
   }
-  await yiyan_lock();
-}
-
-/**
- * 一言冷却锁（1.5s）
- */
-async function yiyan_lock() {
-  console.log('yiyan is locking');
-  await sleep(1500);
-  yiyan_lock_cache.value = false;
-  console.log('unlocked');
 }
 
 /**

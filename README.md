@@ -8,13 +8,15 @@
 
 ## ✨ 功能特性
 
-- **🔍 多搜索引擎聚合** — 支持 Google、Bing、DuckDuckGo 一键切换，引擎配置从 JSON 动态加载，易于扩展
-- **🔗 智能链接预览** — 输入 URL 可直接在页面内预览，无需跳转
-- **📎 万能文件查看器** — 支持 Markdown、HTML、图片、PDF、视频、音频、代码高亮、JSON、纯文本等 10+ 种格式，毛玻璃 UI 与首页主题统一
-- **📱 QR 码生成器** — 支持纠错等级调整（L/M/Q/H）、额外参数拼接、一键下载 PNG
-- **💬 一言（Hitokoto）** — 随机展示来自 hitokoto.cn 的优美句子，1.5s 后自动替换页面标题
-- **🎨 深色主题 UI** — 基于 Naive UI 的精致暗色界面，毛玻璃视觉效果
-- **⚡ 快速加载** — Vite 驱动，文件查看器异步懒加载，首页 chunk 仅 ~280 KB
+| 特性 | 说明 |
+|------|------|
+| 🔍 **多搜索引擎聚合** | 支持 Google、Bing、DuckDuckGo 一键切换，引擎配置从 JSON 动态加载，易于扩展 |
+| 🔗 **智能链接预览** | 输入 URL 可直接在页面内预览，无需跳转 |
+| 📎 **万能文件查看器** | 支持 Markdown、HTML、图片、PDF、视频、音频、代码高亮、JSON、纯文本等 10+ 种格式，毛玻璃 UI 与首页主题统一 |
+| 📱 **QR 码生成器** | 支持纠错等级调整（L/M/Q/H）、额外参数拼接、一键下载 PNG |
+| 💬 **一言（Hitokoto）** | 随机展示来自 hitokoto.cn 的优美句子，1.5s 后自动替换页面标题 |
+| 🎨 **深色主题 UI** | 基于 Naive UI 的精致暗色界面，全局毛玻璃视觉效果 |
+| ⚡ **快速加载** | Vite 驱动，文件查看器异步懒加载，首页 chunk 仅 ~280 KB |
 
 ---
 
@@ -49,10 +51,10 @@ utac-2/
 │   │   ├── searchWay.json      # 主要搜索引擎（Google / Bing / DuckDuckGo 等）
 │   │   └── searchKey.json      # 扩展引擎（QR / Link / rlyiyan 等）
 │   ├── components/             # Vue 组件
-│   │   ├── home.vue            # 首页：搜索框、引擎切换、QR码、一言
+│   │   ├── home.vue            # 首页：搜索聚合、QR 码、一言、链接预览
 │   │   ├── about.vue           # 关于页：人员信息展示
 │   │   ├── Link.vue            # 文件预览器（LinkViewer）：10+ 格式渲染，毛玻璃主题，内置返回
-│   │   └── 404.vue             # 404 页面：毛玻璃卡片 + 故障艺术字
+│   │   └── 404.vue             # 404 页面：毛玻璃卡片 + 故障艺术字 + 粒子动画
 │   ├── css/
 │   │   ├── main.css            # 全局样式 + CSS 设计令牌（:root 变量）
 │   │   ├── router.css          # 面包屑导航样式
@@ -106,7 +108,7 @@ yarn preview
 
 | 路径 | 组件 | 描述 |
 |------|------|------|
-| `/:type?` | `home.vue` | 首页 — 搜索聚合、QR码生成、一言展示。`type` 为可选的搜索引擎参数，动态匹配 JSON 配置中的引擎名称 |
+| `/:type?` | `home.vue` | 首页 — 搜索聚合、QR 码生成、一言展示。`type` 为可选的搜索引擎参数，动态匹配 JSON 配置中的引擎名称 |
 | `/about` | `about.vue` | 关于 — 读取 `about.json` 展示人员信息 |
 
 > 搜索关键词和引擎类型会自动同步到 URL Query，便于分享和回溯。
@@ -176,14 +178,6 @@ yarn preview
 
 各页面样式均引用上述变量，便于一键换色与主题维护。
 
-### 组件交互
-
-**Link.vue（文件预览器）**
-
-- 通过 `props.url` 接收目标地址，自动检测文件类型并渲染
-- 内置 **Back** 返回按钮，点击后触发 `@back` 事件通知父组件退出预览
-- 使用 `defineAsyncComponent` 异步懒加载，避免打包大型依赖（Marked、Highlight.js）到首页 chunk
-
 ### Vite 路径别名
 
 ```js
@@ -202,6 +196,41 @@ alias: {
 - Vue / Vue Router API（`ref`, `computed`, `watch`, `useRoute`...）无需手动 import
 - Naive UI 组件自动按需引入
 - Axios 自动注入为全局可用
+
+---
+
+## 🧩 组件架构
+
+### 首页（home.vue）
+
+```
+home.vue
+├── 加载动画（随机显示 Evil / Neuro GIF）
+├── 搜索页
+│   ├── 标题（1.5s 后自动替换为一言）
+│   ├── 搜索输入框（普通模式 / QR 模式）
+│   ├── 引擎快捷切换按钮
+│   ├── QR 码区域（纠错等级、额外参数、下载）
+│   └── 一言卡片（Hitokoto）
+└── 链接预览模式
+    └── Link.vue（异步懒加载）
+```
+
+### 文件预览器（Link.vue）
+
+```
+Link.vue（LinkViewer）
+├── 顶部操作栏（Back 按钮 + 文件路径 + 类型标签）
+├── 加载 / 错误状态卡片
+├── 内容渲染区（根据 fileType 自动分发）
+│   ├── markdown-body（Marked 渲染）
+│   ├── media-viewer（图片 / 视频 / 音频 / PDF）
+│   ├── code-viewer（Highlight.js 高亮 + 复制）
+│   ├── json-viewer（格式化 + 展开折叠）
+│   ├── web-viewer（沙盒 iframe）
+│   └── text-viewer（纯文本）
+└── 页脚（文件名 + 类型 + 终端光标）
+```
 
 ---
 

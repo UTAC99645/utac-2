@@ -382,10 +382,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vicons/carbon@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@vicons/carbon@npm:0.13.0"
+  checksum: 10c0/bf3298b6b1206aaf553db4901af2f3a5cd0a765cf3d0dee3dbf461403577e068321129757ea8272c43d9f980e95f1fb03119393dd7642f21eaee00170a0be057
+  languageName: node
+  linkType: hard
+
+"@vicons/fluent@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@vicons/fluent@npm:0.13.0"
+  checksum: 10c0/9117f948381e44b2411f1a2b3072e3e9217a3c982aca0355cec4ce7529cbc0f55bbe7d2fc15f34b6e136cc4e932e2b42fd48822741e832cc1a44eaf5441152fb
+  languageName: node
+  linkType: hard
+
 "@vicons/ionicons5@npm:^0.13.0":
   version: 0.13.0
   resolution: "@vicons/ionicons5@npm:0.13.0"
   checksum: 10c0/3be530caf976bce192f8565c714b19a53b739a46b9de845fba5fad792b083439aa3fd4206c876e5eb28fe9c163a59ec41c9d4e44cc63d65a282d1d4b001ed84a
+  languageName: node
+  linkType: hard
+
+"@vicons/tabler@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@vicons/tabler@npm:0.13.0"
+  checksum: 10c0/3d426fc83189e8bf91dea56974331d494eb09f3123a971bd668697f89fea0e9b7698a585d33d0fd8dcbb3f0ca9c6b3e5c548c6f1dae319fa43d1f73a09eaf5b3
   languageName: node
   linkType: hard
 
@@ -1855,7 +1876,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@vicons/carbon": "npm:^0.13.0"
+    "@vicons/fluent": "npm:^0.13.0"
     "@vicons/ionicons5": "npm:^0.13.0"
+    "@vicons/tabler": "npm:^0.13.0"
     "@vitejs/plugin-vue": "npm:^6.0.6"
     axios: "npm:^1.15.2"
     highlight.js: "npm:^11.11.1"

@@ -242,6 +242,9 @@ export default {
       return 'unknown';
     },
 
+    /**
+     * 渲染后的内容（Markdown 需要解析，其余原样返回）
+     */
     renderedContent() {
       if (this.fileType === 'markdown') {
         return marked.parse(this.content || '', { sanitize: false });
@@ -249,6 +252,9 @@ export default {
       return this.content;
     },
 
+    /**
+     * 解析后的 JSON 对象
+     */
     parsedJson() {
       try {
         return JSON.parse(this.content);
@@ -257,11 +263,17 @@ export default {
       }
     },
 
+    /**
+     * 格式化后的 JSON 字符串（2 空格缩进）
+     */
     formattedJson() {
       if (!this.parsedJson) return this.content;
       return JSON.stringify(this.parsedJson, null, 2);
     },
 
+    /**
+     * 根据文件扩展名映射代码高亮语言
+     */
     codeLanguage() {
       const ext = this.url.split('.').pop().split('?')[0].toLowerCase();
       const langMap = {
@@ -275,18 +287,27 @@ export default {
       return langMap[ext] || 'plaintext';
     },
 
+    /**
+     * 视频 MIME 类型映射
+     */
     videoMimeType() {
       const ext = this.url.split('.').pop().split('?')[0].toLowerCase();
       const mimeMap = { 'mp4': 'video/mp4', 'webm': 'video/webm', 'ogg': 'video/ogg', 'mov': 'video/quicktime' };
       return mimeMap[ext] || 'video/mp4';
     },
 
+    /**
+     * 音频 MIME 类型映射
+     */
     audioMimeType() {
       const ext = this.url.split('.').pop().split('?')[0].toLowerCase();
       const mimeMap = { 'mp3': 'audio/mpeg', 'wav': 'audio/wav', 'ogg': 'audio/ogg', 'm4a': 'audio/mp4', 'flac': 'audio/flac' };
       return mimeMap[ext] || 'audio/mpeg';
     },
 
+    /**
+     * PDF 嵌入 URL（可扩展第三方 PDF 查看器）
+     */
     pdfUrl() {
       if (this.url.includes('google.com') || this.url.includes('docs.google.com')) {
         return this.url;
