@@ -3,13 +3,13 @@
   "dependencies": {
     "@vicons/ionicons5": "^0.13.0",
     "@vitejs/plugin-vue": "^6.0.6",
-    "axios": "^1.15.0",
+    "axios": "^1.15.2",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.2",
     "naive-ui": "^2.44.1",
-    "vite": "^8.0.8",
-    "vue": "^3.5.32",
-    "vue-router": "^5.0.4"
+    "vite": "^8.0.10",
+    "vue": "^3.5.33",
+    "vue-router": "^5.0.6"
   },
   "devDependencies": {
     "unplugin-auto-import": "^21.0.0",
