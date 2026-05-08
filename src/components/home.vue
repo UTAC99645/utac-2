@@ -35,14 +35,14 @@
       <!-- QR 模式输入框 -->
       <div v-else>
         <n-input round status="info" :type="inputtype" :loading="inputLod" clearable size="large"
-          v-model:value="searchText" type="text" id="Search" placeholder="context" />
+          v-model:value="searchText" id="Search" placeholder="context" />
       </div>
 
       <n-divider />
 
       <!-- 搜索引擎快捷切换 -->
       <n-flex justify="space-around">
-        <div class="typekey" v-for="[key, item] in keyMap" :key="key">
+        <div class="typekey" v-for="[key] in keyMap" :key="key">
           <n-button :dashed="!(search_type === key)" ghost type="error" size="large" @click="() => {
             if (key === search_type) {
               search_type = 'duckduckgo'
@@ -85,7 +85,7 @@
 
           <!-- 额外搜索类型选择 -->
           <n-flex v-show="extra_on">
-            <n-button v-for="[key, item] in fullMap" :key="key" :type="(key === searchLCfqt) ? 'primary' : 'default'"
+            <n-button v-for="[key] in fullMap" :key="key" :type="(key === searchLCfqt) ? 'primary' : 'default'"
               @click="() => { searchLCfqt = key }">
               {{ key }}
             </n-button>
@@ -149,8 +149,6 @@ import keyMap_src from '../addition/searchKey.json';
 
 const urlMatch = /^https?:\/\/.+\..+/i;
 
-const Random = () => Math.ceil(Math.random() * 100);
-
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // ============================================================
@@ -158,7 +156,6 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 // ============================================================
 
 // --- 搜索相关 ---
-const search_link = ref('');
 const searchText = ref('');
 const search_type_cache = ref('duckduckgo');
 const searchLCfqt = ref('DuckDuckGo');
@@ -172,10 +169,10 @@ const extra_1_on = ref(false);
 const heltoyi = ref(false);
 
 // --- 加载图片映射 ---
-const localmap = ref(new Map([
+const localmap = new Map([
   ['Evil', { url: '/assets/img/lod/Evil.gif' }],
   ['Neuro', { url: '/assets/img/lod/Neuro.gif' }]
-]));
+]);
 
 // --- 搜索引擎配置映射（由 JSON 初始化） ---
 // key: 引擎名称
@@ -183,19 +180,16 @@ const localmap = ref(new Map([
 //   - en:   是否激活（boolean）
 //   - on:   Link 模式专用，是否进入预览（boolean | null）
 //   - url:  搜索前缀（string | null）
-const typeMap = ref(new Map(typeMap_src));
 const keyMap = ref(new Map(keyMap_src));
 const fullMap = ref(new Map([...typeMap_src, ...keyMap_src]));
 
-const keys = [...fullMap.value.keys()];
-
 // --- QR 码配置 ---
-const QRc = ref([
+const QRc = [
   { value: 'L', label: 'L' },
   { value: 'M', label: 'M' },
   { value: 'Q', label: 'Q' },
   { value: 'H', label: 'H' }
-]);
+];
 const QRck = ref('L');
 
 // --- 一言数据 ---
@@ -230,57 +224,37 @@ const Link = computed(() => fullMap.value.get('Link').en);
 const onLink = computed(() => fullMap.value.get('Link').on);
 
 // --- 页面标题（1.5s 后切换为一言） ---
-const Hello = computed(() => {
-  let x = "UTAC's search";
-  if (heltoyi.value) {
-    x = yiyan_word.value;
-    console.log(x);
-  }
-  return x;
-});
+const Hello = computed(() => heltoyi.value ? yiyan_word.value : "UTAC's search");
 
 // --- 当前一言句子 ---
-const yiyan_word = computed(() => {
-  let x = '';
-  x = yiyandata.value[0].hitokoto ?? '';
-  return x;
-});
+const yiyan_word = computed(() => yiyandata.value[0]?.hitokoto ?? '');
 
 // --- 搜索类型下拉选项（由 fullMap 动态生成，供 n-select 使用） ---
-const searchkey = computed(() => {
-  let x = Object.entries(Object.fromEntries(fullMap.value));
-  let a = [];
-  for (let [key, _item] of x) {
-    a.push({
-      value: key,
-      label: key
-    });
-  }
-  return a;
-});
+const searchkey = computed(() =>
+  [...fullMap.value.keys()].map(key => ({ value: key, label: key }))
+);
 
 // --- 搜索链接拼接 ---
 const searchLC = computed(() => {
   if (search_type.value === 'QR') {
     return searchText.value;
   }
-  const type = fullMap.value?.get(search_type.value)?.url ?? '';
+  const type = fullMap.value.get(search_type.value)?.url ?? '';
   return `${type}${searchText.value}`;
 });
 
 // --- 额外前缀 ---
 const extra = computed(() => {
   if (!extra_on.value) return '';
-  return fullMap.value?.get(searchLCfqt.value)?.url ?? '';
+  return fullMap.value.get(searchLCfqt.value)?.url ?? '';
 });
 
 // --- 额外后缀 ---
 const extra_1 = computed(() => {
-  if (extra_1_on.value & extra_on.value & searchLCfqt.value === 'Link') {
+  if (extra_1_on.value && extra_on.value && searchLCfqt.value === 'Link') {
     return '&type=Link&open=true';
-  } else {
-    return '';
   }
+  return '';
 });
 
 // --- 带额外参数的完整搜索链接 ---
@@ -295,43 +269,25 @@ const search_type = computed({
   set(value) {
     if (value === 'rlyiyan') {
       yiyan();
-      return 0;
-    } else {
-      if (value === search_type_cache.value) {
-        return 0;
-      } else {
-        search_type_cache.value = value;
-        message.info(`By ${value}`);
-      }
+      return;
+    }
+    if (value !== search_type_cache.value) {
+      search_type_cache.value = value;
+      message.info(`By ${value}`);
     }
   }
 });
 
 // --- 输入框类型（QR 模式用 textarea） ---
-const inputtype = computed(() => {
-  if (search_type.value === 'QR') {
-    return 'textarea';
-  } else {
-    return 'text';
-  }
-});
+const inputtype = computed(() => search_type.value === 'QR' ? 'textarea' : 'text');
 
 // --- 输入框加载状态（QR 模式不显示加载） ---
-const inputLod = computed(() => {
-  if (search_type.value === 'QR') {
-    return false;
-  } else {
-    return true;
-  }
-});
+const inputLod = computed(() => search_type.value !== 'QR');
 
 // --- 随机加载图片 ---
-const lodimg = computed(() => {
-  const x = Random();
-  return x >= 50
-    ? localmap.value.get('Evil').url
-    : localmap.value.get('Neuro').url;
-});
+const lodimg = computed(() =>
+  localmap.get(Math.random() > 0.5 ? 'Evil' : 'Neuro').url
+);
 
 // ============================================================
 // 方法
@@ -355,14 +311,11 @@ async function yiyan() {
     .catch(err => {
       message.error(`Get yiyan error with: ${err}`);
       loadingBar.error();
-      return 0;
+      return -1;
     });
   await sleep(2000);
   yiyan_lock_cache.value = false;
-  yiyandata.value.unshift(x);
-  if (yiyandata.value.length > 1) {
-    yiyandata.value = yiyandata.value.slice(0, 1);
-  }
+  yiyandata.value = [x];
 }
 
 /**
@@ -370,29 +323,22 @@ async function yiyan() {
  */
 async function init() {
   initLaod();
-  if (route.params.type) {
-    checkUrl();
-  }
+  if (route.params.type) checkUrl();
 }
 
 /**
  * 加载动画
  * 随机决定是否显示加载图（约 50% 概率）
  */
-async function initLaod(Num) {
+async function initLaod(Num = 50) {
   loadingBar.start();
   spinShow.value = true;
-  let x = Num ?? 50;
-  if (x <= Random()) {
-    await sleep(1);
-    spinShow.value = false;
+  await sleep(1);
+  spinShow.value = false;
+  if (Num <= Math.ceil(Math.random() * 100)) {
     loadingBar.error();
-    return;
   } else {
-    await sleep(1);
-    spinShow.value = false;
     loadingBar.finish();
-    return;
   }
 }
 
@@ -412,8 +358,9 @@ function searchfin() {
   if (Link.value) {
     fullMap.value.set('Link', { ...fullMap.value.get('Link'), on: true });
     message.success(`Link to '${searchText.value}'`);
-    return 0;
-  } else if (urlMatch.test(searchText.value)) {
+    return;
+  }
+  if (urlMatch.test(searchText.value)) {
     window.open(searchText.value);
   } else {
     window.open(searchLC.value, '_blank');
@@ -425,12 +372,8 @@ function searchfin() {
  */
 async function search_change() {
   loadingBar.start();
-  for (let [key, _item] of fullMap.value) {
-    if (key === search_type.value) {
-      fullMap.value.set(key, { ...fullMap.value.get(key), en: true });
-    } else {
-      fullMap.value.set(key, { ...fullMap.value.get(key), en: false });
-    }
+  for (let [key] of fullMap.value) {
+    fullMap.value.set(key, { ...fullMap.value.get(key), en: key === search_type.value });
   }
   initLaod();
 }
@@ -454,12 +397,10 @@ function checkUrl() {
   }
   const { open } = route.query;
   const type = route.params.type;
-  if (open) {
-    search_type.value = type;
-    nextTick(() => searchfin());
-    return;
-  }
   search_type.value = type;
+  if (open) {
+    nextTick(() => searchfin());
+  }
 }
 
 /**
@@ -482,7 +423,6 @@ function QRdownload() {
     document.body.appendChild(a);
     a.click();
     a.remove();
-    url.revokeObjectURL(link);
   }
 }
 
@@ -498,10 +438,16 @@ onMounted(async () => {
 });
 
 // 搜索类型变化 -> 更新引擎状态 + 同步 URL
-watch(search_type, () => { search_change(); makeUrl(); }, { immediate: true, deep: true });
+watch(search_type, () => {
+  search_change();
+  makeUrl();
+}, { immediate: true, deep: true });
 
 // 搜索文本变化 -> 同步到 URL query
 watch(searchText, () => {
-  router.replace({ query: { ...route.query, q: searchText.value } });
+  router.replace({
+    params: { type: search_type.value },
+    query: { ...route.query, q: searchText.value }
+  });
 });
 </script>
