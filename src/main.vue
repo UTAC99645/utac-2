@@ -63,6 +63,4 @@ const way = ref([
 ]);
 </script>
 
-<style scoped>
-/* 根组件暂无局部样式 */
-</style>
+

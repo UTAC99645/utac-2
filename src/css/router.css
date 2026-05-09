@@ -10,7 +10,7 @@
   padding: var(--space-sm) 14px;
   background: var(--bg-card);
   border-radius: var(--radius-md);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(12px);
 }
 
 /* ---------- 面包屑链接 ---------- */

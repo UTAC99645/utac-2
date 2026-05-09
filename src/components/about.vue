@@ -65,6 +65,4 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
-/* 关于页面局部样式（当前为空，如需自定义可在下方添加） */
-</style>
+
