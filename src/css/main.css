@@ -147,6 +147,62 @@ title, h1 {
   filter: drop-shadow(0 0 4px rgba(123, 142, 216, 0.40));
 }
 
+/* ---------- 通知弹窗全局毛玻璃覆盖 ---------- */
+.n-notification {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  background: rgba(25, 30, 60, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
+}
+
+.n-notification__avatar {
+  filter: drop-shadow(0 0 4px rgba(123, 142, 216, 0.40));
+}
+
+/* ---------- 卡片全局毛玻璃覆盖 ---------- */
+.n-card,
+.n-card.embedded,
+.n-card--embedded {
+  background: transparent !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: var(--shadow-md) !important;
+  border-radius: var(--radius-lg);
+}
+
+.n-card--embedded .n-card__content-wrapper,
+.n-card--embedded .n-card__main,
+.n-card--embedded .n-card__content,
+.n-card__main,
+.n-card__content-wrapper,
+.n-card__content {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* ---------- 按钮全局毛玻璃覆盖 ---------- */
+.n-button {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* 非透明按钮类型添加半透明背景，保留文字/边框主题色 */
+.n-button:not(.n-button--ghost-type):not(.n-button--dashed-type):not(.n-button--text-type) {
+  background: rgba(25, 30, 60, 0.5) !important;
+}
+
+.n-button:not(.n-button--ghost-type):not(.n-button--dashed-type):not(.n-button--text-type):hover {
+  background: rgba(25, 30, 60, 0.7) !important;
+}
+
+.n-button:not(.n-button--ghost-type):not(.n-button--dashed-type):not(.n-button--text-type):active,
+.n-button:not(.n-button--ghost-type):not(.n-button--dashed-type):not(.n-button--text-type):focus {
+  background: rgba(25, 30, 60, 0.6) !important;
+}
+
 /* ---------- 通用动画 ---------- */
 @keyframes fadeIn {
   from {

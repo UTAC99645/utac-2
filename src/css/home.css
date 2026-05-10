@@ -21,15 +21,6 @@ n-input {
   margin: 0;
 }
 
-/* ---------- 引擎切换按钮 ---------- */
-.typekey {
-  border-radius: var(--radius-md);
-  backdrop-filter: blur(12px);
-  background: var(--bg-card) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: var(--shadow-sm);
-}
-
 /* 覆盖 naive-ui error 按钮为蓝紫色调，与主题统一 */
 .n-button--error-type {
   --n-text-color: var(--color-primary) !important;
@@ -50,33 +41,11 @@ n-input {
   box-shadow: 0 0 8px rgba(123, 142, 216, 0.45);
 }
 
-/* ---------- 卡片组件透明背景覆盖 ----------
-   合并所有 .n-card 相关规则，避免重复定义
-   ---------------------------------------------------------- */
-.n-card.embedded,
-.n-card--embedded,
-.n-card--embedded .n-card__content-wrapper,
-.n-card--embedded .n-card__main,
-.n-card--embedded .n-card__content {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-.n-card,
-.n-card__main,
-.n-card__content-wrapper,
-.n-card__content {
-  background: transparent !important;
-}
-
-.n-card {
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: var(--shadow-md) !important;
+/* ---------- 引擎切换按钮 ---------- */
+.typekey {
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(12px);
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-sm);
 }
