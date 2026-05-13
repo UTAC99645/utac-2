@@ -1,6 +1,7 @@
 /* ============================================================
    路由面包屑导航样式
-   覆盖 naive-ui 默认样式以适配深色主题
+   注：Naive UI 面包屑主题由 naive-ui-glass.css 统一控制
+   此处仅保留项目特有的面包屑容器尺寸
    ============================================================ */
 
 /* ---------- 面包屑容器 ---------- */
@@ -8,28 +9,4 @@
   font-size: 14px;
   height: 4vh;
   padding: var(--space-sm) 14px;
-  background: var(--bg-card);
-  border-radius: var(--radius-md);
-  backdrop-filter: blur(12px);
-}
-
-/* ---------- 面包屑链接 ---------- */
-.n-breadcrumb-item__link {
-  color: var(--text-secondary) !important;
-  transition: color var(--transition-fast);
-}
-
-.n-breadcrumb-item__link:hover {
-  color: var(--color-primary) !important;
-}
-
-/* ---------- 当前激活项 ---------- */
-.n-breadcrumb-item--active .n-breadcrumb-item__link {
-  color: var(--color-primary) !important;
-  font-weight: 600;
-}
-
-/* ---------- 分隔符 ---------- */
-.n-breadcrumb-item__separator {
-  color: var(--color-primary-50) !important;
 }

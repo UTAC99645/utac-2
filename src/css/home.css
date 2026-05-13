@@ -21,26 +21,6 @@ n-input {
   margin: 0;
 }
 
-/* 覆盖 naive-ui error 按钮为蓝紫色调，与主题统一 */
-.n-button--error-type {
-  --n-text-color: var(--color-primary) !important;
-  --n-text-color-hover: #9ab2f0 !important;
-  --n-text-color-pressed: #5a6fb8 !important;
-  --n-text-color-focus: var(--color-primary) !important;
-  --n-border: 1px solid var(--color-primary) !important;
-  --n-border-hover: 1px solid #9ab2f0 !important;
-  --n-border-pressed: 1px solid #5a6fb8 !important;
-  --n-border-focus: 1px solid var(--color-primary) !important;
-}
-
-/* QR 纠错等级按钮（small error）增加蓝紫光晕区分 */
-.n-button--small-type.n-button--error-type {
-  transition: all 0.3s ease;
-}
-.n-button--small-type.n-button--error-type:hover {
-  box-shadow: 0 0 8px rgba(123, 142, 216, 0.45);
-}
-
 /* ---------- 引擎切换按钮 ---------- */
 .typekey {
   border-radius: var(--radius-md);

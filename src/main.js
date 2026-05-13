@@ -15,6 +15,7 @@ import main from "./main.vue";
 // ---------- 全局样式 ----------
 import "./css/main.css";
 import "./css/router.css";
+import "./css/naive-ui-glass.css";
 
 // ---------- 搜索引擎配置数据 ----------
 import typeMap_src from "./addition/searchWay.json";

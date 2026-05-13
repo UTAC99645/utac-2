@@ -19,7 +19,7 @@
     <div v-for="item in source" :key="item.mail">
 
       <!-- 头像 -->
-      <img :src="item.img" :alt="item.name" /><br>
+      <n-image :src="item.img" :alt="item.name" /><br>
 
       <!-- 名称 -->
       <n-gradient-text type="success">
@@ -64,5 +64,3 @@ onMounted(async () => {
   console.log(source.value);
 });
 </script>
-
-
