@@ -5,14 +5,14 @@
     "@vicons/fluent": "^0.13.0",
     "@vicons/ionicons5": "^0.13.0",
     "@vicons/tabler": "^0.13.0",
-    "@vitejs/plugin-vue": "^6.0.6",
-    "axios": "^1.16.0",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "axios": "^1.16.1",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.3",
     "naive-ui": "^2.44.1",
-    "vite": "^8.0.11",
+    "vite": "^8.0.13",
     "vue": "^3.5.34",
-    "vue-router": "^5.0.6"
+    "vue-router": "^5.0.7"
   },
   "devDependencies": {
     "unplugin-auto-import": "^21.0.0",

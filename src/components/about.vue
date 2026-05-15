@@ -47,11 +47,13 @@
 
 // ---------- Vue 组合式 API ----------
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 // ============================================================
 // 数据
 // ============================================================
 
+const message = useMessage()
 const source = ref([]);
 
 // ============================================================
@@ -59,8 +61,13 @@ const source = ref([]);
 // ============================================================
 
 onMounted(async () => {
-  const res = await fetch('/assets/json/about.json');
-  source.value = await res.json();
-  console.log(source.value);
+  await axios.get('/assets/json/about.json')
+    .then(res => {
+      console.log(res)
+      source.value = res.data
+    })
+    .catch(err => {
+      message.error(`err happend with ${err}`);
+    })
 });
 </script>
