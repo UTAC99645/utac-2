@@ -1,0 +1,161 @@
+/* ============================================================
+   全局样式文件
+   职责：
+   1. 设计令牌（CSS 变量）
+   2. 字体定义
+   3. 页面基础重置
+   4. 全局元素默认样式
+   ============================================================ */
+
+/* ---------- 设计令牌 ---------- */
+:root {
+  /* 品牌色 */
+  --color-primary: #7b8ed8;
+  --color-primary-50: #7b8ed888;
+  --color-success: #10b981;
+  --color-info: #6366f1;
+
+  /* 文字色 */
+  --text-primary: #ffffff;
+  --text-secondary: #eeeeee;
+  --text-muted: #c0c0c0;
+
+  /* 背景色 */
+  --bg-page: transparent;
+  --bg-card: rgba(25, 30, 60, 0.45);
+  --bg-overlay: rgba(120, 130, 200, 0.12);
+
+  /* 字体栈 */
+  --font-body: MapleMono, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "Courier New", "Consolas", "Monaco", monospace;
+
+  /* 间距 */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 18px;
+  --space-xl: 36px;
+
+  /* 圆角 */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 24px;
+
+  /* 阴影 */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 2px 8px rgba(123, 142, 216, 0.25);
+
+  /* 动效 */
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+}
+
+/* ---------- 自定义字体：MapleMono ---------- */
+@font-face {
+  font-family: "MapleMono";
+  src:
+    local("MapleMono-NF-CN-ExtraBold"),
+    local("MapleMono NF CN ExtraBold"),
+    url("https://file.utac.top/font/MapleMono-NF-CN-ExtraBold.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- 页面基础重置 ---------- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100%;
+  display: flex;
+}
+
+/* ---------- body 全局样式 ---------- */
+body {
+  font-family: var(--font-body);
+  background-image: url("/assets/img/143937772_p2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* 全局暗色遮罩：让白色文字在背景图浅色区域始终清晰可读 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(10, 15, 40, 0.3) 0%,
+    rgba(15, 20, 50, 0.2) 50%,
+    rgba(10, 15, 40, 0.3) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ---------- 应用根容器 ---------- */
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ---------- 图片全局样式 ----------
+   注意：此规则会作用于所有 img 标签，
+   若组件内需要不同的图片样式，请使用 scoped style 覆盖
+   ---------------------------------------------------------- */
+img {
+  width: 100vw;
+  height: auto;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  margin-bottom: var(--space-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- 标题样式 ---------- */
+title,
+h1 {
+  font-size: 2.8rem;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 0 12px rgba(123, 142, 216, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- 通用动画 ---------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
