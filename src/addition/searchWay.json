@@ -1,0 +1,35 @@
+[
+  [
+    "google",
+    {
+      "en": true,
+      "url": "https://www.google.com/search?q=",
+      "icon": "/assets/xicons/google.svg"
+    }
+  ],
+  [
+    "bing",
+    {
+      "en": false,
+      "url": "https://www.bing.com/search?q=",
+      "icon": "/assets/xicons/bing.svg"
+    }
+  ],
+  [
+    "duckduckgo",
+    {
+      "en": false,
+      "url": "https://duckduckgo.com/?q=",
+      "icon": "/assets/xicons/duckduckgo.svg"
+    }
+  ],
+  [
+    "Link",
+    {
+      "en": false,
+      "on": false,
+      "url": "https://utac99645.top/?q=",
+      "icon": "/assets/xicons/Link.svg"
+    }
+  ]
+]

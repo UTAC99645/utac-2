@@ -1,0 +1,31 @@
+/* ============================================================
+   首页样式文件
+   注意：部分选择器为全局范围，会作用于页面内所有匹配元素
+   ============================================================ */
+
+/* ---------- 搜索输入框 ----------
+   警告：此规则为全局选择器，会作用于页面内所有 n-input 组件。
+   因位于全局 CSS 中，无法使用 scoped 限定范围。
+   ---------------------------------------------------------- */
+n-input, n-select, n-input-group {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.35));
+}
+
+n-input {
+  width: 75vw;
+  height: 5vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+/* ---------- 引擎切换按钮 ---------- */
+.typekey {
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(12px);
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-sm);
+}

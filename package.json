@@ -1,0 +1,36 @@
+{
+  "name": "utac-2",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@types/node": "^25.9.2",
+    "@vicons/fluent": "^0.13.0",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "axios": "^1.17.0",
+    "highlight.js": "^11.11.1",
+    "marked": "^18.0.5",
+    "naive-ui": "^2.44.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vue": "^3.5.35",
+    "vue-router": "^5.1.0",
+    "vue-tsc": "^3.3.4"
+  },
+  "devDependencies": {
+    "@yarnpkg/sdks": "^3.3.0",
+    "unplugin-auto-import": "^21.0.0",
+    "unplugin-vue-components": "^32.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@11.5.3+sha512.7ac1c919341c213a34dc0d02afb7143c5c26ac26ee8c4782deea821b8ac64d2134a081fd8941dae6e29bbb48f58dfc2b7fbceeccc07cb2f09d219d342a4969ed"
+}
