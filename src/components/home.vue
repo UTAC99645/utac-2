@@ -196,6 +196,7 @@ const typeArr = computed<string>(() => {
   rs = key.join("|");
   return rs;
 });
+console.log(typeArr.value)
 // --- QR 码配置 ---
 const QRc: { value: string, label: string }[] = [
   { value: 'L', label: 'L' },
@@ -337,10 +338,6 @@ async function yiyan(): Promise<void> {
 async function init() {
   initLaod();
   if (route.params.type) checkUrl();
-  console.log(...typeMap_src.entries())
-  for (let [c, [a, b]] of typeMap_src.entries()) {
-    console.log(c + '\n' + a + '\n' + b)
-  }
 }
 
 /**
@@ -413,10 +410,10 @@ async function makeUrl() {
 function checkUrl(): void {
   const type: string = route.params.type as string;
   let test = (): boolean => {
-    let reg = new RegExp(`^${typeArr.value}`)
+    let reg = new RegExp(`${typeArr.value}`)
     return reg.test(type)
   }
-  if (!type || test()) message.error(`No Type: ${type}`), search_type.value = "duckduckgo";
+  if (type && !test()) message.error(`No Type: ${type}`), search_type.value = "duckduckgo";
   search_type.value = type;
   const { open, q } = route.query;
   if (q) {
