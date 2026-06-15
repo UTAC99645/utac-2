@@ -11,7 +11,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@types/node": "^25.9.2",
+    "@types/node": "^25.9.3",
     "@vicons/fluent": "^0.13.0",
     "@vitejs/plugin-vue": "^6.0.7",
     "axios": "^1.17.0",
@@ -20,9 +20,9 @@
     "naive-ui": "^2.44.1",
     "typescript": "^6.0.3",
     "vite": "^8.0.16",
-    "vue": "^3.5.35",
+    "vue": "^3.5.38",
     "vue-router": "^5.1.0",
-    "vue-tsc": "^3.3.4"
+    "vue-tsc": "^3.3.5"
   },
   "devDependencies": {
     "@yarnpkg/sdks": "^3.3.0",
