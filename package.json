@@ -11,10 +11,10 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@types/node": "^25.9.3",
+    "@types/node": "^25.9.4",
     "@vicons/fluent": "^0.13.0",
     "@vitejs/plugin-vue": "^6.0.7",
-    "axios": "^1.17.0",
+    "axios": "^1.18.0",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.5",
     "naive-ui": "^2.44.1",
