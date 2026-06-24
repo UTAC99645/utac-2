@@ -19,7 +19,7 @@ import "./css/main.css";
 import "./css/router.css";
 import "./css/naive-ui-glass.css";
 
-import "./axios"
+import "./axios.ts"
 
 // ---------- 搜索引擎配置数据 ----------
 import typeMap_Rsrc from "./addition/searchWay.json";

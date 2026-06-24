@@ -1,6 +1,6 @@
 {
   "name": "utac-2",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,10 +19,10 @@
     "marked": "^18.0.5",
     "naive-ui": "^2.44.1",
     "typescript": "^6.0.3",
-    "vite": "^8.1.0",
-    "vue": "^3.5.38",
+    "vite": "^8.1.3",
+    "vue": "^3.5.39",
     "vue-router": "^5.1.0",
-    "vue-tsc": "^3.3.5"
+    "vue-tsc": "^3.3.6"
   },
   "devDependencies": {
     "unplugin-auto-import": "^21.0.0",

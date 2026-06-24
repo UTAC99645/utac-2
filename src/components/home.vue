@@ -315,21 +315,24 @@ async function yiyan(): Promise<void> {
   yiyan_lock_cache.value = true;
   console.log('start get yiyan');
   loadingBar.start();
-  let x: YiyanItem[] = [];
+  let x: YiyanItem = yiyandata.value[1];
   await axios.get('https://v1.hitokoto.cn')
     .then(res => {
-      x[0] = res.data;
-      console.log(x[0]);
+      x = res.data;
+      console.log(res);
       loadingBar.finish();
     })
     .catch(err => {
       message.error(`Get yiyan error with: ${err}`);
       loadingBar.error();
-      return -1;
     });
   await sleep(2000);
   yiyan_lock_cache.value = false;
-  yiyandata.value = x;
+  if (x === yiyandata.value[1]) {
+    await yiyan()
+  } else {
+    yiyandata.value = [x]
+  }
 }
 
 /**
@@ -415,7 +418,23 @@ function checkUrl(): void {
   }
   if (type && !test()) message.error(`No Type: ${type}`), search_type.value = "duckduckgo";
   search_type.value = type;
+
   const { open, q } = route.query;
+  if (!!open) {
+    router.replace({
+      name: 'Home',
+      params: { type: search_type.value },
+      query: { ...route.query, open: true },
+      hash: route.hash
+    });
+  } else {
+    router.replace({
+      name: 'Home',
+      params: { type: search_type.value },
+      query: { ...route.query, open: false },
+      hash: route.hash
+    });
+  }
   if (q) {
     searchText.value = String(q);
   }
@@ -453,10 +472,10 @@ function QRdownload() {
 
 onMounted(async () => {
   init();
-  yiyan();
+  await yiyan();
   await sleep(1500);
   heltoyi.value = true;
-});
+})
 
 // 搜索类型变化 -> 更新引擎状态 + 同步 URL
 watch(search_type, () => {
