@@ -315,21 +315,24 @@ async function yiyan(): Promise<void> {
   yiyan_lock_cache.value = true;
   console.log('start get yiyan');
   loadingBar.start();
-  let x: YiyanItem[] = [];
+  let x: YiyanItem = yiyandata.value[1];
   await axios.get('https://v1.hitokoto.cn')
     .then(res => {
-      x[0] = res.data;
-      console.log(x[0]);
+      x = res.data;
+      console.log(x);
       loadingBar.finish();
     })
     .catch(err => {
       message.error(`Get yiyan error with: ${err}`);
       loadingBar.error();
-      return -1;
     });
   await sleep(2000);
   yiyan_lock_cache.value = false;
-  yiyandata.value = x;
+  if (x === yiyandata.value[1]) {
+    await yiyan()
+  } else {
+    yiyandata.value = [x]
+  }
 }
 
 /**
@@ -453,7 +456,7 @@ function QRdownload() {
 
 onMounted(async () => {
   init();
-  yiyan();
+  await yiyan();
   await sleep(1500);
   heltoyi.value = true;
 });
