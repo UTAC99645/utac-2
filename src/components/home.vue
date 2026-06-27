@@ -319,7 +319,7 @@ async function yiyan(): Promise<void> {
   await axios.get('https://v1.hitokoto.cn')
     .then(res => {
       x = res.data;
-      console.log(x);
+      console.log(res);
       loadingBar.finish();
     })
     .catch(err => {
