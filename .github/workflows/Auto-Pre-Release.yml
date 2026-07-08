@@ -37,7 +37,7 @@ jobs:
         with:
           files: dist/*
           name: "!!! PRE-RELEASE !!!"
-          tag-name: pre-release
+          tag_name: pre-release
           body: "Build at: ($BUILD_TIME)"
           generate_release_notes: true
           prerelease: true
