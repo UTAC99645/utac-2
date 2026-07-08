@@ -1,0 +1,76 @@
+name: Auto Pre-Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # Job 1: 构建 + 压缩
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      build_time: ${{ steps.time.outputs.build_time }}
+    steps:
+      - name: Record build time
+        id: time
+        run: echo "build_time=$(date -u)" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "26"
+          cache: "pnpm"
+
+      - name: Build
+        run: |
+          pnpm i
+          pnpm run build
+
+      - name: Compress
+        working-directory: dist
+        run: |
+          tar cf dist.tar *
+          lz4 -0 -k dist.tar dist.tar.lz4
+          zstd -10 -k dist.tar -o dist.tar.zst
+          xz -19e -k dist.tar
+          rm -rf index.html assets
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+  # Job 2: 创建 Release（依赖 build 完成）
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Create Pre-Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: pre-release
+          name: "!!! PRE-RELEASE !!!"
+          body: "Build at: ${{ needs.build.outputs.build_time }}"
+          generate_release_notes: true
+          prerelease: true
+          files: |
+            dist/dist.tar
+            dist/dist.tar.lz4
+            dist/dist.tar.zst
+            dist/dist.tar.xz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
