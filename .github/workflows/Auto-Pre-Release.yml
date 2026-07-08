@@ -16,7 +16,7 @@ jobs:
           node-version: "26"
           cache: "pnpm"
       - name: Build & Zip
-        working-directory: ./dist
+        working-directory: dist
         run: |
           tar cf dist.tar *
           lz4 -0 -k dist.tar
@@ -27,11 +27,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: |
-            ./dist/*
+            dist/*
       - name: Pre-Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./dist/*
+          files: dist/*
           name: "!!! PRE-RELEASE !!!"
           tag-name: pre-release
           body: "Build at: ($BUILD_TIME)"
