@@ -53,8 +53,9 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-const way = ref<[object]>([
+const way = ref<{name:string,path:string}[]>([
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' }
 ]);
+console.log(route)
 </script>

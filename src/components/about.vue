@@ -1,7 +1,7 @@
 <template>
   <!-- ========================================================== -->
   <!-- 关于页面
-       数据来源：/assets/json/about.json
+       数据来源：https://file.utac.top/Web/utac/json/about.json
        字段说明：
          - img  : 头像地址
          - name : 名称
@@ -55,18 +55,21 @@ import axios from 'axios';
 
 const message = useMessage()
 const source = ref<{ img: string, name: string, mail: string }[]>([]);
-
+const Utac_res = axios.create({
+  baseURL: "https://file.utac.top/Web/utac",
+})
 // ============================================================
 // 生命周期
 // ============================================================
 
 onMounted(async () => {
-  await axios.get('/assets/json/about.json')
+  await Utac_res.get("/json/about.json")
     .then(res => {
       console.log(res)
       source.value = res.data
     })
     .catch(err => {
+      console.log(err)
       message.error(`err happend with ${err}`);
     })
 });

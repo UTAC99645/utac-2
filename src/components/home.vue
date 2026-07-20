@@ -314,21 +314,24 @@ async function yiyan(): Promise<void> {
   yiyan_lock_cache.value = true;
   console.log('start get yiyan');
   loadingBar.start();
-  let x: YiyanItem[] = [];
+  let x: YiyanItem = yiyandata.value[1];
   await axios.get('https://v1.hitokoto.cn')
     .then(res => {
-      x[0] = res.data;
-      console.log(x[0]);
+      x = res.data;
+      console.log(res);
       loadingBar.finish();
     })
     .catch(err => {
       message.error(`Get yiyan error with: ${err}`);
       loadingBar.error();
-      return -1;
     });
   await sleep(2000);
   yiyan_lock_cache.value = false;
-  yiyandata.value = x;
+  if (x === yiyandata.value[1]) {
+    await yiyan()
+  } else {
+    yiyandata.value = [x]
+  }
 }
 
 /**
@@ -337,10 +340,6 @@ async function yiyan(): Promise<void> {
 async function init() {
   initLaod();
   if (route.params.type) checkUrl();
-  console.log(...typeMap_src.entries())
-  for (let [c, [a, b]] of typeMap_src.entries()) {
-    console.log(c + '\n' + a + '\n' + b)
-  }
 }
 
 /**
@@ -413,14 +412,32 @@ async function makeUrl() {
 function checkUrl(): void {
   const type: string = route.params.type as string;
   let test = (): boolean => {
-    let reg = new RegExp(`^${typeArr.value}`)
+    let reg = new RegExp(`${typeArr.value}`)
     return reg.test(type)
   }
-  if (!type || test()) message.error(`No Type: ${type}`), search_type.value = "duckduckgo";
+  if (type && !test()) message.error(`No Type: ${type}`), search_type.value = "duckduckgo";
   search_type.value = type;
-  const { open, q } = route.query;
-  if (q) {
-    searchText.value = String(q);
+
+  const open = route.query.open
+  const query = route.params.query
+
+  if (!!open) {
+    router.replace({
+      name: 'Home',
+      params: { type: search_type.value, query: route.params.query },
+      query: { ...route.query, open: "true" },
+      hash: route.hash
+    });
+  } else {
+    router.replace({
+      name: 'Home',
+      params: { type: search_type.value, query: route.params.query },
+      query: { ...route.query, open: "false" },
+      hash: route.hash
+    });
+  }
+  if (query) {
+    searchText.value = String(query);
   }
   if (open) {
     nextTick(() => searchfin());
@@ -456,10 +473,10 @@ function QRdownload() {
 
 onMounted(async () => {
   init();
-  yiyan();
+  await yiyan();
   await sleep(1500);
   heltoyi.value = true;
-});
+})
 
 // 搜索类型变化 -> 更新引擎状态 + 同步 URL
 watch(search_type, () => {
@@ -470,8 +487,8 @@ watch(search_type, () => {
 // 搜索文本变化 -> 同步到 URL query
 watch(searchText, () => {
   router.replace({
-    params: { type: search_type.value },
-    query: { ...route.query, q: searchText.value }
+    params: { type: search_type.value, query: searchText.value },
+    query: { ...route.query }
   });
 });
 </script>
