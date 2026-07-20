@@ -48,7 +48,7 @@ const typeArr = computed<string>(() => {
 
 const routes: RouteRecordRaw[] = [
   {
-    path: `/:type(${typeArr.value})?`, // 首页（动态匹配搜索引擎类型）
+    path: `/:type(${typeArr.value})?/:query(.*)?`, // 首页（动态匹配搜索引擎类型）
     name: "Home",
     component: () => import("$/home.vue"), // 懒加载
   },
@@ -63,6 +63,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import("$/404.vue"), // 懒加载 404 页
   },
 ]
+console.log(typeArr.value)
 
 const router = createRouter({
   history: createWebHistory(),

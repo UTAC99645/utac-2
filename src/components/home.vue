@@ -196,7 +196,6 @@ const typeArr = computed<string>(() => {
   rs = key.join("|");
   return rs;
 });
-console.log(typeArr.value)
 // --- QR 码配置 ---
 const QRc: { value: string, label: string }[] = [
   { value: 'L', label: 'L' },
@@ -419,24 +418,26 @@ function checkUrl(): void {
   if (type && !test()) message.error(`No Type: ${type}`), search_type.value = "duckduckgo";
   search_type.value = type;
 
-  const { open, q } = route.query;
+  const open = route.query.open
+  const query = route.params.query
+
   if (!!open) {
     router.replace({
       name: 'Home',
-      params: { type: search_type.value },
-      query: { ...route.query, open: true },
+      params: { type: search_type.value, query: route.params.query },
+      query: { ...route.query, open: "true" },
       hash: route.hash
     });
   } else {
     router.replace({
       name: 'Home',
-      params: { type: search_type.value },
-      query: { ...route.query, open: false },
+      params: { type: search_type.value, query: route.params.query },
+      query: { ...route.query, open: "false" },
       hash: route.hash
     });
   }
-  if (q) {
-    searchText.value = String(q);
+  if (query) {
+    searchText.value = String(query);
   }
   if (open) {
     nextTick(() => searchfin());
@@ -486,8 +487,8 @@ watch(search_type, () => {
 // 搜索文本变化 -> 同步到 URL query
 watch(searchText, () => {
   router.replace({
-    params: { type: search_type.value },
-    query: { ...route.query, q: searchText.value }
+    params: { type: search_type.value, query: searchText.value },
+    query: { ...route.query }
   });
 });
 </script>
