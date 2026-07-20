@@ -40,7 +40,7 @@ jobs:
           lz4 -0 -k dist.tar dist.tar.lz4
           zstd -10 -k dist.tar -o dist.tar.zst
           xz -19e -k dist.tar
-          rm -rf index.html assets
+          rm assets favicon-16x16.png favicon-32x32.png favicon.ico index.html -rf
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
