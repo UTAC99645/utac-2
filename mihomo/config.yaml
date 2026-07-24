@@ -29,7 +29,7 @@ external-controller: 0.0.0.0:9090
 secret: "99645"
 external-ui: ./ui
 external-ui-name: zashboard
-external-ui-url: "https://ghfast.top/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+external-ui-url: "https://v6.gh-proxy.org/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
 
 # ========== 订阅源 ==========
 proxy-providers:
@@ -316,7 +316,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs"
     path: ./ruleset/reject.mrs
     interval: 86400
 
@@ -324,7 +324,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/private.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/private.mrs"
     path: ./ruleset/private.mrs
     interval: 86400
 
@@ -333,7 +333,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.mrs"
     path: ./ruleset/cn.mrs
     interval: 86400
 
@@ -341,7 +341,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tld-cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tld-cn.mrs"
     path: ./ruleset/tld-cn.mrs
     interval: 86400
 
@@ -349,7 +349,7 @@ rule-providers:
     type: http
     behavior: ipcidr
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.mrs"
     path: ./ruleset/cn-ip.mrs
     interval: 86400
 
@@ -357,7 +357,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-cdn-cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-cdn-cn.mrs"
     path: ./ruleset/cn-cdn.mrs
     interval: 86400
 
@@ -365,7 +365,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-games@cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-games@cn.mrs"
     path: ./ruleset/games-cn.mrs
     interval: 86400
 
@@ -373,7 +373,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-dev-cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-dev-cn.mrs"
     path: ./ruleset/dev-cn.mrs
     interval: 86400
 
@@ -382,7 +382,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/openai.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/openai.mrs"
     path: ./ruleset/openai.mrs
     interval: 86400
 
@@ -390,7 +390,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/anthropic.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/anthropic.mrs"
     path: ./ruleset/anthropic.mrs
     interval: 86400
 
@@ -398,7 +398,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/perplexity.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/perplexity.mrs"
     path: ./ruleset/perplexity.mrs
     interval: 86400
 
@@ -407,7 +407,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs"
     path: ./ruleset/netflix.mrs
     interval: 86400
 
@@ -415,7 +415,7 @@ rule-providers:
     type: http
     behavior: ipcidr
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/netflix.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/netflix.mrs"
     path: ./ruleset/netflix-ip.mrs
     interval: 86400
 
@@ -423,7 +423,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/youtube.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/youtube.mrs"
     path: ./ruleset/youtube.mrs
     interval: 86400
 
@@ -431,7 +431,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/disney.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/disney.mrs"
     path: ./ruleset/disney.mrs
     interval: 86400
 
@@ -439,7 +439,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/hbo.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/hbo.mrs"
     path: ./ruleset/hbo.mrs
     interval: 86400
 
@@ -447,7 +447,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/spotify.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/spotify.mrs"
     path: ./ruleset/spotify.mrs
     interval: 86400
 
@@ -455,7 +455,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs"
     path: ./ruleset/tiktok.mrs
     interval: 86400
 
@@ -464,7 +464,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs"
     path: ./ruleset/telegram.mrs
     interval: 86400
 
@@ -472,7 +472,7 @@ rule-providers:
     type: http
     behavior: ipcidr
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/telegram.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/telegram.mrs"
     path: ./ruleset/telegram-ip.mrs
     interval: 86400
 
@@ -480,7 +480,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/twitter.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/twitter.mrs"
     path: ./ruleset/twitter.mrs
     interval: 86400
 
@@ -488,7 +488,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/facebook.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/facebook.mrs"
     path: ./ruleset/facebook.mrs
     interval: 86400
 
@@ -496,7 +496,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/instagram.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/instagram.mrs"
     path: ./ruleset/instagram.mrs
     interval: 86400
 
@@ -504,7 +504,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/whatsapp.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/whatsapp.mrs"
     path: ./ruleset/whatsapp.mrs
     interval: 86400
 
@@ -513,7 +513,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/steam.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/steam.mrs"
     path: ./ruleset/steam.mrs
     interval: 86400
 
@@ -521,7 +521,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/epicgames.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/epicgames.mrs"
     path: ./ruleset/epic.mrs
     interval: 86400
 
@@ -529,7 +529,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/blizzard.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/blizzard.mrs"
     path: ./ruleset/blizzard.mrs
     interval: 86400
 
@@ -537,7 +537,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/ea.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/ea.mrs"
     path: ./ruleset/ea.mrs
     interval: 86400
 
@@ -545,7 +545,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/ubisoft.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/ubisoft.mrs"
     path: ./ruleset/ubisoft.mrs
     interval: 86400
 
@@ -553,7 +553,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/nintendo.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/nintendo.mrs"
     path: ./ruleset/nintendo.mrs
     interval: 86400
 
@@ -562,7 +562,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft.mrs"
     path: ./ruleset/microsoft.mrs
     interval: 86400
 
@@ -570,7 +570,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft@cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft@cn.mrs"
     path: ./ruleset/microsoft-cn.mrs
     interval: 86400
 
@@ -578,7 +578,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/onedrive.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/onedrive.mrs"
     path: ./ruleset/onedrive.mrs
     interval: 86400
 
@@ -586,7 +586,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/xbox.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/xbox.mrs"
     path: ./ruleset/xbox.mrs
     interval: 86400
 
@@ -595,7 +595,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple.mrs"
     path: ./ruleset/apple.mrs
     interval: 86400
 
@@ -603,7 +603,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple-cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple-cn.mrs"
     path: ./ruleset/apple-cn.mrs
     interval: 86400
 
@@ -611,7 +611,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/icloud.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/icloud.mrs"
     path: ./ruleset/icloud.mrs
     interval: 86400
 
@@ -620,7 +620,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs"
     path: ./ruleset/github.mrs
     interval: 86400
 
@@ -628,7 +628,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gitlab.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gitlab.mrs"
     path: ./ruleset/gitlab.mrs
     interval: 86400
 
@@ -636,7 +636,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/docker.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/docker.mrs"
     path: ./ruleset/docker.mrs
     interval: 86400
 
@@ -645,7 +645,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-scholar-!cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-scholar-!cn.mrs"
     path: ./ruleset/scholar.mrs
     interval: 86400
 
@@ -653,7 +653,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/binance.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/binance.mrs"
     path: ./ruleset/crypto.mrs
     interval: 86400
 
@@ -662,7 +662,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/goproxy.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/goproxy.mrs"
     path: ./ruleset/proxy.mrs
     interval: 86400
 
@@ -670,7 +670,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.mrs"
     path: ./ruleset/google.mrs
     interval: 86400
 
@@ -678,7 +678,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs"
+    url: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs"
     path: ./ruleset/geolocation-!cn.mrs
     interval: 86400
 
@@ -699,7 +699,7 @@ rules:
   # ===== 第二层：订阅源和关键域名直连 =====
   - DOMAIN,api.v1.mk,DIRECT
   - DOMAIN,yuyun.mhlnf.cn,DIRECT
-  - DOMAIN,ghfast.top,DIRECT
+  - DOMAIN,v6.gh-proxy.org,DIRECT
   
   # ===== 第三层：广告拦截 =====
   - RULE-SET,reject,全球拦截
@@ -881,9 +881,9 @@ profile:
   
 # ========== 精简版数据库 ==========
 geox-url:
-  geoip: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
-  geosite: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
-  mmdb: "https://ghfast.top/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
+  geoip: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
+  geosite: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://v6.gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
   
 geo-auto-update: true
 geo-update-interval: 24
