@@ -1,6 +1,6 @@
 {
   "name": "utac-2",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,13 +16,13 @@
     "@vitejs/plugin-vue": "^6.0.8",
     "axios": "^1.18.1",
     "highlight.js": "^11.11.1",
-    "marked": "^18.0.6",
+    "marked": "^18.0.7",
     "naive-ui": "^2.44.1",
     "typescript": "^6.0.3",
     "vite": "^8.1.5",
     "vue": "^3.5.40",
     "vue-router": "^5.2.0",
-    "vue-tsc": "^3.3.7"
+    "vue-tsc": "^3.3.8"
   },
   "devDependencies": {
     "unplugin-auto-import": "^21.0.0",

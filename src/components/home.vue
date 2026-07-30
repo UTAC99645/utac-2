@@ -1,15 +1,17 @@
 <template>
   <!-- ========================================================== -->
   <!-- 首页组件
-功能：
-1. 多引擎搜索（动态加载自 JSON 配置）
-2. QR 码生成与下载
-3. 链接预览（内嵌文件查看器）
-4. 一言（Hitokoto）随机展示
--->
+       功能：
+       1. 多引擎搜索（引擎列表由 JSON 配置动态加载）
+       2. QR 码生成与下载（可拼接额外引擎前缀 / Link 后缀）
+       3. 链接预览（内嵌文件查看器 Link.vue）
+       4. 一言（Hitokoto）随机展示
+       URL 设计：引擎与搜索词与路径 /:type/:query 双向同步，
+       配合 ?open=true 可实现"打开链接即搜索"的分享效果
+  -->
   <!-- ========================================================== -->
 
-  <!-- ---------- 加载动画 ---------- -->
+  <!-- ---------- 加载动画层（仅闪现约 1ms，配合顶部加载条的随机动效） ---------- -->
   <div v-if="spinShow">
     <n-image :src="lodimg" style="width: 100vw" alt="Loading" />
   </div>
@@ -22,7 +24,7 @@
       <title type="info">UTAC'S Search</title>
       <h1 class="title">{{ Hello }}</h1>
 
-      <!-- 搜索输入区 -->
+      <!-- 搜索输入区（引擎下拉 + 关键词输入） -->
       <div v-if="!QR">
         <form @submit.prevent="searchfin">
           <n-input-group>
@@ -32,7 +34,7 @@
         </form>
       </div>
 
-      <!-- QR 模式输入框 -->
+      <!-- QR 模式输入框（多行文本，内容即二维码内容） -->
       <div v-else>
         <n-input round :type="inputtype" :loading="inputLod" clearable size="large" v-model:value="searchText"
           id="Search" placeholder="context" />
@@ -40,7 +42,8 @@
 
       <n-divider />
 
-      <!-- 搜索引擎快捷切换 -->
+      <!-- 引擎快捷切换按钮（仅列出 searchKey.json 中的扩展项；
+           再次点击当前引擎则回到默认 duckduckgo） -->
       <n-flex justify="space-around">
         <div class="typekey" v-for="[key] in keyMap" :key="key">
           <n-button :dashed="!(search_type === key)" ghost type="error" size="large" @click="() => {
@@ -56,10 +59,10 @@
       <n-divider />
 
       <div class="page">
-        <!-- ==================== QR 码区域 ==================== -->
+        <!-- ==================== QR 码区域（QR 引擎激活时显示） ==================== -->
         <n-flex v-show="QR" justify="center" style="margin-top: 20px">
 
-          <!-- 纠错等级 -->
+          <!-- 纠错等级选择（L/M/Q/H，纠错能力由低到高） -->
           <div>
             <n-button v-for="item in QRc" :key="item.value" type="error" size="small"
               @click="() => { QRck = item.value; message.warning(`Set QR code error correction level to ${item.value}`); }">
@@ -67,6 +70,10 @@
             </n-button>
           </div>
 
+          <!-- 功能开关行：
+               N/U  —— 额外前缀开关（在二维码内容前拼接所选引擎的 url）
+               O/NO —— Link 后缀开关（追加 &type=Link&open=true，
+                      使扫码打开后直接进入链接预览；仅前缀为 Link 时显示） -->
           <n-divider style="height: 3vh">
             <n-divider vertical />
             <n-switch id="1" v-model:value="extra_on" size="large">
@@ -83,7 +90,7 @@
             <n-divider v-show="extra_on && searchLCfqt === 'Link'" vertical />
           </n-divider>
 
-          <!-- 额外搜索类型选择 -->
+          <!-- 额外前缀的引擎选择（高亮项为当前所选） -->
           <n-flex v-show="extra_on">
             <n-button v-for="[key] in fullMap" :key="key" :type="(key === searchLCfqt) ? 'primary' : 'default'"
               @click="() => { searchLCfqt = key }">
@@ -91,7 +98,7 @@
             </n-button>
           </n-flex>
 
-          <!-- QR 码组件 -->
+          <!-- QR 码本体（value 为最终拼接结果 searchLCfq） -->
           <n-qr-code id="qrcode" :padding="0" :value="searchLCfq" :error-correction-level="QRck" :size="325" />
           <n-divider />
         </n-flex>
@@ -118,7 +125,7 @@
       </div>
     </div>
 
-    <!-- ==================== 链接预览模式 ==================== -->
+    <!-- ==================== 链接预览模式（Link 引擎 on=true 时替换搜索页） ==================== -->
     <div v-else>
       <Rader :url="searchText" @back="exitLinkPreview" />
     </div>
@@ -130,21 +137,33 @@
 // 首页脚本
 // ============================================================
 
-// ---------- 外部依赖 ----------
-import { useMessage, useLoadingBar } from 'naive-ui';
-import { EngineConfig, YiyanItem } from '@/ts/type';
-// ---------- Link 预览组件（异步加载，避免打包大型依赖） ----------
-const Rader = defineAsyncComponent(() => import('./Link.vue'));
-import '../css/home.css';
+// ---------- Vue 核心 API ----------
 import { computed, nextTick, ref, watch, onMounted, defineAsyncComponent } from 'vue';
+
+// ---------- Vue Router ----------
 import { useRoute, useRouter } from 'vue-router';
+
+// ---------- 外部依赖 ----------
 import axios from 'axios';
+import { useMessage, useLoadingBar } from 'naive-ui';
 
-// ---------- 搜索引擎 JSON 配置 ----------
+// ---------- 类型定义 ----------
+import { EngineConfig, YiyanItem } from '@/ts/type';
 
+// ---------- 页面样式 ----------
+import '../css/home.css';
+
+// ---------- 搜索引擎配置（JSON 数据源） ----------
 import typeMap_Rsrc from "../addition/searchWay.json";
 import keyMap_Rsrc from "../addition/searchKey.json";
 
+// ---------- 引擎名集合（校验路由 type 参数，见 addition/mach.ts） ----------
+import typeArr from "@/addition/mach.ts"
+
+// ---------- Link 预览组件（异步加载，避免首屏打包 marked / highlight.js 等大型依赖） ----------
+const Rader = defineAsyncComponent(() => import('./Link.vue'));
+
+// JSON 条目是 [引擎名, 配置] 二元组，断言后供下方 Map 使用
 const typeMap_src = typeMap_Rsrc as [string, EngineConfig][]
 const keyMap_src = keyMap_Rsrc as [string, EngineConfig][]
 
@@ -152,8 +171,10 @@ const keyMap_src = keyMap_Rsrc as [string, EngineConfig][]
 // 常量 & 工具函数
 // ============================================================
 
+// 粗略判断输入是否为 http(s) URL（用于"输入链接直接打开"分支）
 const urlMatch: RegExp = /^https?:\/\/.+\..+/i;
 
+// 毫秒级延时（配合 async/await 使用）
 const sleep: Function = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // ============================================================
@@ -161,58 +182,50 @@ const sleep: Function = (ms: number) => new Promise(resolve => setTimeout(resolv
 // ============================================================
 
 // --- 搜索相关 ---
-const searchText = ref<string>('');
-const search_type_cache = ref('duckduckgo');
+const searchText = ref<string>('');              // 输入框内容
+const search_type_cache = ref('duckduckgo');     // 当前引擎（search_type 的底层存储）
+// QR 区域"额外前缀"所选引擎
+// 注：初值 'DuckDuckGo' 与配置中的小写 key 不匹配，相当于初始未选中
 const searchLCfqt = ref('DuckDuckGo');
 
 // --- UI 状态 ---
-const spinShow = ref(false);
-const extra_on = ref(false);
-const extra_1_on = ref(false);
+const spinShow = ref(false);    // 加载动画层显隐
+const extra_on = ref(false);    // QR 额外前缀开关
+const extra_1_on = ref(false);  // QR Link 后缀开关
 
-// --- 页面标题控制 ---
+// --- 页面标题控制（false 显示固定标题，true 显示一言） ---
 const heltoyi = ref(false);
 
-// --- 加载图片映射 ---
+// --- 加载图片映射（随机二选一） ---
 const localmap = new Map([
   ['Evil', { url: '/assets/img/lod/Evil.gif' }],
   ['Neuro', { url: '/assets/img/lod/Neuro.gif' }]
 ]);
 
 // --- 搜索引擎配置映射（由 JSON 初始化） ---
-// key: 引擎名称
-// value:
-//   - en:   是否激活（boolean）
-//   - on:   Link 模式专用，是否进入预览（boolean | null）
-//   - url:  搜索前缀（string | null）
+// keyMap  ：扩展功能项（searchKey.json），驱动引擎快捷切换按钮
+// fullMap ：全量引擎表（主引擎 + 扩展项），选项、激活态、前缀拼接都基于它
+// 配置字段：en 是否激活 / url 搜索前缀 / on Link 是否进入预览 / icon 图标（预留）
 const keyMap = ref<Map<string, EngineConfig>>(new Map(keyMap_src));
 const fullMap = ref<Map<string, EngineConfig>>(new Map([...typeMap_src, ...keyMap_src]));
 
-const fullMap_src = ref<[string, EngineConfig][]>([...typeMap_src, ...keyMap_src]);
-
-const typeArr = computed<string>(() => {
-  let rs: string
-  let key: any[] = fullMap_src.value.map(item => item[0])
-  rs = key.join("|");
-  return rs;
-});
-// --- QR 码配置 ---
+// --- QR 码纠错等级选项 ---
 const QRc: { value: string, label: string }[] = [
   { value: 'L', label: 'L' },
   { value: 'M', label: 'M' },
   { value: 'Q', label: 'Q' },
   { value: 'H', label: 'H' }
 ];
-const QRck = ref('L');
+const QRck = ref('L'); // 当前纠错等级
 
-// --- 一言数据 ---
+// --- 一言数据（仅展示第 1 条；初始为占位文本） ---
 const yiyandata = ref<YiyanItem[]>([{
   hitokoto: '加载中喵~',
   from: '',
   from_who: ''
 }]);
 
-const yiyan_lock_cache = ref<boolean>(false);
+const yiyan_lock_cache = ref<boolean>(false); // 一言按钮冷却锁
 
 // ============================================================
 // naive-ui / Router 实例
@@ -236,18 +249,18 @@ const Link = computed<boolean>(() => fullMap.value.get('Link')!.en);
 // --- 是否显示链接预览 ---
 const onLink = computed<boolean>(() => fullMap.value.get('Link')!.on ?? false);
 
-// --- 页面标题（1.5s 后切换为一言） ---
+// --- 页面标题（挂载 1.5s 后由固定标题切换为一言） ---
 const Hello = computed<string>(() => heltoyi.value ? yiyan_word.value : "UTAC's search");
 
 // --- 当前一言句子 ---
 const yiyan_word = computed<string>(() => yiyandata.value[0]?.hitokoto ?? '');
 
-// --- 搜索类型下拉选项（由 fullMap 动态生成，供 n-select 使用） ---
+// --- 引擎下拉选项（由 fullMap 动态生成，供 n-select 使用） ---
 const searchkey = computed<{ value: string, label: string }[]>(() =>
   [...fullMap.value.keys()].map(key => ({ value: key, label: key }))
 );
 
-// --- 搜索链接拼接 ---
+// --- 搜索链接拼接（QR 模式下内容即原文，不再拼接前缀） ---
 const searchLC = computed<string>(() => {
   if (search_type.value === 'QR') {
     return searchText.value;
@@ -256,13 +269,13 @@ const searchLC = computed<string>(() => {
   return `${type}${searchText.value}`;
 });
 
-// --- 额外前缀 ---
+// --- QR 额外前缀（取所选引擎的 url，未开启时为空） ---
 const extra = computed<string>(() => {
   if (!extra_on.value) return '';
   return fullMap.value.get(searchLCfqt.value)?.url ?? '';
 });
 
-// --- 额外后缀 ---
+// --- QR Link 后缀（使扫码打开后直接进入链接预览） ---
 const extra_1 = computed<string>(() => {
   if (extra_1_on.value && extra_on.value && searchLCfqt.value === 'Link') {
     return '&type=Link&open=true';
@@ -270,11 +283,11 @@ const extra_1 = computed<string>(() => {
   return '';
 });
 
-// --- 带额外参数的完整搜索链接 ---
+// --- 最终二维码内容：额外前缀 + 主体 + Link 后缀 ---
 const searchLCfq = computed<string>(() => `${extra.value}${searchLC.value}${extra_1.value}`);
 
-// --- 搜索类型（读写计算属性） ---
-// 特殊处理 rlyiyan：切换时自动获取一言，不更新缓存
+// --- 当前搜索引擎（读写计算属性） ---
+// 特殊处理伪引擎 rlyiyan：选中时仅刷新一言，不改变当前引擎（预留入口，JSON 中未配置）
 const search_type = computed<string>({
   get() {
     return search_type_cache.value;
@@ -291,10 +304,10 @@ const search_type = computed<string>({
   }
 });
 
-// --- 输入框类型（QR 模式用 textarea） ---
+// --- 输入框类型（QR 模式用多行文本域） ---
 const inputtype = computed<'text' | 'textarea'>(() => search_type.value === 'QR' ? 'textarea' : 'text');
 
-// --- 输入框加载状态（QR 模式不显示加载） ---
+// --- 输入框加载态（QR 模式不显示） ---
 const inputLod = computed<boolean>(() => search_type.value !== 'QR');
 
 // --- 随机加载图片 ---
@@ -307,8 +320,10 @@ const lodimg = computed<string>(() =>
 // ============================================================
 
 /**
-* 获取一言（Hitokoto）数据并替换当前展示
-* 冷却时间：2s（通过 yiyan_lock_cache 控制按钮状态）
+* 获取一言（Hitokoto）并替换当前展示
+* 流程：请求 -> 冷却 2s（防连点）-> 更新列表
+* 重试机制：x 初值取当前列表第 2 项（通常为 undefined）；
+*           若请求失败 x 保持不变，则递归重试直至拿到新数据
 */
 async function yiyan(): Promise<void> {
   yiyan_lock_cache.value = true;
@@ -335,7 +350,7 @@ async function yiyan(): Promise<void> {
 }
 
 /**
-* 初始化入口
+* 初始化入口：播放加载动效；URL 带引擎参数时恢复对应搜索状态
 */
 async function init() {
   initLaod();
@@ -343,8 +358,10 @@ async function init() {
 }
 
 /**
-* 加载动画
-* 随机决定是否显示加载图（约 50% 概率）
+* 加载动效
+* 加载条起步 + 加载图闪现约 1ms（肉眼基本不可见）；
+* 随后按随机数决定加载条以 error 还是 finish 收尾 ——
+* Num 为 error 收尾的概率百分位（默认 50，即约一半概率，彩蛋效果）
 */
 async function initLaod(Num: number = 50) {
   loadingBar.start();
@@ -361,10 +378,10 @@ async function initLaod(Num: number = 50) {
 /**
 * 搜索提交
 * 逻辑分支：
-*   1. 空输入 -> 提示
-*   2. Link 模式 -> 进入内嵌预览
-*   3. 直接输入 URL -> 新标签打开
-*   4. 普通搜索词 -> 拼接搜索链接后新标签打开
+*   1. 空输入        -> 提示并返回
+*   2. Link 模式     -> 置 on=true，进入内嵌预览
+*   3. 输入是 URL    -> 新标签直接打开
+*   4. 普通搜索词    -> 拼接引擎前缀后新标签打开
 */
 function searchfin() {
   if (!searchText.value.trim()) {
@@ -384,7 +401,8 @@ function searchfin() {
 }
 
 /**
-* 切换搜索引擎时更新激活状态
+* 同步引擎激活状态：fullMap 中仅当前引擎的 en 置 true，其余置 false，
+* 并播放一次加载动效作为切换反馈
 */
 async function search_change() {
   loadingBar.start();
@@ -395,9 +413,9 @@ async function search_change() {
 }
 
 /**
-* 更新浏览器 URL 参数（params.type）
+* 把当前引擎写入路径 params（保留原有 query/hash），使页面状态可分享
 */
-async function makeUrl() {
+function makeUrl() {
   router.push({
     name: 'Home',
     params: { type: search_type.value },
@@ -407,7 +425,11 @@ async function makeUrl() {
 }
 
 /**
-* 根据路由参数恢复搜索状态
+* 根据路由参数恢复搜索状态（分享链接打开时执行）
+*   1. 引擎名不在配置中时弹出错误提示
+*   2. 解析 open 查询参数（支持 true / t / false / f，其他值按真值处理），
+*      并把规范化后的 open 回写 URL
+*   3. 路径中的搜索词填入输入框；open 为真时下一拍自动执行搜索
 */
 function checkUrl(): void {
   const type: string = route.params.type as string;
@@ -418,24 +440,25 @@ function checkUrl(): void {
   if (type && !test()) message.error(`No Type: ${type}`), search_type.value = "duckduckgo";
   search_type.value = type;
 
-  const open = route.query.open
+  let raw = route.query.open as string
+  console.log(raw)
+  let open: boolean = false
+  if (raw === "true" || raw === "t") {
+    open = true as boolean
+  } else if (raw === "false" || raw === "f") {
+    open = false as boolean
+  } else {
+    open = !!raw
+  }
   const query = route.params.query
 
-  if (!!open) {
-    router.replace({
-      name: 'Home',
-      params: { type: search_type.value, query: route.params.query },
-      query: { ...route.query, open: "true" },
-      hash: route.hash
-    });
-  } else {
-    router.replace({
-      name: 'Home',
-      params: { type: search_type.value, query: route.params.query },
-      query: { ...route.query, open: "false" },
-      hash: route.hash
-    });
-  }
+  router.replace({
+    name: 'Home',
+    params: { type: search_type.value, query: route.params.query },
+    query: { ...route.query, open: String(open) },
+    hash: route.hash
+  })
+
   if (query) {
     searchText.value = String(query);
   }
@@ -445,14 +468,14 @@ function checkUrl(): void {
 }
 
 /**
-* 退出链接预览模式
+* 退出链接预览模式（置 Link.on=false，回到搜索页）
 */
 function exitLinkPreview() {
   fullMap.value.set('Link', { ...fullMap.value.get('Link')!, on: false });
 }
 
 /**
-* 下载当前生成的 QR 码图片
+* 下载当前 QR 码：取 n-qr-code 内部 canvas 导出 PNG 并触发浏览器下载
 */
 function QRdownload() {
   const canvas = document.querySelector('#qrcode')?.querySelector('canvas');
@@ -475,16 +498,16 @@ onMounted(async () => {
   init();
   await yiyan();
   await sleep(1500);
-  heltoyi.value = true;
+  heltoyi.value = true; // 1.5s 后页面标题切换为一言
 })
 
-// 搜索类型变化 -> 更新引擎状态 + 同步 URL
+// 引擎变化 -> 同步激活态 + 回写 URL（immediate 保证挂载时先执行一次）
 watch(search_type, () => {
   search_change();
   makeUrl();
 }, { immediate: true, deep: true });
 
-// 搜索文本变化 -> 同步到 URL query
+// 输入变化 -> 同步进路径 params，实现"搜索链接即可分享"
 watch(searchText, () => {
   router.replace({
     params: { type: search_type.value, query: searchText.value },

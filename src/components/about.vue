@@ -53,8 +53,11 @@ import axios from 'axios';
 // 数据
 // ============================================================
 
+// useMessage 由 unplugin-auto-import 自动注入，无需 import
 const message = useMessage()
 const source = ref<{ img: string, name: string, mail: string }[]>([]);
+
+// 独立 Axios 实例：指向托管 about.json 的静态文件服务
 const Utac_res = axios.create({
   baseURL: "https://file.utac.top/Web/utac",
 })
@@ -62,6 +65,7 @@ const Utac_res = axios.create({
 // 生命周期
 // ============================================================
 
+// 挂载后拉取人员信息；失败时弹出错误提示
 onMounted(async () => {
   await Utac_res.get("/json/about.json")
     .then(res => {

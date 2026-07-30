@@ -1,54 +1,46 @@
 // ============================================================
-// 应用入口文件
-// 职责：创建 Vue 应用实例、配置路由、挂载到 DOM
+// 应用入口
+// 职责：
+//   1. 创建 Vue 应用实例并挂载到 index.html 的 #main
+//   2. 注册 Axios 全局拦截器（副作用引入，见 axios.ts）
+//   3. 创建 Vue Router：路由表 + 页面标题同步守卫
+// 约定：
+//   ref / computed / useMessage 等常用 API 由 unplugin-auto-import
+//   自动注入，无需显式 import（配置见 vite.config.ts）
 // ============================================================
 
 // ---------- Vue 核心 ----------
-import { createApp, ref, computed } from "vue";
+import { createApp } from "vue";
 
 // ---------- Vue Router ----------
-import { createRouter, createWebHistory, useRoute, RouteRecordRaw } from "vue-router";
-import { EngineConfig } from "./ts/type";
-const route = useRoute();
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 // ---------- 根组件 ----------
 import main from "./main.vue";
 
-// ---------- 全局样式 ----------
+// ---------- 全局样式（引入顺序即样式级联顺序，请勿随意调整） ----------
 import "./css/main.css";
 import "./css/router.css";
 import "./css/naive-ui-glass.css";
 
+// ---------- Axios 拦截器（为每个响应附加耗时，见 axios.ts） ----------
 import "./axios.ts"
 
-// ---------- 搜索引擎配置数据 ----------
-import typeMap_Rsrc from "./addition/searchWay.json";
-import keyMap_Rsrc from "./addition/searchKey.json";
+// ---------- 引擎名集合（约束路由 type 参数的取值，见 addition/mach.ts） ----------
+import typeArr from "./addition/mach.ts"
 
-const typeMap_src = typeMap_Rsrc as [string, EngineConfig][]
-const keyMap_src = keyMap_Rsrc as [string, EngineConfig][]
 
 // ============================================================
-// 路由动态参数构建
-// 根据 JSON 配置自动生成路由参数正则，实现动态引擎匹配
-// ============================================================
-
-const fullMap_src = ref<[string, EngineConfig][]>([...typeMap_src, ...keyMap_src]);
-
-const typeArr = computed<string>(() => {
-  let rs: string
-  let key: any[] = fullMap_src.value.map(item => item[0])
-  rs = key.join("|");
-  return rs;
-});
-
-// ============================================================
-// 路由配置
+// 路由表
+// 首页路径格式：/:type?/:query?
+//   - type  ：搜索引擎名，取值受 mach.ts 生成的正则约束（如 /google）
+//   - query ：可选搜索词，直接作为路径段（如 /google/hello）
+// 所有页面组件均按需懒加载
 // ============================================================
 
 const routes: RouteRecordRaw[] = [
   {
-    path: `/:type(${typeArr.value})?/:query(.*)?`, // 首页（动态匹配搜索引擎类型）
+    path: `/:type(${typeArr.value})?/:query(.*)?`, // 首页（type 为受约束的引擎名）
     name: "Home",
     component: () => import("$/home.vue"), // 懒加载
   },
@@ -63,7 +55,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import("$/404.vue"), // 懒加载 404 页
   },
 ]
-console.log(typeArr.value)
 
 const router = createRouter({
   history: createWebHistory(),
@@ -71,8 +62,21 @@ const router = createRouter({
 });
 
 // ============================================================
-// 挂载应用
+// 全局前置守卫：根据路由参数同步页面标题
+//   带搜索词 -> "引擎-搜索词"；仅引擎 -> 引擎名
+// ============================================================
+
+router.beforeEach((to) => {
+  let q = to.params.query
+  let t = to.params.type
+  document.title = q ? `${t}-${q}` : t as string
+})
+
+// ============================================================
+// 创建并挂载应用
 // 挂载点：index.html 中的 #main
 // ============================================================
 
-createApp(main).use(router).mount("#main");
+createApp(main)
+  .use(router)
+  .mount("#main");

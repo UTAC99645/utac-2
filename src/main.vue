@@ -38,6 +38,7 @@
 <script lang="ts" setup>
 // ============================================================
 // 根组件脚本
+// 注：ref 由 unplugin-auto-import 自动注入，无需显式 import
 // ============================================================
 
 // ---------- naive-ui ----------
@@ -47,15 +48,15 @@ import { darkTheme } from 'naive-ui';
 import { useRoute, useRouter } from 'vue-router';
 
 // ============================================================
-// 导航数据
+// 面包屑导航数据
+// way 中的 name 同时是路由名：与当前路由名一致时高亮显示
 // ============================================================
 
 const route = useRoute();
 const router = useRouter();
 
-const way = ref<{name:string,path:string}[]>([
+const way = ref<{ name: string, path: string }[]>([
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' }
 ]);
-console.log(route)
 </script>
