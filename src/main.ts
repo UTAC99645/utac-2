@@ -27,7 +27,7 @@ import "./css/naive-ui-glass.css";
 import "./axios.ts"
 
 // ---------- 引擎名集合（约束路由 type 参数的取值，见 addition/mach.ts） ----------
-import typeArr from "./addition/mach.ts"
+import searchEngineTypes from "./addition/mach.ts"
 
 
 // ============================================================
@@ -40,7 +40,7 @@ import typeArr from "./addition/mach.ts"
 
 const routes: RouteRecordRaw[] = [
   {
-    path: `/:type(${typeArr.value})?/:query(.*)?`, // 首页（type 为受约束的引擎名）
+    path: `/:type(${searchEngineTypes.value})?/:query(.*)?`, // 首页（type 为受约束的引擎名）
     name: "Home",
     component: () => import("$/home.vue"), // 懒加载
   },

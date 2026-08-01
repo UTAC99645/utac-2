@@ -23,11 +23,11 @@ const keyMap_src = keyMap_Rsrc as [string, EngineConfig][]
 
 const fullMap_src = ref<[string, EngineConfig][]>([...typeMap_src, ...keyMap_src]);
 
-const typeArr = computed<string>(() => {
+const searchEngineTypes = computed<string>(() => {
   let rs: string
   let key: any[] = fullMap_src.value.map(item => item[0])
   rs = key.join("|");
   return rs;
 });
 
-export default typeArr
+export default searchEngineTypes
