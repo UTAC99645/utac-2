@@ -9,7 +9,6 @@
   -->
   <!-- ========================================================== -->
   <div class="not-found-page">
-
     <!-- 背景图 -->
     <div class="bg-image" :style="{ backgroundImage: `url(${bgUrl})` }" />
 
@@ -26,9 +25,9 @@
 
       <p class="subtitle">页面走丢啦 ~(=^‥^)/</p>
       <p class="desc">
-        主人要找的页面好像被本喵藏起来了喵…<br>
-        要不要回到首页继续探险呢？<br>
-        <b><s><i>{{ route.params.pathMatch }}</i></s></b>
+        主人要找的页面好像被本喵藏起来了喵…<br />
+        要不要回到首页继续探险呢？<br />
+        <b><s><i>{{ route.params.slug }}</i></s></b>
       </p>
 
       <div class="actions">
@@ -64,9 +63,9 @@
 //   3. 返回首页 / 返回上一页
 // ============================================================
 
-import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import '../css/404.css';
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import "../assets/css/404.css";
 
 // ---------- Router ----------
 const route = useRoute();
@@ -76,7 +75,7 @@ const router = useRouter();
 const mounted = ref(false);
 
 // ---------- 背景图地址 ----------
-const bgUrl = 'https://file.utac99645.top/BackGround/143937772_p2.png';
+const bgUrl = "https://file.utac99645.top/BackGround/143937772_p2.png";
 
 // ============================================================
 // 生命周期
@@ -93,14 +92,25 @@ onMounted(() => {
 // 导航方法
 // ============================================================
 
-const goHome = () => router.push('/');
+/**
+ * 返回首页（导航到 /）
+ */
+const goHome = () => router.push("/");
 
+/**
+ * 返回上一页（浏览器历史回退）
+ */
 const goBack = () => router.back();
 
 // ============================================================
 // 粒子样式生成（随机大小、位置、延迟）
 // ============================================================
 
+/**
+ * 生成单个飘落粒子的随机样式
+ * @param n 粒子序号（仅用于 v-for 的 key，与样式无关）
+ * @returns 随机的大小 / 水平位置 / 动画延迟 / 动画时长 / 透明度
+ */
 const getParticleStyle = (n) => {
   const size = Math.random() * 4 + 2;
   const left = Math.random() * 100;

@@ -1,0 +1,104 @@
+/* ============================================================
+   首页样式文件
+   注意：部分选择器为全局范围，会作用于页面内所有匹配元素
+   ============================================================ */
+
+/* ---------- 搜索输入框 ----------
+   注意：naive-ui 组件实际渲染为 div.n-input 等类名元素，
+   且限定在首页根容器 .home-page 内，避免污染其他页面
+   ---------------------------------------------------------- */
+.home-page .n-input,
+.home-page .n-select,
+.home-page .n-input-group {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.35));
+}
+
+/* 搜索表单：流式布局水平居中（替代原 absolute 硬定位，避免遮挡标题/卡片） */
+.home-page form {
+  display: flex;
+  justify-content: center;
+}
+
+/* 输入组整体限宽，窄屏自适应收缩 */
+.home-page .n-input-group {
+  width: min(76vw, 660px);
+}
+
+/* QR 模式裸输入框（无 form 包裹）：同样限宽居中
+   （:not() 排除搜索框输入组内的输入框） */
+.home-page .n-input:not(.n-input-group .n-input) {
+  display: flex;
+  width: min(76vw, 660px);
+  margin-inline: auto;
+}
+
+/* 焦点态：统一光晕（focus-within 兼容 select 内部 input） */
+.home-page .n-input:focus-within,
+.home-page .n-select:focus-within {
+  box-shadow: var(--focus-ring);
+}
+
+/* ---------- 页面标题：入场动画 ---------- */
+.title {
+  animation: fadeIn 0.8s var(--ease-out) both;
+}
+
+/* ---------- 引擎切换按钮 ---------- */
+.typekey {
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out);
+}
+
+.typekey:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- 一言卡片：限宽居中 + hover 抬升 ---------- */
+.home-page .n-card {
+  max-width: 640px;
+  margin: 0 auto;
+  transition:
+    transform 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out);
+}
+
+.home-page .n-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* 卡片内容入场（naive-ui 类名：n-card-content） */
+.home-page .n-card-content {
+  animation: fadeInScale 0.6s var(--ease-out) both;
+}
+
+/* header（by/from）与 action（ID + 按钮）：次要信息弱化
+   （naive-ui 类名：header 为 n-card-header，action 为 n-card__action） */
+.home-page .n-card-header,
+.home-page .n-card__action {
+  font-size: var(--fs-sm);
+  opacity: 0.85;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 640px) {
+  .home-page .n-input-group {
+    width: 92vw;
+  }
+
+  .home-page .n-card {
+    max-width: 92vw;
+  }
+}
