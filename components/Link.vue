@@ -1,7 +1,7 @@
 <template>
   <!-- ========================================================== -->
   <!-- 链接预览 / 万能文件查看器
-       输入：url（父组件 home.vue 传入）
+       输入：url（父组件 pages/index.vue 传入）
        输出：back 事件（点击 Back 返回搜索页）
        能力：根据 URL 后缀（必要时嗅探内容）识别文件类型，
              以对应方式渲染 —— Markdown / HTML / 图片 / PDF /
@@ -159,7 +159,7 @@ import hljs from 'highlight.js'
 import 'highlight.js/styles/atom-one-dark.css'
 
 // ---------- 页面样式 ----------
-import '../css/link.css'
+import '../assets/css/link.css'
 
 // ---------- 图标 ----------
 import { ErrorCircle24Regular, Warning24Regular, QuestionCircle24Regular } from '@vicons/fluent'
@@ -244,9 +244,11 @@ const fileType = computed<FileType>(() => {
 // ============================================================
 
 // Markdown 渲染为 HTML；其余类型原样返回
+// 注意：marked v5+ 已移除 sanitize 选项（不再内置 HTML 过滤），
+//       此处直接输出渲染结果，对来自外部 URL 的内容存在 XSS 风险
 const renderedContent = computed<string>(() => {
   if (fileType.value === 'markdown') {
-    return marked.parse(content.value || '', { sanitize: false }) as string
+    return marked.parse(content.value || '') as string
   }
   return content.value
 })
@@ -267,8 +269,10 @@ const formattedJson = computed<string>(() => {
 })
 
 // 代码高亮语言：由扩展名映射到 highlight.js 语言名
+// 扩展名提取链：最后一段 -> 去掉 query 参数 -> 转小写；
+// 链中两处都可能为 undefined（无扩展名 / 空串），缺省回退 plaintext
 const codeLanguage = computed<string>(() => {
-  const ext = props.url.split('.').pop()?.split('?')[0].toLowerCase() || ''
+  const ext = props.url.split('.').pop()?.split('?')[0]?.toLowerCase() || ''
   const langMap: Record<string, string> = {
     js: 'javascript', ts: 'typescript', jsx: 'jsx', tsx: 'tsx',
     vue: 'xml', py: 'python', rb: 'ruby', go: 'go', rs: 'rust',
@@ -282,7 +286,7 @@ const codeLanguage = computed<string>(() => {
 
 // 视频 MIME：由扩展名推断（默认 video/mp4）
 const videoMimeType = computed<string>(() => {
-  const ext = props.url.split('.').pop()?.split('?')[0].toLowerCase() || ''
+  const ext = props.url.split('.').pop()?.split('?')[0]?.toLowerCase() || ''
   const mimeMap: Record<string, string> = {
     mp4: 'video/mp4', webm: 'video/webm', ogg: 'video/ogg', mov: 'video/quicktime'
   }
@@ -291,7 +295,7 @@ const videoMimeType = computed<string>(() => {
 
 // 音频 MIME：由扩展名推断（默认 audio/mpeg）
 const audioMimeType = computed<string>(() => {
-  const ext = props.url.split('.').pop()?.split('?')[0].toLowerCase() || ''
+  const ext = props.url.split('.').pop()?.split('?')[0]?.toLowerCase() || ''
   const mimeMap: Record<string, string> = {
     mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg',
     m4a: 'audio/mp4', flac: 'audio/flac'
@@ -299,8 +303,8 @@ const audioMimeType = computed<string>(() => {
   return mimeMap[ext] || 'audio/mpeg'
 })
 
-// PDF 地址：目前原样使用传入 URL
-// 预留：对 Google Docs 等场景可在此替换为对应的查看器地址
+// PDF 地址：目前无论何种 URL 均原样返回（if/else 两分支相同，属占位逻辑）
+// 预留：对 Google Docs 等场景可在此替换为对应的在线查看器地址
 const pdfUrl = computed<string>(() => {
   if (props.url.includes('google.com') || props.url.includes('docs.google.com')) {
     return props.url

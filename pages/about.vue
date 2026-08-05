@@ -10,12 +10,12 @@
   <!-- ========================================================== -->
 
   <!-- 页面标题 -->
-  <n-gradient-text type="warning" :size="30">
+  <n-gradient-text class="about-page" type="warning" :size="30">
     关于
   </n-gradient-text>
 
   <!-- 人员信息列表 -->
-  <div v-if="source.length">
+  <div class="about-page" v-if="source.length">
     <div v-for="item in source" :key="item.mail">
 
       <!-- 头像 -->
@@ -37,7 +37,7 @@
   </div>
 
   <!-- 加载中 -->
-  <div v-else>加载中...</div>
+  <div class="about-page" v-else>加载中...</div>
 </template>
 
 <script setup lang="ts">
@@ -49,12 +49,16 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
+// ---------- 页面样式 ----------
+import '../assets/css/about.css';
+
 // ============================================================
 // 数据
 // ============================================================
 
-// useMessage 由 unplugin-auto-import 自动注入，无需 import
+// useMessage 由 Nuxt 自动导入（见 nuxt.config.ts 的 imports.presets），无需手动 import
 const message = useMessage()
+// 人员列表（about.json 拉取结果；字段说明见模板顶部注释）
 const source = ref<{ img: string, name: string, mail: string }[]>([]);
 
 // 独立 Axios 实例：指向托管 about.json 的静态文件服务

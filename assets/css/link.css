@@ -20,9 +20,9 @@
   margin-bottom: var(--space-lg);
   background: var(--bg-card);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--border-subtle);
   flex-wrap: wrap;
 }
 
@@ -73,9 +73,9 @@
   padding: 60px 20px;
   background: var(--bg-card);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--border-subtle);
   margin-bottom: var(--space-lg);
 }
 
@@ -101,9 +101,9 @@
 .glass-content {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--border-subtle);
   padding: var(--space-xl);
   margin-bottom: var(--space-lg);
 }
@@ -157,7 +157,7 @@
 
 .markdown-body pre {
   background-color: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 16px;
   overflow-x: auto;
@@ -229,7 +229,7 @@
   margin: 16px 0;
   text-align: center;
   background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 20px;
   position: relative;
@@ -277,7 +277,7 @@
 /* ---------- 代码 / JSON 查看器 ---------- */
 .code-viewer, .json-viewer {
   background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   margin: 16px 0;
   overflow: hidden;
@@ -289,7 +289,7 @@
   align-items: center;
   padding: 10px 16px;
   background: rgba(25, 30, 60, 0.55);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .code-viewer pre, .json-viewer pre {
@@ -321,7 +321,7 @@
   position: relative;
   width: 100%;
   height: 70vh;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: #000;
   overflow: hidden;
@@ -367,7 +367,7 @@
 /* ---------- 纯文本 ---------- */
 .text-viewer {
   background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   margin: 16px 0;
   padding: 20px;

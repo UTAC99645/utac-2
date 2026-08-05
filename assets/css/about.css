@@ -2,6 +2,19 @@
    关于页面样式
    ============================================================ */
 
+/* ---------- 头像 ----------
+   覆盖 main.css 的全局 img 规则（width: 100vw），
+   头像应为固定尺寸圆形
+   ---------------------------------------------------------- */
+.about-page img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-sm);
+}
+
 /* ---------- 名称 ---------- */
 .name {
   color: var(--color-info, #6366f1);
@@ -18,15 +31,15 @@
 }
 
 /* ---------- 副标题 ---------- */
-h2 {
+.about-page h2 {
   margin: 6px 0;
   font-size: 1.1em;
 }
 
 /* ---------- 内容项容器 ----------
-   注意：全局 div 选择器会作用于 about 页面所有 div
+   限定在 about 页根容器内，避免污染其他页面
    ---------------------------------------------------------- */
-div {
+.about-page div {
   text-align: center;
   margin-bottom: var(--space-lg);
   animation: fadeIn 0.7s;

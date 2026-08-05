@@ -1,16 +1,8 @@
+<!-- app.vue -->
 <template>
-  <!-- ========================================================== -->
-  <!-- 根组件（App Shell）
-       职责：
-       1. 提供全局 naive-ui 主题（深色模式）
-       2. 提供加载条、消息提示等全局 UI 能力
-       3. 顶部面包屑导航 + 下方路由视图
-  -->
-  <!-- ========================================================== -->
   <n-config-provider :theme="darkTheme">
     <n-loading-bar-provider>
       <n-message-provider>
-
         <!-- ---------- 面包屑导航 ---------- -->
         <n-flex justify="end">
           <n-breadcrumb separator="<->">
@@ -27,9 +19,10 @@
 
         <!-- ---------- 路由视图 ---------- -->
         <n-flex justify="center">
-          <router-view />
+          <NuxtLayout>
+            <NuxtPage />
+          </NuxtLayout>
         </n-flex>
-
       </n-message-provider>
     </n-loading-bar-provider>
   </n-config-provider>
@@ -37,15 +30,19 @@
 
 <script lang="ts" setup>
 // ============================================================
-// 根组件脚本
-// 注：ref 由 unplugin-auto-import 自动注入，无需显式 import
+// 根组件脚本（全局应用壳）
+// 职责：
+//   1. 提供全局 naive-ui 主题（深色模式）
+//   2. 提供加载条、消息提示等全局 UI 能力
+//   3. 顶部面包屑导航 + 下方路由视图
 // ============================================================
+import "./assets/css/router.css";
 
 // ---------- naive-ui ----------
-import { darkTheme } from 'naive-ui';
+import { darkTheme } from "naive-ui";
 
 // ---------- Vue Router ----------
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from "vue-router";
 
 // ============================================================
 // 面包屑导航数据
@@ -55,8 +52,8 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-const way = ref<{ name: string, path: string }[]>([
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' }
+const way = ref<{ name: string; path: string }[]>([
+  { name: "Home", path: "/" },
+  { name: "About", path: "/about" }
 ]);
 </script>
