@@ -38,6 +38,13 @@
 // ============================================================
 import "./assets/css/router.css";
 
+// 全站指针轨迹特效（桌面鼠标拖尾 / 手机触摸涟漪）
+const { start: startTrail } = usePointerTrail();
+
+onMounted(() => {
+  startTrail();
+});
+
 // ---------- naive-ui ----------
 import { darkTheme } from "naive-ui";
 

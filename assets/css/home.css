@@ -24,6 +24,10 @@
   width: min(76vw, 660px);
 }
 
+/* 输入组：引擎下拉 / 关键词输入 宽度比例（由 CSS 控制，默认桌面 25/75） */
+.home-page .n-input-group .n-select { width: 25%; }
+.home-page .n-input-group .n-input { width: 75%; }
+
 /* QR 模式裸输入框（无 form 包裹）：同样限宽居中
    （:not() 排除搜索框输入组内的输入框） */
 .home-page .n-input:not(.n-input-group .n-input) {
@@ -100,5 +104,43 @@
 
   .home-page .n-card {
     max-width: 92vw;
+  }
+
+  /* 手机：40/60 */
+  .home-page .n-input-group .n-select { width: 40%; }
+  .home-page .n-input-group .n-input { width: 60%; }
+
+  /* 手机：快捷切换按钮间距与热区 */
+  .home-page .typekey {
+    margin: var(--space-xs);
+  }
+
+  /* QR 二维码限宽 */
+  .home-page #qrcode {
+    max-width: min(325px, 80vw);
+    height: auto;
+  }
+}
+
+/* 小屏手机：上下堆叠 */
+@media (max-width: 480px) {
+  .home-page .n-input-group {
+    flex-direction: column;
+    width: 92vw;
+  }
+  .home-page .n-input-group .n-select,
+  .home-page .n-input-group .n-input {
+    width: 100%;
+  }
+}
+
+/* 触屏设备：关闭 hover 抬升，改用按压反馈 */
+@media (hover: none) and (pointer: coarse) {
+  .typekey:hover,
+  .home-page .n-card:hover {
+    transform: none;
+  }
+  .typekey:active {
+    transform: scale(0.96);
   }
 }

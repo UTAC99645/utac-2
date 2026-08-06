@@ -7,6 +7,15 @@
    4. 全局元素默认样式
    ============================================================ */
 
+/* ---------- 统一断点约定（全站共用，勿各自修改） ----------
+   小屏手机  : @media (max-width: 480px)
+   手机      : @media (max-width: 640px)
+   平板      : @media (max-width: 1024px)
+   桌面      : @media (min-width: 1025px)
+   触屏检测  : @media (hover: none) and (pointer: coarse)
+   减少动效  : @media (prefers-reduced-motion: reduce)
+   -------------------------------------------------------- */
+
 /* ---------- 设计令牌 ---------- */
 :root {
   /* 品牌色 */
@@ -136,7 +145,7 @@ body::before {
    若组件内需要不同的图片样式，请使用 scoped style 覆盖
    ---------------------------------------------------------- */
 img {
-  width: 100vw;
+  max-width: 100%;
   height: auto;
   border-radius: var(--radius-sm);
   object-fit: cover;
@@ -181,13 +190,102 @@ h1 {
   }
 }
 
+/* ---------- 指针轨迹特效（composable: composables/pointerTrail.ts） ---------- */
+.trail-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* 桌面鼠标：柔和光点拖尾 */
+.trail-dot {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(123, 142, 216, 0.9), rgba(123, 142, 216, 0));
+  box-shadow: 0 0 10px rgba(123, 142, 216, 0.6);
+  animation: trailDot 0.7s var(--ease-out) forwards;
+}
+
+@keyframes trailDot {
+  0%   { opacity: 0.9; transform: scale(0.4); }
+  100% { opacity: 0;   transform: scale(1.6) translateY(-12px); }
+}
+
+/* 手机触摸：扩散涟漪 */
+.trail-ripple {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  border: 2px solid rgba(123, 142, 216, 0.7);
+  animation: trailRipple 0.8s var(--ease-out) forwards;
+}
+
+@keyframes trailRipple {
+  0%   { opacity: 0.8; transform: scale(0.2); }
+  100% { opacity: 0;   transform: scale(4); }
+}
+
 /* ---------- 减少动画偏好：统一关闭 ---------- */
 @media (prefers-reduced-motion: reduce) {
   .title,
   .home-page .n-card-content,
   .home-page .n-card,
-  .typekey {
+  .typekey,
+  .trail-dot,
+  .trail-ripple {
     animation: none !important;
     transition: none !important;
+  }
+  .trail-dot,
+  .trail-ripple {
+    display: none !important;
+  }
+}
+
+/* ---------- 平板（641–1024px）：取中间档 ---------- */
+@media (max-width: 1024px) {
+  :root {
+    --glass-blur: 12px;
+    --glass-blur-sm: 6px;
+  }
+}
+
+/* ---------- 手机（≤640px）：降模糊提性能、加深卡片保可读 ---------- */
+@media (max-width: 640px) {
+  :root {
+    --glass-blur: 8px;
+    --glass-blur-sm: 4px;
+    --bg-card: rgba(25, 30, 60, 0.6);
+    --fs-xl: 20px;
+    --fs-lg: 16px;
+    --space-xl: 28px;
+  }
+  h1 {
+    font-size: 1.9rem;
+  }
+}
+
+/* ---------- 不支持毛玻璃的浏览器：回退为高不透明度实底 ---------- */
+@supports not (backdrop-filter: blur(1px)) {
+  .typekey,
+  .home-page .n-card,
+  .glass-card,
+  .glass-header,
+  .glass-content,
+  .state-card,
+  .media-viewer,
+  .code-viewer,
+  .json-viewer,
+  .text-viewer,
+  .pdf-viewer,
+  .web-viewer {
+    background: rgba(25, 30, 60, 0.9);
   }
 }

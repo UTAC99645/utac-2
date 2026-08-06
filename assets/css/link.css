@@ -443,3 +443,24 @@
     max-height: 55vh;
   }
 }
+
+/* 手机（≤640px）：紧凑布局 */
+@media (max-width: 640px) {
+  .glass-header {
+    padding: var(--space-xs) var(--space-md);
+    gap: var(--space-sm);
+  }
+  .glass-content {
+    padding: var(--space-md);
+  }
+  .web-viewer,
+  .pdf-viewer {
+    height: 45vh;
+  }
+  .media-viewer img {
+    max-height: 45vh;
+  }
+  .markdown-body h1 {
+    font-size: 22px;
+  }
+}

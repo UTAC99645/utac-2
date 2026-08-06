@@ -3,24 +3,21 @@
     "google",
     {
       "en": true,
-      "url": "https://www.google.com/search?q=",
-      "icon": "/assets/xicons/google.svg"
+      "url": "https://www.google.com/search?q="
     }
   ],
   [
     "bing",
     {
       "en": false,
-      "url": "https://www.bing.com/search?q=",
-      "icon": "/assets/xicons/bing.svg"
+      "url": "https://www.bing.com/search?q="
     }
   ],
   [
     "duckduckgo",
     {
       "en": false,
-      "url": "https://duckduckgo.com/?q=",
-      "icon": "/assets/xicons/duckduckgo.svg"
+      "url": "https://duckduckgo.com/?q="
     }
   ],
   [
@@ -28,8 +25,7 @@
     {
       "en": false,
       "on": false,
-      "url": "https://utac99645.top/?q=",
-      "icon": "/assets/xicons/Link.svg"
+      "url": "https://utac99645.top/?q="
     }
   ]
 ]

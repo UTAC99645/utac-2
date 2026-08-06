@@ -45,3 +45,14 @@
   animation: fadeIn 0.7s;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
+
+/* ---------- 移动端：头像缩小、间距紧凑 ---------- */
+@media (max-width: 640px) {
+  .about-page img {
+    width: 96px;
+    height: 96px;
+  }
+  .about-page div {
+    margin-bottom: var(--space-md);
+  }
+}

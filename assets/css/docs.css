@@ -141,3 +141,19 @@
   border-radius: 0 var(--radius-sm, 4px) var(--radius-sm, 4px) 0;
   margin: var(--space-md) 0;
 }
+
+/* ---------- 移动端：图解紧凑、字段表横向滚动防溢出 ---------- */
+@media (max-width: 640px) {
+  .doc-diagram {
+    font-size: 11px;
+    padding: var(--space-sm) var(--space-md);
+  }
+  .doc-fields {
+    display: block;
+    overflow-x: auto;
+  }
+  .doc-fields th,
+  .doc-fields td {
+    white-space: nowrap;
+  }
+}
