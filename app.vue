@@ -54,6 +54,7 @@ const router = useRouter();
 
 const way = ref<{ name: string; path: string }[]>([
   { name: "Home", path: "/" },
-  { name: "About", path: "/about" }
+  { name: "About", path: "/about" },
+  { name: "Docs", path: "/docs" }
 ]);
 </script>

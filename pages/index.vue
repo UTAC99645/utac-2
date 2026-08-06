@@ -361,6 +361,7 @@ async function yiyan(): Promise<void> {
 
 /**
  * 初始化入口：播放加载动效；URL 带引擎参数时恢复对应搜索状态
+ * @returns 无（异步流程，随动效/恢复完成后结束）
  */
 async function init() {
   initLaod();
@@ -370,8 +371,9 @@ async function init() {
 /**
  * 加载动效
  * 加载条起步 + 加载图闪现约 1ms（肉眼基本不可见）；
- * 随后按随机数决定加载条以 error 还是 finish 收尾 ——
- * Num 为 error 收尾的概率百分位（默认 50，即约一半概率，彩蛋效果）
+ * 随后按随机数决定加载条以 error 还是 finish 收尾。
+ * @param Num error 收尾的概率百分位（默认 50，约一半概率，彩蛋效果）
+ * @returns 无（纯动效副作用）
  */
 async function initLaod(Num: number = 50) {
   loadingBar.start();
@@ -392,6 +394,7 @@ async function initLaod(Num: number = 50) {
  *   2. Link 模式     -> 置 on=true，进入内嵌预览
  *   3. 输入是 URL    -> 新标签直接打开
  *   4. 普通搜索词    -> 拼接引擎前缀后新标签打开
+ * @returns 无（副作用：打开新窗口 / 切换预览态 / 弹出提示）
  */
 function searchfin() {
   if (!searchText.value.trim()) {
@@ -413,6 +416,7 @@ function searchfin() {
 /**
  * 同步引擎激活状态：fullMap 中仅当前引擎的 en 置 true，其余置 false，
  * 并播放一次加载动效作为切换反馈
+ * @returns 无（副作用：更新 fullMap 激活态 + 动效）
  */
 async function search_change() {
   loadingBar.start();
@@ -424,6 +428,7 @@ async function search_change() {
 
 /**
  * 把当前引擎写入 URL query（保留原有 query/hash），使页面状态可分享
+ * @returns 无（副作用：路由 query 更新）
  */
 function makeUrl() {
   router.push({
@@ -439,6 +444,7 @@ function makeUrl() {
  *   2. 解析 open 查询参数（支持 true / t / false / f，其他值按真值处理），
  *      并把规范化后的 open 回写 URL
  *   3. 将 q 参数（搜索词）填入输入框；open 为真时下一拍自动执行搜索
+ * @returns 无（副作用：回写路由 query、填输入框、按需触发搜索）
  */
 function checkUrl(): void {
   const type: string = route.query.type as string;
@@ -477,6 +483,7 @@ function checkUrl(): void {
 
 /**
  * 退出链接预览模式（置 Link.on=false，回到搜索页）
+ * @returns 无（副作用：更新 fullMap 中 Link 的 on 标记）
  */
 function exitLinkPreview() {
   fullMap.value.set("Link", { ...fullMap.value.get("Link")!, on: false });
@@ -484,6 +491,7 @@ function exitLinkPreview() {
 
 /**
  * 下载当前 QR 码：取 n-qr-code 内部 canvas 导出 PNG 并触发浏览器下载
+ * @returns 无（副作用：触发 PNG 文件下载；找不到 canvas 时静默跳过）
  */
 function QRdownload() {
   const canvas = document.querySelector("#qrcode")?.querySelector("canvas");
