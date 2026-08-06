@@ -70,6 +70,7 @@ const Utac_res = axios.create({
 // ============================================================
 
 // 挂载后拉取人员信息；失败时弹出错误提示
+// @returns 无（副作用：填充 source 列表 / 失败时弹提示）
 onMounted(async () => {
   await Utac_res.get("/json/about.json")
     .then(res => {

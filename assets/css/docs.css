@@ -1,0 +1,143 @@
+/* ============================================================
+   Doc 文档页样式
+   职责：图文长页的可读性样式 —— 图解卡片 / 等宽代码块 / 关键点标签
+   ============================================================ */
+
+/* ---------- 页面根容器：限宽居中，让长页更好读 ---------- */
+.doc-page {
+  width: min(980px, 92vw);
+  margin: 0 auto;
+  padding-bottom: var(--space-xl);
+}
+
+/* ---------- 页面主标题 ---------- */
+.doc-title {
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 0.12em;
+}
+
+.doc-subtitle {
+  text-align: center;
+  color: var(--text-muted, #c0c0c0);
+  margin-bottom: var(--space-xl);
+}
+
+/* ---------- 区块卡片 ---------- */
+.doc-card {
+  margin-bottom: var(--space-lg);
+  animation: fadeIn 0.5s ease;
+}
+
+/* ---------- 卡片内的章节标题 ---------- */
+.doc-section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--space-sm);
+}
+
+/* ---------- 普通段落说明 ---------- */
+.doc-card p {
+  margin: var(--space-sm) 0;
+  line-height: 1.8;
+}
+
+/* ---------- 列表 ---------- */
+.doc-card ul,
+.doc-card ol {
+  margin: var(--space-sm) 0;
+  padding-left: var(--space-xl);
+  line-height: 1.9;
+}
+
+/* ---------- 等宽图解 / 代码块（核心：讲原理用的示意图） ---------- */
+.doc-diagram {
+  margin: var(--space-md) 0;
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md, 8px);
+  overflow-x: auto;
+  font-family: var(--font-mono, "Courier New", monospace);
+  font-size: 13px;
+  line-height: 1.5;
+  color: #d7dcef;
+  white-space: pre;
+}
+
+/* 图解中可高亮的片段（如关键字/路径） */
+.doc-diagram .hl {
+  color: var(--color-primary, #7b8ed8);
+  font-weight: 700;
+}
+
+/* 图解中的注释行（更暗） */
+.doc-diagram .cm {
+  color: #6b7280;
+}
+
+/* ---------- 关键点标签 ---------- */
+.doc-tag {
+  font-family: var(--font-mono, "Courier New", monospace);
+  background: var(--color-primary-50, rgba(123, 142, 216, 0.5));
+  color: #ffffff;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm, 4px);
+  font-size: 0.9em;
+}
+
+/* ---------- 步骤号（核心搜索流程等） ---------- */
+.doc-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary, #7b8ed8);
+  color: #fff;
+  font-weight: 700;
+  margin-right: var(--space-sm);
+  flex-shrink: 0;
+}
+
+/* ---------- 字段说明表 ---------- */
+.doc-fields {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-md) 0;
+  font-size: 0.95rem;
+}
+.doc-fields th,
+.doc-fields td {
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.doc-fields th {
+  background: rgba(123, 142, 216, 0.15);
+}
+.doc-fields code {
+  font-family: var(--font-mono, "Courier New", monospace);
+  color: var(--color-primary, #7b8ed8);
+}
+
+/* ---------- 安全警示（红色系） ---------- */
+.doc-warn {
+  border-left: 4px solid #f56565;
+  background: rgba(245, 101, 101, 0.08);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0 var(--radius-sm, 4px) var(--radius-sm, 4px) 0;
+  margin: var(--space-md) 0;
+}
+
+/* ---------- 成功/信息提示（绿色系） ---------- */
+.doc-tip {
+  border-left: 4px solid var(--color-success, #10b981);
+  background: rgba(16, 185, 129, 0.08);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0 var(--radius-sm, 4px) var(--radius-sm, 4px) 0;
+  margin: var(--space-md) 0;
+}

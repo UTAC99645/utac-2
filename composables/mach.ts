@@ -28,6 +28,11 @@ const keyMap_src = keyMap_Rsrc as [string, EngineConfig][]
 
 const fullMap_src = ref<[string, EngineConfig][]>([...typeMap_src, ...keyMap_src]);
 
+/**
+ * 全部引擎名的正则片段（以 "|" 拼接的 computed ref）
+ * @returns 形如 "google|bing|duckduckgo|Link|QR" 的字符串，供校验 URL type 参数用
+ * @note 返回的是 computed ref，消费方需取 .value
+ */
 export const searchEngineTypes = computed<string>(() => {
   let rs: string
   let key: any[] = fullMap_src.value.map(item => item[0])

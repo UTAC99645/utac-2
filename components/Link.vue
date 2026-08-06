@@ -203,6 +203,10 @@ const codeBlock = ref<HTMLElement | null>(null) // 代码 <code> 元素引用（
 // 优先级：web 特征 -> 各类扩展名 -> 内容嗅探（JSON / HTML）-> unknown
 // ============================================================
 
+/**
+ * 识别 URL 对应文件的展示类型
+ * @returns 识别出的 FileType（web/markdown/html/image/pdf/video/audio/code/json/text/unknown/error）
+ */
 const fileType = computed<FileType>(() => {
   if (!props.url) return 'unknown'
 
@@ -246,6 +250,7 @@ const fileType = computed<FileType>(() => {
 // Markdown 渲染为 HTML；其余类型原样返回
 // 注意：marked v5+ 已移除 sanitize 选项（不再内置 HTML 过滤），
 //       此处直接输出渲染结果，对来自外部 URL 的内容存在 XSS 风险
+// @returns 渲染后的 HTML（markdown 类型）或原文（其余类型）
 const renderedContent = computed<string>(() => {
   if (fileType.value === 'markdown') {
     return marked.parse(content.value || '') as string
@@ -254,6 +259,7 @@ const renderedContent = computed<string>(() => {
 })
 
 // JSON 解析结果（解析失败为 null，供折叠视图与格式化使用）
+// @returns 解析出的对象/数组，解析失败则为 null
 const parsedJson = computed<unknown | null>(() => {
   try {
     return JSON.parse(content.value)
@@ -263,6 +269,7 @@ const parsedJson = computed<unknown | null>(() => {
 })
 
 // 格式化后的 JSON（2 空格缩进；解析失败时回退为原文）
+// @returns 格式化字符串
 const formattedJson = computed<string>(() => {
   if (!parsedJson.value) return content.value
   return JSON.stringify(parsedJson.value, null, 2)
@@ -271,6 +278,7 @@ const formattedJson = computed<string>(() => {
 // 代码高亮语言：由扩展名映射到 highlight.js 语言名
 // 扩展名提取链：最后一段 -> 去掉 query 参数 -> 转小写；
 // 链中两处都可能为 undefined（无扩展名 / 空串），缺省回退 plaintext
+// @returns 高亮语言名（如 'javascript'），未知扩展名回退 'plaintext'
 const codeLanguage = computed<string>(() => {
   const ext = props.url.split('.').pop()?.split('?')[0]?.toLowerCase() || ''
   const langMap: Record<string, string> = {
@@ -285,6 +293,7 @@ const codeLanguage = computed<string>(() => {
 })
 
 // 视频 MIME：由扩展名推断（默认 video/mp4）
+// @returns 视频 MIME 类型字符串
 const videoMimeType = computed<string>(() => {
   const ext = props.url.split('.').pop()?.split('?')[0]?.toLowerCase() || ''
   const mimeMap: Record<string, string> = {
@@ -294,6 +303,7 @@ const videoMimeType = computed<string>(() => {
 })
 
 // 音频 MIME：由扩展名推断（默认 audio/mpeg）
+// @returns 音频 MIME 类型字符串
 const audioMimeType = computed<string>(() => {
   const ext = props.url.split('.').pop()?.split('?')[0]?.toLowerCase() || ''
   const mimeMap: Record<string, string> = {
@@ -305,6 +315,7 @@ const audioMimeType = computed<string>(() => {
 
 // PDF 地址：目前无论何种 URL 均原样返回（if/else 两分支相同，属占位逻辑）
 // 预留：对 Google Docs 等场景可在此替换为对应的在线查看器地址
+// @returns PDF 地址（当前恒等于 props.url）
 const pdfUrl = computed<string>(() => {
   if (props.url.includes('google.com') || props.url.includes('docs.google.com')) {
     return props.url
@@ -317,6 +328,7 @@ const pdfUrl = computed<string>(() => {
 // ============================================================
 
 // 返回搜索页
+// @returns 无（副作用：向父组件发出 back 事件）
 const handleBack = (): void => {
   emit('back')
 }
@@ -325,6 +337,7 @@ const handleBack = (): void => {
  * 拉取文本类资源
  * 图片 / 音视频 / PDF / 网页由浏览器标签直接加载，无需 fetch；
  * 其余类型 fetch 原文存入 content，30s 超时自动中止
+ * @returns 无（副作用：填充 content / 设置 error / 更新 loading）
  */
 const loadFile = async (): Promise<void> => {
   loading.value = true
@@ -371,6 +384,7 @@ const loadFile = async (): Promise<void> => {
 }
 
 // 对代码块执行 highlight.js 高亮
+// @returns 无（副作用：就地高亮 codeBlock 元素的语法着色）
 const highlightCode = (): void => {
   if (codeBlock.value) {
     hljs.highlightElement(codeBlock.value)
@@ -378,6 +392,8 @@ const highlightCode = (): void => {
 }
 
 // 复制原文到剪贴板，并将按钮文案短暂置为 COPIED!（2s 后恢复）
+// @param event 点击事件（用于定位按钮以临时改文案）
+// @returns 无（副作用：写剪贴板 + 按钮文案变化）
 const copyCode = (event: MouseEvent): void => {
   navigator.clipboard.writeText(content.value).then(() => {
     const btn = event.target as HTMLButtonElement
@@ -390,6 +406,8 @@ const copyCode = (event: MouseEvent): void => {
 }
 
 // 内容嗅探：是否为合法 JSON
+// @param str 待检测的文本内容
+// @returns 可被 JSON.parse 解析则为 true，否则 false
 const isJsonContent = (str: string): boolean => {
   try {
     JSON.parse(str)
@@ -400,11 +418,15 @@ const isJsonContent = (str: string): boolean => {
 }
 
 // 内容嗅探：是否以常见 HTML 标签开头
+// @param str 待检测的文本内容
+// @returns 以常见 HTML 标签开头则为 true，否则 false
 const isHtmlContent = (str: string): boolean => {
   return !!str.trim().match(/^<(!doctype|html|head|body|div|span|p|a|img|br|hr|table|ul|ol|li|h[1-6]|header|footer|nav|section|article|main|aside|figure|figcaption|code|pre|blockquote)/i)
 }
 
 // 字节数格式化为人类可读（Bytes / KB / MB / GB，保留两位小数）
+// @param bytes 原始字节数
+// @returns 形如 "1.50 MB" 的可读字符串
 const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
@@ -413,11 +435,14 @@ const formatFileSize = (bytes: number): string => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
+// 媒体加载成功：仅打日志（占位回调）
+// @returns 无
 const handleMediaLoad = (): void => {
   console.log('Media loaded successfully')
 }
 
 // 媒体加载失败：进入错误展示态
+// @returns 无（副作用：设置 error 文案）
 const handleMediaError = (): void => {
   error.value = 'Failed to load media resource'
 }
