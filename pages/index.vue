@@ -27,8 +27,8 @@
       <div v-if="!QR">
         <form @submit.prevent="searchfin">
           <n-input-group>
-            <n-select style="width: 25%" v-model:value="search_type" :options="searchkey" size="large" />
-            <n-input style="width: 75%" v-model:value="searchText" clearable size="large" />
+            <n-select v-model:value="search_type" :options="searchkey" size="large" />
+            <n-input v-model:value="searchText" clearable size="large" />
           </n-input-group>
         </form>
       </div>

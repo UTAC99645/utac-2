@@ -20,14 +20,14 @@
 - 构建：`pnpm build`
 - 预览：`pnpm preview`
 - 类型检查：`pnpm exec vue-tsc --noEmit`
-- 代码检查：`pnpm lint`（注意：脚本已定义，但 **eslint 未安装，当前不可用**，使用前需先安装配置）
+- 无 lint 脚本（eslint 未安装；如需静态检查需自行安装并配置）
 
 ### 代码组织
 
 ```
 utac-2/
 ├── app.vue                    # 根组件（深色主题 / 面包屑导航 / 路由视图）
-├── nuxt.config.ts             # Nuxt 配置（SPA、CSS、自动导入、别名、组件目录）
+├── nuxt.config.ts             # Nuxt 配置（SPA、CSS、自动导入、组件目录）
 ├── pages/
 │   ├── index.vue              # 首页（搜索 / QR 码 / 一言 / 链接预览入口）
 │   ├── about.vue              # 关于页（远程 about.json）
@@ -38,7 +38,8 @@ utac-2/
 │   ├── auto.mach.ts            # Nuxt 模块：将 mach.ts 的 searchEngineTypes 注入为全局自动导入
 │   ├── mach.ts                 # 引擎名正则片段（computed ref，消费方取 .value）
 │   ├── axios.ts               # Axios 拦截器（纯副作用模块，未被引用）
-│   └── type.ts                # 类型定义（EngineConfig / YiyanItem）
+│   ├── type.ts                # 类型定义（EngineConfig / YiyanItem）
+│   └── pointerTrail.ts        # 全站指针轨迹特效（桌面鼠标拖尾 / 手机触摸涟漪）
 ├── plugins/
 │   └── native-ui.ts           # Naive UI 注册插件
 ├── addition/
@@ -51,10 +52,11 @@ utac-2/
 ### 开发约定
 
 - **URL 设计**：搜索状态通过 query 参数同步 —— `/?type=<引擎>&q=<搜索词>&open=<true|false>`；`open=true` 打开即搜索，`type` 非法值回退 `duckduckgo`（校验逻辑在 `pages/index.vue` 的 `checkUrl()`，正则来自 `composables/mach.ts`）
-- **引擎配置**：`addition/*.json` 为 `[名称, 配置]` 二元组数组；`en` 激活态、`url` 搜索前缀、`on`（仅 Link）进入预览、`icon` 预留未使用；新增引擎只需追加 JSON 条目
+- **引擎配置**：`addition/*.json` 为 `[名称, 配置]` 二元组数组；字段 `en` 激活态、`url` 搜索前缀、`on`（仅 Link）进入预览；新增引擎只需追加 JSON 条目
 - **自动导入**：`ref` / `computed` / `useRoute` 等由 Nuxt 内置；`useMessage` / `useDialog` / `useNotification` / `useLoadingBar` / `axios` 由 `nuxt.config.ts` 的 `imports.presets` 注入，无需手动 import
 - **组件注册**：`components/` 目录 `pathPrefix: false`，`Link.vue` 在 index.vue 中以 `<Rader>` 异步组件引用（`defineAsyncComponent`，避免首屏加载 marked / highlight.js）
-- **导入习惯**：页面内样式与数据以相对路径导入（`../assets/css/*.css`、`../addition/*.json`）；勿使用 `@/` 别名（nuxt.config.ts 中 `@` 指向已删除的 `./src`，属死配置）
+- **导入习惯**：页面内样式与数据以相对路径导入（`../assets/css/*.css`、`../addition/*.json`）；不使用 `@/` 别名
+- **响应式断点**：全站统一断点约定见 `assets/css/main.css` 顶部（手机 ≤640px、平板 ≤1024px、桌面 ≥1025px、触屏 `(hover:none)`、减少动效）；`assets/css/naive-ui-glass.css` 为主题覆盖，除非确有需要否则不改动
 
 ### 测试策略
 
@@ -69,6 +71,5 @@ utac-2/
 
 ## 持续改进建议
 
-- 安装并配置 eslint，恢复 `pnpm lint` 脚本
 - 为引擎配置 JSON 增加运行时校验（当前依赖 `!` 非空断言访问 `fullMap.get(...)`)
 - 增加自动化测试覆盖率（目前仅类型检查 + 构建验证）

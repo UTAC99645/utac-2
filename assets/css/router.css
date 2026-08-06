@@ -7,6 +7,15 @@
 /* ---------- 面包屑容器 ---------- */
 .n-breadcrumb {
   font-size: 14px;
-  height: 4vh;
+  min-height: 4vh;
   padding: var(--space-sm) 14px;
+}
+
+/* ---------- 移动端：紧凑并允许换行 ---------- */
+@media (max-width: 640px) {
+  .n-breadcrumb {
+    font-size: 13px;
+    min-height: auto;
+    padding: var(--space-xs) 10px;
+  }
 }
