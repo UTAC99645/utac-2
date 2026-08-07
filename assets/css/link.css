@@ -111,6 +111,9 @@
 /* ---------- Markdown 样式 ---------- */
 .markdown-body {
   color: var(--text-secondary, #eee);
+  /* 宽表格 / 长连续内容在容器内横向滚动，
+     避免撑宽页面后被外层 justify-content:center 布局裁剪左侧 */
+  overflow-x: auto;
 }
 
 .markdown-body h1 {
@@ -218,6 +221,9 @@
 /* ---------- HTML 内容 ---------- */
 .html-body {
   color: var(--text-secondary, #eee);
+  /* 与 .markdown-body 同理：固定宽度 / nowrap 元素在内部滚动，
+     防止撑宽页面导致左侧被裁剪 */
+  overflow-x: auto;
 }
 
 .html-body * {

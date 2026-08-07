@@ -9,35 +9,38 @@
   -->
   <!-- ========================================================== -->
 
-  <!-- 页面标题 -->
-  <n-gradient-text class="about-page" type="warning" :size="30">
-    关于
-  </n-gradient-text>
+  <!-- 单一根容器：避免多个顶层节点被 app.vue 的 <n-flex> 当作多个 flex 项横排 -->
+  <div class="about-page">
+    <!-- 页面标题 -->
+    <n-gradient-text class="about-title" type="warning" :size="30">
+      关于
+    </n-gradient-text>
 
-  <!-- 人员信息列表 -->
-  <div class="about-page" v-if="source.length">
-    <div v-for="item in source" :key="item.mail">
+    <!-- 人员信息列表 -->
+    <div v-if="source.length">
+      <div v-for="item in source" :key="item.mail">
 
-      <!-- 头像 -->
-      <n-image :src="item.img" :alt="item.name" /><br>
+        <!-- 头像 -->
+        <n-image :src="item.img" :alt="item.name" /><br>
 
-      <!-- 名称 -->
-      <n-gradient-text type="success">
-        NAME:
-        <span class="name">{{ item.name }}</span>
-      </n-gradient-text><br>
+        <!-- 名称 -->
+        <n-gradient-text type="success">
+          NAME:
+          <span class="name">{{ item.name }}</span>
+        </n-gradient-text><br>
 
-      <!-- 邮箱 -->
-      <n-gradient-text type="success">
-        MAIL:
-        <span class="mail">{{ item.mail }}</span>
-      </n-gradient-text><br>
+        <!-- 邮箱 -->
+        <n-gradient-text type="success">
+          MAIL:
+          <span class="mail">{{ item.mail }}</span>
+        </n-gradient-text><br>
 
+      </div>
     </div>
-  </div>
 
-  <!-- 加载中 -->
-  <div class="about-page" v-else>加载中...</div>
+    <!-- 加载中 -->
+    <div v-else>加载中...</div>
+  </div>
 </template>
 
 <script setup lang="ts">
