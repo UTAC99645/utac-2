@@ -12,16 +12,14 @@ tun:
   dns-hijack:
     - "any:53"
     - "tcp://any:53"
-    # 显式劫持 IPv6 DNS，防止 fe80::1 等链路本地地址绕过
     - "udp://[::]:53"
     - "tcp://[::]:53"
   auto-route: true
   auto-detect-interface: true
+  auto-redirect: true             # 加这行（Android 端提升兼容性）
   strict-route: true
-  # 给 tun 接口分配 IPv6 ULA 地址，确保 IPv6 流量进入 tun
   inet6-address:
     - fdaa:adbf:30c8::1/64
-  # 如果 Android 系统有 IPv6 地址，确保路由正确
   inet6-route-address: []
 
 # ========== 基础端口 ==========
@@ -733,11 +731,18 @@ rules:
   # ===== 第四层：私有域名直连 =====
   - RULE-SET,private,DIRECT
   
-  # ===== Google Play 修复：googleapis.cn 必须走代理，不可被 tld-cn 直连 =====
+  # ===== Google Play 下载修复（必须放在 tld-cn/cn 规则之前）=====
   - DOMAIN-SUFFIX,googleapis.cn,节点选择
   - DOMAIN-SUFFIX,services.googleapis.cn,节点选择
-  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,节点选择
   - DOMAIN-SUFFIX,googleapis.com,节点选择
+  - DOMAIN-SUFFIX,play.googleapis.com,节点选择
+  - DOMAIN-SUFFIX,play-fe.googleapis.com,节点选择
+  - DOMAIN-SUFFIX,android.clients.google.com,节点选择
+  - DOMAIN-SUFFIX,android.googleapis.com,节点选择
+  - DOMAIN-SUFFIX,play-lh.googleusercontent.com,节点选择
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,节点选择
+  - DOMAIN-SUFFIX,gvt1.com,节点选择
+  - DOMAIN-SUFFIX,gvt2.com,节点选择
   
   # ===== 第五层：国内核心服务（新增 tld-cn、games-cn、dev-cn） =====
   - RULE-SET,tld-cn,DIRECT
@@ -823,10 +828,24 @@ rules:
 dns:
   enable: true
   listen: 0.0.0.0:1053
-  ipv6: true                    # 开启 AAAA 查询
-  enhanced-mode: redir-host
+  ipv6: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - "+.lan"
+    - "+.local"
+    - "+.market.xiaomi.com"
+    - "+.push.apple.com"
+    - "+.stun.*"
+    - "+.msftncsi.com"
+    - "time.*.com"
+    - "time.*.gov"
+    - "ntp.*.com"
+    - "ntp.*.gov"
   use-hosts: true
   respect-rules: true
+  # ... 后面保持不变
+
 
   default-nameserver:
     - 223.5.5.5
