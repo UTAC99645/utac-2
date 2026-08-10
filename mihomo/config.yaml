@@ -5,6 +5,25 @@
 # Google Play HotFix
 # ==========================================
 
+# ==== tun ====
+tun:
+  enable: true
+  stack: mixed
+  dns-hijack:
+    - "any:53"
+    - "tcp://any:53"
+    # 显式劫持 IPv6 DNS，防止 fe80::1 等链路本地地址绕过
+    - "udp://[::]:53"
+    - "tcp://[::]:53"
+  auto-route: true
+  auto-detect-interface: true
+  strict-route: true
+  # 给 tun 接口分配 IPv6 ULA 地址，确保 IPv6 流量进入 tun
+  inet6-address:
+    - fdaa:adbf:30c8::1/64
+  # 如果 Android 系统有 IPv6 地址，确保路由正确
+  inet6-route-address: []
+
 # ========== 基础端口 ==========
 mixed-port: 25480
 socks-port: 25481
@@ -27,15 +46,22 @@ unified-delay: true
 # ========== 控制面板 ==========
 external-controller: 0.0.0.0:9090
 secret: "99645"
+
 external-ui: ./ui
 external-ui-name: zashboard
-external-ui-url: "https://v6.gh-proxy.org/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+external-ui-url: "https://ghfast.top/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+
+# 跨域（必须，否则外部浏览器连不上）
+external-controller-cors:
+  allow-private-network: true
+  allow-origins:
+    - '*'
 
 # ========== 订阅源 ==========
 proxy-providers:
   yuyun:
     type: http
-    url: "https://api.v1.mk/sub?target=clash&url=https%3A%2F%2Fyuyun.mhlnf.cn%2Fyuyunsvip%3Ftoken%3D3e4c4d0a543c31ead9572ff8c80c0279"
+    url: "https://yuyun.mhlnf.cn/yuyunsvip?token=3e4c4d0a543c31ead9572ff8c80c0279"
     interval: 3600
     health-check:
       enable: true
@@ -797,67 +823,58 @@ rules:
 dns:
   enable: true
   listen: 0.0.0.0:1053
-  ipv6: true
-  enhanced-mode: fake-ip
-  fake-ip-range: 198.18.0.1/16
+  ipv6: true                    # 开启 AAAA 查询
+  enhanced-mode: redir-host
   use-hosts: true
-  respect-rules: true          # 新增：强制DNS请求遵循路由规则，防泄露
-  
-  # 新增：Fake-IP过滤，避免国内/局域网域名被污染
-  fake-ip-filter:
-    - '+.lan'
-    - '+.local'
-    - '+.market.xiaomi.com'
-    - 'geosite:cn'
-    - 'geosite:private'
-    - 'geosite:category-ntp'
-    - 'rule-set:cn'
-    - 'rule-set:cn-cdn'
-    - 'rule-set:private'
-    - 'rule-set:apple-cn'
-    - 'rule-set:microsoft-cn'
-    # Google Play 修复
-    - '+.googleapis.cn'
-    - '+.services.googleapis.cn'
-    - '+.xn--ngstr-lra8j.com'
-    - '+.googleapis.com'
+  respect-rules: true
 
-  
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
-    
+
+  proxy-server-nameserver:
+    - https://223.5.5.5/dns-query
+    - https://119.29.29.29/dns-query
+
   nameserver:
-    - https://223.5.5.5/dns-query      # 阿里DoH
-    - https://120.53.53.53/dns-query   # DNSPod DoH
-    
-  # 新增：直连域名专用DNS（国内域名走国内加密DNS）
+    - https://cloudflare-dns.com/dns-query
+    - https://dns.google/dns-query
+
   direct-nameserver:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
-    
+
   fallback:
     - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
-    
-  proxy-server-nameserver:
-    - https://223.5.5.5/dns-query
-    
+
   nameserver-policy:
-    # 国内域名+私有+国内游戏+国内开发：强制国内DNS解析
-    "geosite:cn,private,category-games@cn,category-dev-cn":
+    "geosite:cn,private,geolocation-cn":
       - https://dns.alidns.com/dns-query
       - https://doh.pub/dns-query
-    # 国外域名+GFW：强制国外DNS解析
     "geosite:geolocation-!cn,gfw":
-      - https://1.1.1.1/dns-query
-      - https://8.8.8.8/dns-query
-      
+      - https://cloudflare-dns.com/dns-query
+      - https://dns.google/dns-query
+
   fallback-filter:
     geoip: true
     geoip-code: CN
+    geosite:
+      - cn
+      - private
     ipcidr:
       - 240.0.0.0/4
+    # IPv6 排除：避免把 IPv6 保留地址误判为污染
+    # 实际污染返回的是真实公网 IPv6（如 Facebook 的 2a03:2880::），
+    # 所以 fallback-filter 主要靠 geoip 判断
+
+hosts:
+  'cloudflare-dns.com': [104.16.249.249, 2606:4700::6810:f9f9]
+  'dns.google': [8.8.4.4, 2001:4860:4860::8844]
+  'dns.alidns.com': [223.5.5.5, 2400:3200::1]
+  'doh.pub': [1.12.12.12, 2402:4e00::]
+  'one.one.one.one': [1.1.1.1, 2606:4700:4700::1111]
+
 
 # ========== 流量嗅探 ==========
 sniffer:
