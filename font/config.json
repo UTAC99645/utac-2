@@ -1,13 +1,13 @@
 {
-    "version": "v8.0-beta.1",
-    "font_version": "8.001",
+    "version": "v8.0-beta.2",
+    "font_version": "8.002",
     "family_name": "Maple Mono",
     "line_height": 1.0,
     "width": "default",
     "use_hinted": false,
     "ligature": true,
     "remove_tag_liga": false,
-    "infinite_arrow": "default",
+    "infinite_arrow": true,
     "standard_zero": false,
     "weight_mapping": {
         "thin": 100,
@@ -93,9 +93,9 @@
     "cjk": {
         "locales": {
             "cn": true,
-            "jp": false,
-            "tc": false,
-            "kr": false,
+            "jp": true,
+            "tc": true,
+            "kr": true,
             "custom": []
         },
         "with_nerd_font": true,
