@@ -1,127 +1,153 @@
-/* ==UserStyle==
-@name           font change
-@namespace      none
-@version        1.0.6.2
-@description    NONE
-@author         UTAC99645
-==/UserStyle== */
-@-moz-document domain("*") {
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-Bold.ttf') format('truetype');
-        font-weight: bold;
-        font-style: normal;
-    }
+/* ============================================================
+   MapleMono Global Font — 纯 CSS 版
+   作者: UTAC99645
+   说明: 以下按 ①~⑤ 来源分成 5 个独立区块，
+         请保留需要的区块，删掉其余 4 个！
+   ============================================================ */
 
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-BoldItalic.ttf') format('truetype');
-        font-weight: bold;
-        font-style: italic;
-    }
+/* 如需换 CDN 前缀，把下面所有 https://file.utac.top/font 替换掉 */
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-Extra-LightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'MapleMono NF CN';
+    src: local('MapleMono NF CN'), url('https://file.utac.top/font/MapleMono-NF-CN-ExtraBoldItalic.ttf') format('truetype');
+    font-weight: 800;
+    font-style: italic;
+    font-display: swap;
+}
 
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-ExtraBold.ttf') format('truetype');
-        font-weight: 800;
-        font-style: normal;
-    }
+/* ============================================================
+   全局字体
+   ============================================================ */
+* {
+    font-family: 'MapleMono NF CN', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "liga", "calt";
+}
 
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-ExtraBoldItalic.ttf') format('truetype');
-        font-weight: 800;
-        font-style: italic;
-    }
+/* ============================================================
+   图标字体保护（防止被全局字体覆盖）
+   ============================================================ */
+.fa, .fas, .far, .fal, .fab,
+[class*="fa-"],
+.material-icons, .material-icons-outlined, .material-icons-round, .material-icons-sharp,
+.material-symbols-outlined,
+.bi, [class*="bi-"],
+.octicon,
+[class*="iconfont"], [class*="icon-"],
+i[class*="icon"], span[class*="icon"] {
+    font-family: inherit !important;
+}
 
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-ExtraLight.ttf') format('truetype');
-        font-weight: 200;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-Extra-LightItalic.ttf') format('truetype');
-        font-weight: 200;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-Italic.ttf') format('truetype');
-        font-weight: normal;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-Light.ttf') format('truetype');
-        font-weight: 300;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-LightItalic.ttf') format('truetype');
-        font-weight: 300;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-Medium.ttf') format('truetype');
-        font-weight: 500;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-MediumItalic.ttf') format('truetype');
-        font-weight: 500;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-Regular.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-SemiBold.ttf') format('truetype');
-        font-weight: 600;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-SemiBoldItalic.ttf') format('truetype');
-        font-weight: 600;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-Thin.ttf') format('truetype');
-        font-weight: 100;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono';
-        src: url('https://file.utac99645.top/font/MapleMono-NF-CN-ThinItalic.ttf') format('truetype');
-        font-weight: 100;
-        font-style: italic;
-    }
-
-    /* 全网页字体应用 */
-    * {
-        font-family: 'MapleMono-NF-CN' , 'MapleMono NF CN' , 'MapleMono NF' , 'MapleMono CN' , 'MapleMono', !important;
-        -webkit-font-smoothing: antialiased;
-        font-feature-settings: "liga", "calt";
-    }
+[style*="Font Awesome"], [style*="font awesome"],
+[style*="Material Icons"], [style*="material icons"],
+[style*="Bootstrap Icons"], [style*="bootstrap-icons"],
+[style*="octicons"] {
+    font-family: inherit !important;
 }
