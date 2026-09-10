@@ -41,13 +41,11 @@ export default defineNuxtConfig({
   },
 
   // 4. 组件目录注册（Nuxt 默认扫描 ~/components）
-  //    pathPrefix: false —— components/Button.vue 可直接以 <Button /> 使用
   //    （当前 ~/components 下仅有 Link.vue（链接预览/万能文件查看器）；
   //      其余 UI 全部来自 naive-ui，由 plugins/native-ui.ts 全局注册）
   components: [
     {
       path: "~/components",
-      pathPrefix: false
     }
   ]
 });

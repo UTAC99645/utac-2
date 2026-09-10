@@ -29,6 +29,20 @@
 </template>
 
 <script lang="ts" setup>
+const route = useRoute()
+
+const title_ = route.meta.title as string ?? "UTAC's Search comb"
+const description_ = route.meta.description as string ?? "UTAC's Search comb"
+const url_ = computed(() => (`"https://utac.top" ${route.fullPath}`))
+console.log("当前路由：", route.fullPath, "标题：", title_, "描述：", description_, "URL：", url_)
+useSeoMeta({
+  title: title_,
+  description: description_,
+  ogTitle: title_,
+  ogDescription: description_,
+  ogImage: "https://file.utac.top/BackGround/E/Evil-push!.jpg",
+  ogUrl: url_,
+})
 // ============================================================
 // 根组件脚本（全局应用壳）
 // 职责：
@@ -56,7 +70,6 @@ import { useRoute, useRouter } from "vue-router";
 // way 中的 name 同时是路由名：与当前路由名一致时高亮显示
 // ============================================================
 
-const route = useRoute();
 const router = useRouter();
 
 const way = ref<{ name: string; path: string }[]>([

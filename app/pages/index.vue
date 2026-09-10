@@ -136,12 +136,17 @@
 
     <!-- ==================== 链接预览模式（Link 引擎 on=true 时替换搜索页） ==================== -->
     <div v-else>
-      <Rader :url="searchText" @back="exitLinkPreview" />
+      <File-View :url="searchText" @back="exitLinkPreview" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const title_ = computed(() => search_type.value === "QR" ? "UTAC's QR code" : `Search With ${search_type.value}`);
+useSeoMeta({
+  title: title_ ?? "UTAC's Search comb",
+  description: "UTAC's Search comb",
+});
 // ============================================================
 // 首页脚本
 // ============================================================
@@ -163,9 +168,6 @@ import keyMap_Rsrc from "../addition/searchKey.json";
 // ---------- 引擎名集合（校验路由 type 参数） ----------
 // searchEngineTypes 由 composables/auto.mach.ts 模块注入为全局自动导入，
 // 无需手动 import（实现见 composables/mach.ts）
-
-// ---------- Link 预览组件（异步加载，避免首屏打包 marked / highlight.js 等大型依赖） ----------
-const Rader = defineAsyncComponent(() => import("../components/Link.vue"));
 
 // JSON 条目是 [引擎名, 配置] 二元组，断言后供下方 Map 使用
 const typeMap_src = typeMap_Rsrc as [string, EngineConfig][];
