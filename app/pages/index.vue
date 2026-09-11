@@ -142,11 +142,6 @@
 </template>
 
 <script setup lang="ts">
-const title_ = computed(() => search_type.value === "QR" ? "UTAC's QR code" : `Search With ${search_type.value}`);
-useSeoMeta({
-  title: title_ ?? "UTAC's Search comb",
-  description: "UTAC's Search comb",
-});
 // ============================================================
 // 首页脚本
 // ============================================================
@@ -517,6 +512,10 @@ onMounted(async () => {
   await yiyan();
   await sleep(1500);
   heltoyi.value = true; // 1.5s 后页面标题切换为一言
+
+  useSeoMeta({
+    title: () => search_type.value === "QR" ? "QR Maker" : `Search With ${search_type.value}`,
+  });
 });
 
 // 引擎变化 -> 同步激活态 + 回写 URL（immediate 保证挂载时先执行一次）
