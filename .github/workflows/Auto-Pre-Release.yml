@@ -3,13 +3,10 @@ name: Auto Pre-Release
 on:
   push:
     branches: [main]
-    paths-ignore:            # 文档改动不触发发版
-      - '**.md'
-      - 'LICENSE'
-      - '.gitignore'
+    paths-ignore: ['**.md', 'LICENSE', '.gitignore']
   workflow_dispatch:
 
-concurrency:                 # 连续 push 时只跑最新一次
+concurrency:
   group: pre-release
   cancel-in-progress: true
 
@@ -17,27 +14,27 @@ permissions:
   contents: write
 
 env:
-  NODE_VERSION: '24'         # 当前 Active LTS；26 是 Current，10/28 才转 LTS
-  TAR_SOURCE: '.output'   # SSR 全量部署改成 '.output'
+  NODE_VERSION: '24'
+  PNPM_VERSION: '10'
+  TAR_SOURCE: '.output'          # 纯静态部署改成 '.output/public'
   NUXT_TELEMETRY_DISABLED: '1'
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    outputs:
-      build_time: ${{ steps.meta.outputs.build_time }}
-      short_sha: ${{ steps.meta.outputs.short_sha }}
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Meta
         id: meta
         run: |
-          echo "build_time=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
-          echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "time=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
+          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
       - uses: actions/setup-node@v4
         with:
@@ -45,22 +42,20 @@ jobs:
           cache: pnpm
 
       - name: Install
-        run: pnpm install --frozen-lockfile     # CI 禁止隐式改 lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm run build
 
-      - name: Ensure compressors
+      - name: Ensure lz4
         run: command -v lz4 || (sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends lz4)
 
       - name: Package & compress
         run: |
           set -euo pipefail
-          mkdir -p dist
-          # 固定 mtime/owner/排序 → 产物可复现，重复发布时 CDN/校验值稳定
+          mkdir -p dist && cd dist
           tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
-              -cf dist/dist.tar -C "$TAR_SOURCE" .
-          cd dist
+              -cf dist.tar -C "$GITHUB_WORKSPACE/$TAR_SOURCE" .
           lz4  -12 -q -k dist.tar dist.tar.lz4 & p1=$!
           zstd -T0 -19 -q -k dist.tar -o dist.tar.zst & p2=$!
           xz   -T0 -9e -q -k dist.tar & p3=$!
@@ -74,49 +69,29 @@ jobs:
             for f in dist/dist.tar*; do echo "| \`$(basename "$f")\` | $(du -h "$f" | cut -f1) |"; done
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-          if-no-files-found: error      # 空产物直接失败，别静默发个空包
-          retention-days: 3
-          compression-level: 0          # 内容已压缩，别再 Gzip 一遍白烧 CPU
+      # 想留一份可下载的产物就解开这段（改成 @v6 或更高，别再用 v4）
+      # - uses: actions/upload-artifact@v6
+      #   with:
+      #     name: dist
+      #     path: dist/
+      #     compression-level: 0
+      #     retention-days: 3
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
-
-      - name: 清理旧的 pre-release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release delete pre-release --yes --cleanup-tag || echo "无历史 release，跳过"
-
-      - name: Create Pre-Release
-        uses: softprops/action-gh-release@v2
+      - name: Publish Pre-Release
+        uses: softprops/action-gh-release@v3    # v3 = Node 24 运行时，v2.6.2 已停止维护
         with:
           tag_name: pre-release
           target_commitish: ${{ github.sha }}
-          name: "!!! PRE-RELEASE !!! (${{ needs.build.outputs.short_sha }})"
+          name: "!!! PRE-RELEASE !!! (${{ steps.meta.outputs.sha }})"
           make_latest: false
           prerelease: true
-          fail_on_unmatched_files: true   # 文件缺失立刻报错，不再静默跳过
+          overwrite_files: true
+          fail_on_unmatched_files: true
           generate_release_notes: true
           body: |
-            🕐 Build at: ${{ needs.build.outputs.build_time }}
+            🕐 Build at: ${{ steps.meta.outputs.time }}
             🔗 Commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
             🏗️ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
             > ⚠️ 预发布版本，会被下一次 main 推送覆盖，请勿用于生产。
-          files: |
-            dist/dist.tar
-            dist/dist.tar.lz4
-            dist/dist.tar.zst
-            dist/dist.tar.xz
-            dist/SHA256SUMS.txt
+          files: dist/*

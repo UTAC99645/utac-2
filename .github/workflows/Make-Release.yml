@@ -9,11 +9,12 @@ permissions:
 
 concurrency:
   group: release-${{ github.ref }}
-  cancel-in-progress: false        # 正式发布不要中途掐断
+  cancel-in-progress: false        # 正式发布不可中途掐断
 
 env:
-  NODE_VERSION: '24'               # Active LTS
-  TAR_SOURCE: '.output'     # SSR 全量部署改成 '.output'
+  NODE_VERSION: '24'
+  PNPM_VERSION: '10'
+  TAR_SOURCE: '.output'            # 纯静态部署改成 '.output/public'
   NUXT_TELEMETRY_DISABLED: '1'
 
 jobs:
@@ -21,9 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      # tag 名走 env 传入，避免直接注入 shell
       - name: 校验 tag 与 package.json 版本一致
         id: meta
         env:
@@ -41,6 +41,8 @@ jobs:
           echo "time=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
 
       - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
       - uses: actions/setup-node@v4
         with:
@@ -57,19 +59,19 @@ jobs:
         run: command -v lz4 || (sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends lz4)
 
       - name: Package & compress
+        env:
+          VER: ${{ steps.meta.outputs.version }}
         run: |
           set -euo pipefail
-          mkdir -p dist
-          ver='${{ steps.meta.outputs.version }}'
-          cd dist
+          mkdir -p dist && cd dist
           # 固定 mtime/owner/排序 → 产物可复现
           tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
-              -cf "dist-${ver}.tar" -C "$GITHUB_WORKSPACE/$TAR_SOURCE" .
-          lz4  -12 -q -k "dist-${ver}.tar" "dist-${ver}.tar.lz4" & p1=$!
-          zstd -T0 -19 -q -k "dist-${ver}.tar" -o "dist-${ver}.tar.zst" & p2=$!
-          xz   -T0 -9e -q -k "dist-${ver}.tar" & p3=$!
+              -cf "dist-$VER.tar" -C "$GITHUB_WORKSPACE/$TAR_SOURCE" .
+          lz4  -12 -q -k "dist-$VER.tar" "dist-$VER.tar.lz4" & p1=$!
+          zstd -T0 -19 -q -k "dist-$VER.tar" -o "dist-$VER.tar.zst" & p2=$!
+          xz   -T0 -9e -q -k "dist-$VER.tar" & p3=$!
           wait $p1 && wait $p2 && wait $p3
-          sha256sum dist-* > SHA256SUMS.txt
+          sha256sum "dist-$VER".tar* > SHA256SUMS.txt
 
       - name: Size summary
         run: |
@@ -79,15 +81,23 @@ jobs:
             for f in dist/dist-*; do echo "| \`$(basename "$f")\` | $(du -h "$f" | cut -f1) |"; done
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Make Release
-        uses: softprops/action-gh-release@v2
+      # 想留一份可下载产物就解开这段（v6+ 才是 Node 24 运行时）
+      # - uses: actions/upload-artifact@v6
+      #   with:
+      #     name: dist
+      #     path: dist/
+      #     compression-level: 0
+      #     retention-days: 90
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v3    # v3 = Node 24 运行时；v2.6.2 已停止维护
         with:
-          tag_name: ${{ steps.meta.outputs.tag }}     # 用真实推送的 tag，不再另建
+          tag_name: ${{ steps.meta.outputs.tag }}    # 用真实推送的 tag，不再凭 package.json 拼
           target_commitish: ${{ github.sha }}
           name: v${{ steps.meta.outputs.version }}
           make_latest: true
-          fail_on_unmatched_files: true
           generate_release_notes: true
+          fail_on_unmatched_files: true
           body: |
             🕐 Build at: ${{ steps.meta.outputs.time }}
             🔗 Commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
