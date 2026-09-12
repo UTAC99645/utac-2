@@ -13,7 +13,6 @@ concurrency:
 
 env:
   NODE_VERSION: '24'               # Active LTS
-  PNPM_VERSION: '10'
   TAR_SOURCE: '.output'     # SSR 全量部署改成 '.output'
   NUXT_TELEMETRY_DISABLED: '1'
 
@@ -42,8 +41,6 @@ jobs:
           echo "time=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - uses: actions/setup-node@v4
         with:

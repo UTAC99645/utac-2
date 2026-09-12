@@ -18,7 +18,6 @@ permissions:
 
 env:
   NODE_VERSION: '24'         # 当前 Active LTS；26 是 Current，10/28 才转 LTS
-  PNPM_VERSION: '10'
   TAR_SOURCE: '.output'   # SSR 全量部署改成 '.output'
   NUXT_TELEMETRY_DISABLED: '1'
 
@@ -39,8 +38,6 @@ jobs:
           echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - uses: actions/setup-node@v4
         with:
