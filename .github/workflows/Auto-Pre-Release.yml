@@ -3,74 +3,123 @@ name: Auto Pre-Release
 on:
   push:
     branches: [main]
+    paths-ignore:            # 文档改动不触发发版
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
   workflow_dispatch:
+
+concurrency:                 # 连续 push 时只跑最新一次
+  group: pre-release
+  cancel-in-progress: true
 
 permissions:
   contents: write
 
+env:
+  NODE_VERSION: '24'         # 当前 Active LTS；26 是 Current，10/28 才转 LTS
+  PNPM_VERSION: '10'
+  TAR_SOURCE: '.output'   # SSR 全量部署改成 '.output'
+  NUXT_TELEMETRY_DISABLED: '1'
+
 jobs:
-  # Job 1: 构建 + 压缩
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     outputs:
-      build_time: ${{ steps.time.outputs.build_time }}
+      build_time: ${{ steps.meta.outputs.build_time }}
+      short_sha: ${{ steps.meta.outputs.short_sha }}
     steps:
-      - name: Record build time
-        id: time
-        run: echo "build_time=$(date -u)" >> $GITHUB_OUTPUT
-
       - uses: actions/checkout@v4
 
+      - name: Meta
+        id: meta
+        run: |
+          echo "build_time=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
       - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "26"
-          cache: "pnpm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile     # CI 禁止隐式改 lockfile
 
       - name: Build
-        run: |
-          pnpm i
-          pnpm run build
+        run: pnpm run build
 
-      - name: Compress
-        working-directory: .output
-        run: |
-          tar cf dist.tar *
-          lz4 -0 -k dist.tar dist.tar.lz4
-          zstd -10 -k dist.tar -o dist.tar.zst
-          xz -19e -k dist.tar
-          rm _nuxt assets favicon-16x16.png favicon-32x32.png favicon.ico index.html -rf
+      - name: Ensure compressors
+        run: command -v lz4 || (sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends lz4)
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Package & compress
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          # 固定 mtime/owner/排序 → 产物可复现，重复发布时 CDN/校验值稳定
+          tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
+              -cf dist/dist.tar -C "$TAR_SOURCE" .
+          cd dist
+          lz4  -12 -q -k dist.tar dist.tar.lz4 & p1=$!
+          zstd -T0 -19 -q -k dist.tar -o dist.tar.zst & p2=$!
+          xz   -T0 -9e -q -k dist.tar & p3=$!
+          wait $p1 && wait $p2 && wait $p3
+          sha256sum dist.tar* > SHA256SUMS.txt
+
+      - name: Size summary
+        run: |
+          {
+            echo '### 📦 产物大小'; echo '| 文件 | 大小 |'; echo '| --- | --- |'
+            for f in dist/dist.tar*; do echo "| \`$(basename "$f")\` | $(du -h "$f" | cut -f1) |"; done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: .output/public/*
+          path: dist/
+          if-no-files-found: error      # 空产物直接失败，别静默发个空包
+          retention-days: 3
+          compression-level: 0          # 内容已压缩，别再 Gzip 一遍白烧 CPU
 
-  # Job 2: 创建 Release（依赖 build 完成）
   release:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
+
+      - name: 清理旧的 pre-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete pre-release --yes --cleanup-tag || echo "无历史 release，跳过"
 
       - name: Create Pre-Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: pre-release
-          name: "!!! PRE-RELEASE !!!"
-          body: "Build at: ${{ needs.build.outputs.build_time }}"
-          generate_release_notes: true
+          target_commitish: ${{ github.sha }}
+          name: "!!! PRE-RELEASE !!! (${{ needs.build.outputs.short_sha }})"
+          make_latest: false
           prerelease: true
+          fail_on_unmatched_files: true   # 文件缺失立刻报错，不再静默跳过
+          generate_release_notes: true
+          body: |
+            🕐 Build at: ${{ needs.build.outputs.build_time }}
+            🔗 Commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+            🏗️ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            > ⚠️ 预发布版本，会被下一次 main 推送覆盖，请勿用于生产。
           files: |
             dist/dist.tar
             dist/dist.tar.lz4
             dist/dist.tar.zst
             dist/dist.tar.xz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            dist/SHA256SUMS.txt
