@@ -34,7 +34,7 @@ jobs:
           pnpm run build
 
       - name: Compress
-        working-directory: .output/public
+        working-directory: .output
         run: |
           tar cf dist.tar *
           lz4 -0 -k dist.tar dist.tar.lz4
