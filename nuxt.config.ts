@@ -35,7 +35,7 @@ export default defineNuxtConfig({
   //    关闭 SSR 后 Naive UI 无需做服务端样式收集；
   //    保留 transpile 是为了让 Nuxt 在打包时对 naive-ui / vueuc /
   //    @css-render/vue3-ssr 做依赖转译，保证组件样式正确注入与兼容
-  ssr: false,
+  ssr: true,
   build: {
     transpile: ["naive-ui", "vueuc", "@css-render/vue3-ssr"]
   },
