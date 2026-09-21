@@ -6,7 +6,7 @@
   "engines": {
     "node": "^22.19.0 || >=24.11.0"
   },
-  "packageManager": "pnpm@12.4.1+sha512.2e81e399d73fe8390dab25e06aa788ab7a5908248d2f5a370f82b481147a6a7a367bf8048f9a6fdb6460f21a66f0542dedb8b94ca2c8723596741920b1656d4c",
+  "packageManager": "pnpm@12.5.1+sha512.e3f305bc784a2bc89f5ad3b6138889470fae8d2af5f36b61216ec91c2c3d64089775f9de38aac331044ea40f245cb0d5666392dfdf65824e1907ef6a2c62de5f",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
@@ -20,14 +20,14 @@
     "@vicons/fluent": "^0.13.0",
     "axios": "^1.20.0",
     "highlight.js": "^11.12.0",
-    "marked": "^18.0.12",
+    "marked": "^18.0.13",
     "naive-ui": "^2.45.3",
     "nitro": "3.0.260903-beta",
     "nuxt": "npm:nuxt-nightly@5.0.0-29813728.153e67ba",
-    "vue": "^3.5.42"
+    "vue": "^3.5.43"
   },
   "devDependencies": {
-    "@types/node": "^25.9.6",
+    "@types/node": "^25.9.8",
     "typescript": "^6.0.3",
     "unplugin-auto-import": "^21.1.0",
     "unplugin-vue-components": "^32.1.0",
