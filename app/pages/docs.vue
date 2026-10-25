@@ -17,7 +17,7 @@
   <!-- ========================================================== -->
   <div class="doc-page">
     <!-- ==================== 标题 ==================== -->
-    <n-gradient-text class="doc-title" type="warning" :size="32">
+    <n-gradient-text class="doc-title" type="warning">
       UTAC 搜索站 · 工作原理
     </n-gradient-text>
     <p class="doc-subtitle">这是一篇给小白看的说明书 —— 不用懂代码，看完就懂它怎么工作。</p>

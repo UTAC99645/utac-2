@@ -136,7 +136,7 @@
 
     <!-- ==================== 链接预览模式（Link 引擎 on=true 时替换搜索页） ==================== -->
     <div v-else>
-      <Rader :url="searchText" @back="exitLinkPreview" />
+      <File-View :url="searchText" @back="exitLinkPreview" />
     </div>
   </div>
 </template>
@@ -163,9 +163,6 @@ import keyMap_Rsrc from "../addition/searchKey.json";
 // ---------- 引擎名集合（校验路由 type 参数） ----------
 // searchEngineTypes 由 composables/auto.mach.ts 模块注入为全局自动导入，
 // 无需手动 import（实现见 composables/mach.ts）
-
-// ---------- Link 预览组件（异步加载，避免首屏打包 marked / highlight.js 等大型依赖） ----------
-const Rader = defineAsyncComponent(() => import("../components/Link.vue"));
 
 // JSON 条目是 [引擎名, 配置] 二元组，断言后供下方 Map 使用
 const typeMap_src = typeMap_Rsrc as [string, EngineConfig][];
@@ -515,6 +512,10 @@ onMounted(async () => {
   await yiyan();
   await sleep(1500);
   heltoyi.value = true; // 1.5s 后页面标题切换为一言
+
+  useSeoMeta({
+    title: () => search_type.value === "QR" ? "QR Maker" : `Search With ${search_type.value}`,
+  });
 });
 
 // 引擎变化 -> 同步激活态 + 回写 URL（immediate 保证挂载时先执行一次）

@@ -3,74 +3,92 @@ name: Auto Pre-Release
 on:
   push:
     branches: [main]
+    paths-ignore: ['**.md', 'LICENSE', '.gitignore']
   workflow_dispatch:
+
+concurrency:
+  group: pre-release
+  cancel-in-progress: true
 
 permissions:
   contents: write
 
-jobs:
-  # Job 1: 构建 + 压缩
-  build:
-    runs-on: ubuntu-latest
-    outputs:
-      build_time: ${{ steps.time.outputs.build_time }}
-    steps:
-      - name: Record build time
-        id: time
-        run: echo "build_time=$(date -u)" >> $GITHUB_OUTPUT
+env:
+  NODE_VERSION: '24'
+  TAR_SOURCE: '.output'          # 纯静态部署改成 '.output/public'
+  NUXT_TELEMETRY_DISABLED: '1'
 
-      - uses: actions/checkout@v4
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Meta
+        id: meta
+        run: |
+          echo "time=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
+          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "26"
-          cache: "pnpm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
+        run: pnpm run build
+
+      - name: Ensure lz4
+        run: command -v lz4 || (sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends lz4)
+
+      - name: Package & compress
         run: |
-          pnpm i
-          pnpm run build
+          set -euo pipefail
+          mkdir -p dist && cd dist
+          tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
+              -cf dist.tar -C "$GITHUB_WORKSPACE/$TAR_SOURCE" .
+          lz4  -12 -q -k dist.tar dist.tar.lz4 & p1=$!
+          zstd -T0 -19 -q -k dist.tar -o dist.tar.zst & p2=$!
+          xz   -T0 -9e -q -k dist.tar & p3=$!
+          wait $p1 && wait $p2 && wait $p3
+          sha256sum dist.tar* > SHA256SUMS.txt
 
-      - name: Compress
-        working-directory: .output/public
+      - name: Size summary
         run: |
-          tar cf dist.tar *
-          lz4 -0 -k dist.tar dist.tar.lz4
-          zstd -10 -k dist.tar -o dist.tar.zst
-          xz -19e -k dist.tar
-          rm _nuxt assets favicon-16x16.png favicon-32x32.png favicon.ico index.html -rf
+          {
+            echo '### 📦 产物大小'; echo '| 文件 | 大小 |'; echo '| --- | --- |'
+            for f in dist/dist.tar*; do echo "| \`$(basename "$f")\` | $(du -h "$f" | cut -f1) |"; done
+          } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: .output/public/*
+      # 想留一份可下载的产物就解开这段（改成 @v6 或更高，别再用 v4）
+      # - uses: actions/upload-artifact@v6
+      #   with:
+      #     name: dist
+      #     path: dist/
+      #     compression-level: 0
+      #     retention-days: 3
 
-  # Job 2: 创建 Release（依赖 build 完成）
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
-
-      - name: Create Pre-Release
-        uses: softprops/action-gh-release@v2
+      - name: Publish Pre-Release
+        uses: softprops/action-gh-release@v3    # v3 = Node 24 运行时，v2.6.2 已停止维护
         with:
           tag_name: pre-release
-          name: "!!! PRE-RELEASE !!!"
-          body: "Build at: ${{ needs.build.outputs.build_time }}"
-          generate_release_notes: true
+          target_commitish: ${{ github.sha }}
+          name: "!!! PRE-RELEASE !!! (${{ steps.meta.outputs.sha }})"
+          make_latest: false
           prerelease: true
-          files: |
-            dist/dist.tar
-            dist/dist.tar.lz4
-            dist/dist.tar.zst
-            dist/dist.tar.xz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          overwrite_files: true
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          body: |
+            🕐 Build at: ${{ steps.meta.outputs.time }}
+            🔗 Commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+            🏗️ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            > ⚠️ 预发布版本，会被下一次 main 推送覆盖，请勿用于生产。
+          files: dist/*

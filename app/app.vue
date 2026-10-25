@@ -29,6 +29,8 @@
 </template>
 
 <script lang="ts" setup>
+const route = useRoute()
+
 // ============================================================
 // 根组件脚本（全局应用壳）
 // 职责：
@@ -43,6 +45,14 @@ const { start: startTrail } = usePointerTrail();
 
 onMounted(() => {
   startTrail();
+  useSeoMeta({
+    title: () => (route.meta.title as string) || "UTAC's Search comb",
+    description: () => (route.meta.description as string) || "UTAC's Search comb",
+    ogTitle: () => (route.meta.title as string) || "UTAC's Search comb",
+    ogDescription: () => (route.meta.description as string) || "UTAC's Search comb",
+    ogImage: 'https://file.utac.top/BackGround/E/Evil-push!.jpg',
+    ogUrl: () => `https://utac.top${route.fullPath}`,
+  })
 });
 
 // ---------- naive-ui ----------
@@ -56,7 +66,6 @@ import { useRoute, useRouter } from "vue-router";
 // way 中的 name 同时是路由名：与当前路由名一致时高亮显示
 // ============================================================
 
-const route = useRoute();
 const router = useRouter();
 
 const way = ref<{ name: string; path: string }[]>([
