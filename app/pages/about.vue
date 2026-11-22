@@ -50,7 +50,6 @@
 
 // ---------- Vue 组合式 API ----------
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
 
 // ---------- 页面样式 ----------
 import '../assets/css/about.css';
@@ -64,10 +63,6 @@ const message = useMessage()
 // 人员列表（about.json 拉取结果；字段说明见模板顶部注释）
 const source = ref<{ img: string, name: string, mail: string }[]>([]);
 
-// 独立 Axios 实例：指向托管 about.json 的静态文件服务
-const Utac_res = axios.create({
-  baseURL: "https://file.utac.top/Web/utac",
-})
 // ============================================================
 // 生命周期
 // ============================================================
@@ -75,14 +70,13 @@ const Utac_res = axios.create({
 // 挂载后拉取人员信息；失败时弹出错误提示
 // @returns 无（副作用：填充 source 列表 / 失败时弹提示）
 onMounted(async () => {
-  await Utac_res.get("/json/about.json")
-    .then(res => {
-      console.log(res)
-      source.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-      message.error(`err happend with ${err}`);
-    })
+  try {
+    const res = await fetch("https://file.utac.top/Web/utac/json/about.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    source.value = (await res.json()) as { img: string, name: string, mail: string }[];
+  } catch (err) {
+    console.log(err);
+    message.error(`err happend with ${err}`);
+  }
 });
 </script>

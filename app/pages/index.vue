@@ -151,7 +151,6 @@
 //   EngineConfig / YiyanItem 来自 composables/type.ts，同样由 Nuxt 自动导入）
 
 // ---------- 外部依赖 ----------
-import axios from "axios";
 
 // ---------- 页面样式 ----------
 import "../assets/css/home.css";
@@ -334,17 +333,16 @@ async function yiyan(): Promise<void> {
   loadingBar.start();
   // 类型为 YiyanItem | undefined：undefined 即哨兵值，表示本次请求未拿到新数据
   let x: YiyanItem | undefined = yiyandata.value[1];
-  await axios
-    .get("https://v1.hitokoto.cn")
-    .then((res) => {
-      x = res.data;
-      console.log(res);
-      loadingBar.finish();
-    })
-    .catch((err) => {
-      message.error(`Get yiyan error with: ${err}`);
-      loadingBar.error();
-    });
+  try {
+    const res = await fetch("https://v1.hitokoto.cn");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    x = (await res.json()) as YiyanItem;
+    console.log(x);
+    loadingBar.finish();
+  } catch (err) {
+    message.error(`Get yiyan error with: ${err}`);
+    loadingBar.error();
+  }
   await sleep(2000);
   yiyan_lock_cache.value = false;
   if (x === yiyandata.value[1]) {

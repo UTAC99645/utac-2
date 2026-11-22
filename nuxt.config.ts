@@ -23,10 +23,6 @@ export default defineNuxtConfig({
       {
         from: "naive-ui",
         imports: ["useDialog", "useMessage", "useNotification", "useLoadingBar"]
-      },
-      {
-        from: "axios",
-        imports: [["default", "axios"]]
       }
     ]
   },
