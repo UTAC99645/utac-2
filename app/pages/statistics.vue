@@ -2,7 +2,8 @@
   <!-- ========================================================== -->
   <!-- 统计页面
        展示：搜索引擎配置概览 + 页面访问统计
-       风格：与全站一致的深色毛玻璃主题（复用 main.css 设计令牌）
+       引擎数据来自 composables/useEngines.ts（与首页同一数据源，
+       JSON 增删引擎后本页自动同步，不再硬编码）
   -->
   <!-- ========================================================== -->
   <div class="statistics-page">
@@ -29,7 +30,7 @@
       <div class="stats-grid">
         <article
           class="stat-card"
-          v-for="(engine, i) in engineList"
+          v-for="(engine, i) in engineCards"
           :key="engine.key"
           :style="{ animationDelay: i * 60 + 'ms' }"
         >
@@ -83,17 +84,38 @@
 <script setup lang="ts">
 // ============================================================
 // 统计页面脚本
+// 引擎卡片由 useEngines 状态仓派生（颜色为展示层本地映射）
 // ============================================================
 
-// ---------- 搜索引擎配置 ----------
-const engineList = [
-  { key: "google", label: "Google", desc: "google.com/search", url: "https://www.google.com/search?q=", color: "linear-gradient(135deg, #4285f4, #34a853)" },
-  { key: "bing", label: "Bing", desc: "bing.com/search", url: "https://bing.com/search?q=", color: "linear-gradient(135deg, #00a1f1, #008373)" },
-  { key: "duckduckgo", label: "DuckDuckGo", desc: "duckduckgo.com", url: "https://duckduckgo.com/?q=", color: "linear-gradient(135deg, #de5833, #ffb92e)" },
-  { key: "Link", label: "Link", desc: "utac99645.top", url: "https://utac99645.top/?q=", color: "linear-gradient(135deg, #7b8ed8, #6366f1)" }
-];
+/** 引擎徽章配色（仅展示用；未登记的引擎走默认色） */
+const ENGINE_COLORS: Record<string, string> = {
+  google: "linear-gradient(135deg, #4285f4, #34a853)",
+  bing: "linear-gradient(135deg, #00a1f1, #008373)",
+  duckduckgo: "linear-gradient(135deg, #de5833, #ffb92e)",
+  Link: "linear-gradient(135deg, #7b8ed8, #6366f1)"
+};
+/** 未登记引擎的默认徽章色 */
+const FALLBACK_COLOR = "linear-gradient(135deg, #7b8ed8, #6366f1)";
 
-// ---------- 页面访问统计 ----------
+/** 主机名展示优化：去掉协议与查询参数（如 https://www.google.com/search?q= -> google.com/search） */
+function hostDesc(url: string): string {
+  return url.replace(/^https?:\/\//, "").replace(/\?.*$/, "");
+}
+
+const engines = useEngines();
+
+/** 引擎卡片视图模型 */
+const engineCards = computed(() =>
+  engines.entries.value.map(([key]) => ({
+    key,
+    label: key,
+    desc: hostDesc(engines.urlOf(key)) || "自定义前缀",
+    url: engines.urlOf(key),
+    color: ENGINE_COLORS[key] ?? FALLBACK_COLOR
+  }))
+);
+
+// ---------- 页面访问统计（演示数据） ----------
 const pageStats = [
   { route: "/", visits: 1247, lastVisit: "2026-11-19" },
   { route: "/about", visits: 382, lastVisit: "2026-11-18" },
@@ -101,16 +123,15 @@ const pageStats = [
 ];
 
 // ---------- 概览数字 ----------
-const totalVisits = pageStats.reduce((sum, p) => sum + p.visits, 0);
 const summary = computed(() => [
-  { label: "搜索引擎", value: engineList.length },
+  { label: "搜索引擎", value: engineCards.value.length },
   { label: "统计页面", value: pageStats.length },
-  { label: "总访问量", value: totalVisits.toLocaleString() }
+  { label: "总访问量", value: pageStats.reduce((sum, p) => sum + p.visits, 0).toLocaleString() }
 ]);
 
-// ---------- 访问量条形宽度（按最大值归一为百分比） ----------
-const maxVisits = Math.max(...pageStats.map((p) => p.visits), 1);
+/** 访问量条形宽度（按最大值归一为百分比） */
 function barWidth(v: number): number {
+  const maxVisits = Math.max(...pageStats.map((p) => p.visits), 1);
   return Math.round((v / maxVisits) * 100);
 }
 </script>

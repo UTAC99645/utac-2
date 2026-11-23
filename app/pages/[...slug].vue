@@ -54,7 +54,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // ============================================================
 // 404 页面脚本
 // 功能：
@@ -63,8 +63,6 @@
 //   3. 返回首页 / 返回上一页
 // ============================================================
 
-import { ref, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
 import "../assets/css/404.css";
 
 // ---------- Router ----------
@@ -111,7 +109,7 @@ const goBack = () => router.back();
  * @param n 粒子序号（仅用于 v-for 的 key，与样式无关）
  * @returns 随机的大小 / 水平位置 / 动画延迟 / 动画时长 / 透明度
  */
-const getParticleStyle = (n) => {
+const getParticleStyle = (n: number): Record<string, string | number> => {
   const size = Math.random() * 4 + 2;
   const left = Math.random() * 100;
   const delay = Math.random() * 5;

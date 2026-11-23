@@ -1,6 +1,6 @@
 # UTAC-2
 
-基于 **Nuxt 4**（SPA 模式）+ **Vue 3** + **TypeScript** + **Naive UI** 构建的个人主页与搜索聚合应用。
+基于 **Nuxt**（SSR）+ **Vue 3** + **TypeScript** + **Naive UI** 构建的个人主页与搜索聚合应用。
 
 在线预览：[utac.top](https://utac.top)
 
@@ -18,11 +18,10 @@
 
 ## 技术栈
 
-- [Nuxt 4](https://nuxt.com/) — 应用框架（`ssr: false`，纯 SPA 模式）
+- [Nuxt](https://nuxt.com/) — 应用框架
 - [Vue 3](https://vuejs.org/) — Composition API
 - [TypeScript](https://www.typescriptlang.org/) — 类型安全
 - [Naive UI](https://www.naiveui.com/) — 组件库（`plugins/native-ui.ts` 全局注册）
-- [Axios](https://axios-http.com/) — HTTP 客户端（`composables/axios.ts` 拦截器，暂未启用）
 - [Marked](https://marked.js.org/) — Markdown 渲染
 - [Highlight.js](https://highlightjs.org/) — 代码语法高亮
 - [unplugin-auto-import](https://github.com/unplugin/unplugin-auto-import) — 自动注入 `ref`、`computed`、`useMessage` 等 API
@@ -32,28 +31,43 @@
 
 ```
 utac-2/
-├── app.vue                    # 根组件（深色主题 / 消息提供器 / 面包屑导航 / 路由视图）
-├── nuxt.config.ts             # Nuxt 配置（SPA 模式、CSS、自动导入、别名、组件目录）
-├── pages/
-│   ├── index.vue              # 首页（搜索 / QR 码 / 一言 / 链接预览入口）
-│   ├── about.vue              # 关于页（数据来自远程 about.json）
-│   └── [...slug].vue          # 兜底 404 页
-├── components/
-│   └── Link.vue               # 链接预览 / 万能文件查看器
-├── composables/
-│   ├── mach.ts                # 合并 JSON，生成引擎名匹配正则（computed ref）
-│   ├── axios.ts               # Axios 全局拦截器（统计请求耗时，暂未启用）
-│   └── type.ts                # TypeScript 类型定义（EngineConfig / YiyanItem）
-├── plugins/
-│   └── native-ui.ts           # Naive UI 全局注册插件
-├── addition/
-│   ├── searchWay.json         # 主引擎列表（google / bing / duckduckgo / Link）
-│   └── searchKey.json         # 扩展功能项（QR）
-├── assets/
-│   └── css/                   # 全局样式（main / home / about / link / router / 404 / naive-ui-glass）
-├── public/
-│   └── assets/
-│       └── img/               # 图片资源（加载动效、404 背景等）
+├── app/
+│   ├── app.vue                # 根组件（深色主题 / 消息提供器 / 面包屑导航 / 路由视图）
+│   ├── error.vue              # 全局错误页（深色毛玻璃卡片风格）
+│   ├── pages/
+│   │   ├── index.vue          # 首页（编排层：搜索 / QR / 一言 / 链接预览入口）
+│   │   ├── about.vue          # 关于页（数据来自远程 about.json）
+│   │   ├── docs.vue           # 文档页（工作原理讲解）
+│   │   ├── statistics.vue     # 统计页（引擎概览来自 useEngines，与首页同源）
+│   │   └── [...slug].vue      # 兜底 404 页
+│   ├── components/
+│   │   ├── FileViewer.vue     # 链接预览 / 万能文件查看器（编排组件，异步加载）
+│   │   ├── SearchQrPanel.vue  # QR 码面板（纠错等级 / 前缀后缀开关 / 下载）
+│   │   ├── HitokotoCard.vue   # 一言卡片（单条展示 + 刷新）
+│   │   └── FileViewer/renderers/  # 各文件类型渲染器
+│   │       ├── MarkdownRenderer.vue  # Marked 渲染
+│   │       ├── CodeRenderer.vue      # Highlight.js 高亮 + 复制
+│   │       ├── JsonRenderer.vue      # 展开 / 折叠 + 复制
+│   │       ├── MediaRenderer.vue     # 图片 / PDF / 视频 / 音频
+│   │       └── WebRenderer.vue       # 沙盒 iframe 网页
+│   ├── composables/
+│   │   ├── useEngines.ts      # 引擎状态仓（单一数据源：配置解析 + 校验 + 激活态）
+│   │   ├── useYiyan.ts        # 一言拉取（失败重试上限 3 次 + 冷却锁）
+│   │   ├── useQrCode.ts       # QR 内容拼接 / 纠错等级 / PNG 下载
+│   │   ├── useHomePageData.ts # 首页数据编排
+│   │   ├── type.ts            # TypeScript 类型定义（EngineConfig / YiyanItem）
+│   │   └── pointerTrail.ts    # 全站指针轨迹特效
+│   ├── utils/
+│   │   ├── common.ts          # 通用小工具（sleep 等）
+│   │   └── fileType.ts        # 文件类型识别（纯函数：扩展名 + 内容嗅探）
+│   ├── plugins/
+│   │   └── native-ui.ts       # Naive UI 全局注册插件
+│   ├── addition/
+│   │   ├── searchWay.json     # 主引擎列表（google / bing / duckduckgo / Link）
+│   │   └── searchKey.json     # 扩展功能项（QR）
+│   ├── assets/css/            # 全局样式（main / home / about / link / router / 404 / docs / naive-ui-glass）
+│   └── public/assets/img/     # 图片资源（加载动效、404 背景等）
+├── nuxt.config.ts
 ├── package.json
 ├── pnpm-lock.yaml
 └── tsconfig.json              # 继承 .nuxt/tsconfig.json
@@ -83,6 +97,8 @@ pnpm preview
 | ---------------- | ---------------- | ------------------------ |
 | `/`              | `index.vue`      | 首页                     |
 | `/about`         | `about.vue`      | 关于页                   |
+| `/docs`          | `docs.vue`       | 工作原理文档             |
+| `/statistics`    | `statistics.vue` | 统计概览                 |
 | 其他任意路径     | `[...slug].vue`  | 兜底 404 页              |
 
 首页会把当前引擎与输入实时同步到 URL query，因此链接可直接分享：
@@ -99,7 +115,7 @@ pnpm preview
 
 ## 搜索引擎配置
 
-引擎列表由 `addition/searchWay.json`（主引擎）与 `addition/searchKey.json`（扩展功能项）动态加载，格式为 `[名称, 配置]` 二元组数组：
+引擎列表由 `app/addition/searchWay.json`（主引擎）与 `app/addition/searchKey.json`（扩展功能项）动态加载，格式为 `[名称, 配置]` 二元组数组：
 
 ```json
 [
@@ -109,12 +125,12 @@ pnpm preview
 ]
 ```
 
-- `en` — 是否为当前激活项（运行时同一时刻只有一个为 `true`）
-- `url` — 搜索前缀，与关键词拼接后打开
-- `on` — 仅 Link 引擎使用：是否进入内嵌预览
+- `url` — 搜索前缀，与关键词拼接后打开（**必填**，缺失的条目会在启动时被校验跳过并告警）
+- `en` — 历史兼容字段，激活态现由 `useEngines` 状态仓统一管理，JSON 中的值会被忽略
+- `on` — 历史兼容字段，链接预览开关现由 `useEngines` 的 `previewOn` 管理
 - `icon` — 图标路径（预留字段，当前未使用）
 
-新增引擎只需向 JSON 追加条目，下拉选项、快捷按钮、URL 校验都会自动生效。
+新增引擎只需向 JSON 追加条目，下拉选项、快捷按钮、统计页卡片、URL 校验都会自动生效。
 
 ## 文件预览支持格式
 
