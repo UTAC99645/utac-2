@@ -6,7 +6,7 @@
   "engines": {
     "node": "^22.19.0 || >=24.11.0"
   },
-  "packageManager": "pnpm@latest",
+  "packageManager": "pnpm@12.21.0",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
