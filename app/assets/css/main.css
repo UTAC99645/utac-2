@@ -87,13 +87,15 @@
   --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-/* ---------- 自定义字体：MapleMono ---------- */
+/* ---------- 自定义字体：MapleMono ----------
+   使用站点自托管子集（woff2）：19.5MB 整包 TTF → 1.5MB 子集，
+   覆盖 ASCII/常用中文标点/GB2312 全汉字/假名；unicode-range 留空即全场景生效 */
 @font-face {
   font-family: "MapleMono";
   src:
     local("MapleMono-NF-CN-ExtraBold"),
     local("MapleMono NF CN ExtraBold"),
-    url("https://file.utac.top/font/MapleMono-NF-CN-ExtraBold.ttf") format("truetype");
+    url("/assets/font/MapleMono-sub.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -112,7 +114,8 @@ body {
 /* ---------- body 全局样式 ---------- */
 body {
   font-family: var(--font-body);
-  background-image: url("/assets/img/143937772_p2.png");
+  /* WebP 版背景：8.6MB PNG → 789KB WebP，首屏快一个数量级 */
+  background-image: url("/assets/img/143937772_p2.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

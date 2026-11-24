@@ -73,7 +73,7 @@ const router = useRouter();
 const mounted = ref(false);
 
 // ---------- 背景图地址 ----------
-const bgUrl = "https://file.utac99645.top/BackGround/143937772_p2.png";
+const bgUrl = "/assets/img/143937772_p2.webp";
 
 // ============================================================
 // 生命周期

@@ -49,6 +49,13 @@ onMounted(() => {
   window.addEventListener("scroll", onNavScroll, { passive: true });
   onNavScroll();
   startTrail();
+  // 首屏资源预加载：背景 WebP + 字体子集尽早开始下载
+  useHead({
+    link: [
+      { rel: "preload", as: "image", href: "/assets/img/143937772_p2.webp", fetchpriority: "high" },
+      { rel: "preload", as: "font", type: "font/woff2", href: "/assets/font/MapleMono-sub.woff2", crossorigin: "" }
+    ]
+  });
   useSeoMeta({
     title: () => (route.meta.title as string) || "UTAC's Search comb",
     description: () => (route.meta.description as string) || "UTAC's Search comb",

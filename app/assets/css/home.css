@@ -122,6 +122,73 @@
   opacity: 0.85;
 }
 
+/* ---------- 启动屏：纯 CSS 品牌动画（零图片下载） ---------- */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  background: rgba(10, 12, 30, 0.86);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  animation: bootIn 0.4s var(--ease-out) both;
+  transition: opacity 0.28s var(--ease-out);
+}
+
+/* 退场：淡出后由 v-if 移除 */
+.boot-screen.boot-out {
+  opacity: 0;
+}
+
+.boot-brand {
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  padding-left: 0.35em; /* 抵消末字符字距，视觉居中 */
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: bootPulse 1.4s ease-in-out infinite;
+}
+
+/* 底部细进度条：填充两段式流动 */
+.boot-bar {
+  width: min(46vw, 220px);
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.boot-bar span {
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #8b9dff, #6366f1, transparent);
+  animation: bootSlide 0.9s var(--ease-out) infinite;
+}
+
+@keyframes bootIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes bootPulse {
+  0%, 100% { filter: brightness(1);   transform: scale(1); }
+  50%      { filter: brightness(1.3); transform: scale(1.04); }
+}
+
+@keyframes bootSlide {
+  from { transform: translateX(-120%); }
+  to   { transform: translateX(320%); }
+}
+
 /* ---------- 响应式 ---------- */
 @media (max-width: 640px) {
   .home-page .n-input-group {
@@ -168,5 +235,16 @@
   }
   .typekey:active {
     transform: scale(0.96);
+  }
+}
+
+/* ---------- 减少动效：启动屏直接快进 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .boot-screen {
+    animation: none !important;
+  }
+  .boot-brand,
+  .boot-bar span {
+    animation: none !important;
   }
 }

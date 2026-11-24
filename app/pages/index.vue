@@ -10,13 +10,18 @@
   -->
   <!-- ========================================================== -->
 
-  <!-- ---------- 加载动画层（仅闪现约 1ms，配合顶部加载条的随机动效） ---------- -->
-  <div class="home-page" v-if="spinShow">
-    <n-image :src="lodimg" style="width: 100vw" alt="Loading" />
+  <!-- ---------- 启动屏：纯 CSS 品牌动画（零下载，SSR 直出） ---------- -->
+  <div v-if="booting" class="boot-screen" :class="{ 'boot-out': bootOut }">
+    <div class="boot-brand">UTAC</div>
+    <div class="boot-bar"><span></span></div>
   </div>
 
-  <!-- ---------- 主内容 ---------- -->
-  <div class="home-page" v-else>
+  <!-- ---------- 主内容 ----------
+       搜索 UI 含 naive-ui Select / vueuc Follower（依赖浏览器 DOM 测量），
+       必须客户端挂载，否则 SSR 报 document is not defined（500）；
+       服务端只直出上面的启动屏，水合后本节点才渲染 -->
+  <ClientOnly>
+    <div class="home-page">
     <!-- ==================== 搜索页 ==================== -->
     <div v-if="!engines.previewOn.value">
       <title type="info">UTAC'S Search</title>
@@ -68,6 +73,7 @@
       <FileViewer :url="searchText" @back="engines.previewOn.value = false" />
     </div>
   </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
@@ -97,15 +103,11 @@ const { fetchYiyan, yiyan, word: yiyanWord } = useHomePageData();
 // ============================================================
 
 const searchText = ref<string>(""); // 输入框内容
-const spinShow = ref(false);        // 加载动画层显隐
+/** 启动屏显隐（纯 CSS 动画，约 900ms 后退场） */
+const booting = ref(true);
+const bootOut = ref(false);
 /** 页面标题控制（false 显示固定标题，true 显示一言） */
 const heltoyi = ref(false);
-
-/** 加载图片映射（随机二选一） */
-const localmap = new Map([
-  ["Evil", { url: "/assets/img/lod/Evil.gif" }],
-  ["Neuro", { url: "/assets/img/lod/Neuro.gif" }]
-]);
 
 /** 粗略判断输入是否为 http(s) URL */
 const urlMatch: RegExp = /^https?:\/\/.+\..+/i;
@@ -131,8 +133,15 @@ const inputtype = computed<"text" | "textarea">(() =>
   engines.isQrMode.value ? "textarea" : "text"
 );
 
-/** 随机加载图片 */
-const lodimg = computed<string>(() => localmap.get(Math.random() > 0.5 ? "Evil" : "Neuro")!.url);
+/** 启动屏：播放约 750ms 后触发退场动画，动画结束彻底移除 */
+async function runBoot(): Promise<void> {
+  loadingBar.start();
+  await sleep(750);
+  bootOut.value = true;
+  await sleep(280);
+  booting.value = false;
+  loadingBar.finish();
+}
 
 /** 搜索链接拼接（QR 模式下内容即原文，不再拼接前缀） */
 const searchLC = computed<string>(() => {
@@ -151,22 +160,6 @@ async function refreshYiyan(): Promise<void> {
   loadingBar.start();
   await fetchYiyan((err) => message.error(`Get yiyan error with: ${err}`));
   loadingBar.finish();
-}
-
-/**
- * 加载动效：加载条起步 + 加载图闪现约 1ms（肉眼基本不可见），
- * 随后按随机数决定加载条以 error 还是 finish 收尾（约一半概率，彩蛋效果）
- */
-async function initLaod(): Promise<void> {
-  loadingBar.start();
-  spinShow.value = true;
-  await sleep(1);
-  spinShow.value = false;
-  if (50 <= Math.ceil(Math.random() * 100)) {
-    loadingBar.error();
-  } else {
-    loadingBar.finish();
-  }
 }
 
 /**
@@ -237,9 +230,9 @@ function checkUrl(): void {
   if (open) nextTick(() => searchfin());
 }
 
-/** 初始化：播放加载动效；URL 带引擎参数时恢复状态 */
+/** 初始化：播放启动屏；URL 带引擎参数时恢复状态 */
 function init(): void {
-  initLaod();
+  runBoot();
   if (route.query.type) checkUrl();
 }
 
@@ -251,7 +244,6 @@ function init(): void {
 watch(
   () => engines.active.value,
   () => {
-    initLaod();
     router.push({
       path: "/",
       query: { ...route.query, type: engines.active.value },
