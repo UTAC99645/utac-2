@@ -8,17 +8,26 @@
   text-align: center;
 }
 
-/* ---------- 头像 ----------
-   覆盖 main.css 的全局 img 规则（width: 100vw），
-   头像应为固定尺寸圆形
-   ---------------------------------------------------------- */
+/* ---------- 头像：固定尺寸圆形 + 渐变光环 ---------- */
 .about-page img {
   width: 120px;
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: var(--shadow-md);
-  margin-bottom: var(--space-sm);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 0 0 3px rgba(123, 142, 216, 0.45),
+    0 0 24px rgba(123, 142, 216, 0.35),
+    var(--shadow-md);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+
+.about-page img:hover {
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 3px rgba(139, 157, 255, 0.6),
+    0 0 34px rgba(139, 157, 255, 0.45),
+    var(--shadow-md);
 }
 
 /* ---------- 名称 ---------- */

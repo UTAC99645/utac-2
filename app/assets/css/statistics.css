@@ -73,3 +73,280 @@
     transition: none !important;
   }
 }
+
+/* ============================================================
+   视觉升级补充（2026-11）：hero / 概览数字条 / 引擎卡片 / 热门路径
+   ============================================================ */
+
+/* ---------- 顶部标题区 ---------- */
+.stats-hero {
+  text-align: center;
+  padding-top: var(--space-lg);
+}
+
+/* h1 已由全局样式提供渐变文字与底部光条，这里只调间距 */
+.stats-title {
+  margin-bottom: var(--space-sm);
+}
+
+.stats-subtitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin: 0 0 var(--space-lg);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 区块与标题 ---------- */
+.stats-section {
+  margin-top: var(--space-xl);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--space-md);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.heading-bar {
+  width: 4px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #a8b8ff, #6366f1);
+  box-shadow: 0 0 8px rgba(123, 142, 216, 0.55);
+  flex-shrink: 0;
+}
+
+/* ---------- 概览数字横条 ---------- */
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.summary-item {
+  text-align: center;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.6s var(--ease-out) both;
+  transition: transform 0.25s var(--ease-out), border-color 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+
+.summary-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md), var(--glow-primary);
+}
+
+.summary-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 6px rgba(123, 142, 216, 0.4));
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-label {
+  margin-top: 2px;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* ---------- 引擎卡片网格 ---------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-md);
+}
+
+.stat-card {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  box-shadow: var(--shadow-sm);
+  animation: fadeInScale 0.5s var(--ease-out) both;
+  transition: transform 0.25s var(--ease-out), border-color 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md), var(--glow-primary);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* 引擎首字徽章：圆形渐变底 */
+.engine-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.engine-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.engine-key {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.engine-url {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-subtle);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.url-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+  flex-shrink: 0;
+}
+
+/* ---------- 访问列表（热门路径 / 页面访问） ---------- */
+.visit-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 720px;
+}
+
+.visit-row {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.5s var(--ease-out) both;
+  transition: border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+
+.visit-row:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.visit-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.visit-route {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visit-count {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.visit-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.visit-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #6366f1, #a8b8ff);
+  box-shadow: 0 0 8px rgba(123, 142, 216, 0.5);
+  transition: width 0.6s var(--ease-out);
+}
+
+.visit-date {
+  margin-top: var(--space-sm);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 640px) {
+  .stats-summary {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+  }
+  .summary-value {
+    font-size: 1.4rem;
+  }
+  .summary-label {
+    font-size: 12px;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- 减少动效 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .summary-item,
+  .stat-card,
+  .visit-row {
+    animation: none !important;
+    transition: none !important;
+  }
+}

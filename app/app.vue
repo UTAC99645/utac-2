@@ -3,8 +3,9 @@
   <n-config-provider :theme="darkTheme">
     <n-loading-bar-provider>
       <n-message-provider>
-        <!-- ---------- 面包屑导航 ---------- -->
-        <n-flex justify="end">
+        <!-- ---------- 顶部悬浮玻璃导航 ---------- -->
+        <nav class="site-nav" :class="{ 'is-scrolled': navScrolled }">
+          <span class="nav-brand" @click="router.push('/')">UTAC</span>
           <n-breadcrumb separator="<->">
             <n-breadcrumb-item v-for="item in way" :key="item.path" @click="router.push(item.path)">
               <n-text :type="route.name === item.name ? 'info' : 'default'">
@@ -12,10 +13,7 @@
               </n-text>
             </n-breadcrumb-item>
           </n-breadcrumb>
-        </n-flex>
-
-        <!-- ---------- 分隔线 ---------- -->
-        <n-divider />
+        </nav>
 
         <!-- ---------- 路由视图 ---------- -->
         <n-flex justify="center">
@@ -36,14 +34,20 @@ const route = useRoute()
 // 职责：
 //   1. 提供全局 naive-ui 主题（深色模式）
 //   2. 提供加载条、消息提示等全局 UI 能力
-//   3. 顶部面包屑导航 + 下方路由视图
+//   3. 顶部悬浮玻璃导航 + 下方路由视图
 // ============================================================
 import "./assets/css/router.css";
 
-// 全站指针轨迹特效（桌面鼠标拖尾 / 手机触摸涟漪）
-const { start: startTrail } = usePointerTrail();
+// ---------- 导航滚动加深：滚过一屏 1/6 后挂 is-scrolled ----------
+const navScrolled = ref(false);
+
+function onNavScroll(): void {
+  navScrolled.value = window.scrollY > 90;
+}
 
 onMounted(() => {
+  window.addEventListener("scroll", onNavScroll, { passive: true });
+  onNavScroll();
   startTrail();
   useSeoMeta({
     title: () => (route.meta.title as string) || "UTAC's Search comb",
@@ -53,6 +57,13 @@ onMounted(() => {
     ogImage: 'https://file.utac.top/BackGround/E/Evil-push!.jpg',
     ogUrl: () => `https://utac.top${route.fullPath}`,
   })
+});
+
+// 全站指针轨迹特效（桌面鼠标拖尾 / 手机触摸涟漪）
+const { start: startTrail } = usePointerTrail();
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", onNavScroll);
 });
 
 // ---------- naive-ui ----------

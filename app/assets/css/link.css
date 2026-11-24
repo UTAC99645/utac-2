@@ -23,6 +23,7 @@
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
   flex-wrap: wrap;
 }
 
@@ -106,6 +107,8 @@
   border: 1px solid var(--border-subtle);
   padding: var(--space-xl);
   margin-bottom: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  animation: fadeInScale 0.45s var(--ease-out) both;
 }
 
 /* ---------- Markdown 样式 ---------- */

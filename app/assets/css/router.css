@@ -1,10 +1,72 @@
 /* ============================================================
-   路由面包屑导航样式
-   注：Naive UI 面包屑主题由 naive-ui-glass.css 统一控制
-   此处仅保留项目特有的面包屑容器尺寸
+   顶部悬浮玻璃导航样式
+   结构：.site-nav（品牌字 + 面包屑）吸顶悬浮，
+        滚动后自动加深底色；naive-ui 面包屑主题仍由
+        naive-ui-glass.css 统一控制
    ============================================================ */
 
-/* ---------- 面包屑容器 ---------- */
+/* ---------- 导航容器：吸顶悬浮玻璃条 ---------- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  min-width: 0;
+  min-height: 52px;
+  padding: var(--space-sm) clamp(14px, 3vw, 28px);
+  background: rgba(22, 26, 55, 0.42);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  transition: background 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out);
+}
+
+/* 滚动后加深底色，避免与页面内容糊在一起 */
+.site-nav.is-scrolled {
+  background: rgba(16, 20, 45, 0.68);
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.38);
+}
+
+/* ---------- 品牌字：渐变 + 悬停微光 ---------- */
+.nav-brand {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: filter 0.3s var(--ease-out), text-shadow 0.3s var(--ease-out);
+}
+
+.nav-brand:hover {
+  filter: brightness(1.2);
+  text-shadow: 0 0 14px rgba(139, 157, 255, 0.55);
+}
+
+/* ---------- 面包屑微调 ----------
+   naive-ui-glass.css 给 .n-breadcrumb 配了独立玻璃底，
+   在导航条内部会形成"玻璃叠玻璃"的圆角深块，这里脱掉外套 */
+.site-nav .n-breadcrumb {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: var(--space-sm) 6px;
+}
+
 .n-breadcrumb {
   font-size: 14px;
   min-height: 4vh;
@@ -13,9 +75,29 @@
 
 /* ---------- 移动端：紧凑并允许换行 ---------- */
 @media (max-width: 640px) {
+  .site-nav {
+    min-height: 44px;
+    padding: var(--space-xs) 10px;
+  }
+  /* 手机：面包屑单行滑动，不把导航条撑爆（杜绝横向溢出） */
+  .site-nav .n-breadcrumb {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .site-nav .n-breadcrumb::-webkit-scrollbar {
+    display: none;
+  }
   .n-breadcrumb {
     font-size: 13px;
     min-height: auto;
-    padding: var(--space-xs) 10px;
+    padding: var(--space-xs) 6px;
+  }
+  .nav-brand {
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
   }
 }

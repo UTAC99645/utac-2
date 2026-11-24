@@ -25,11 +25,12 @@
 .home-page form {
   display: flex;
   justify-content: center;
+  gap: var(--space-sm);
 }
 
 /* 输入组整体限宽，窄屏自适应收缩 */
 .home-page .n-input-group {
-  width: min(76vw, 660px);
+  width: min(80vw, 720px);
 }
 
 /* 输入组：引擎下拉 / 关键词输入 宽度比例（由 CSS 控制，默认桌面 25/75） */
@@ -40,22 +41,26 @@
    （:not() 排除搜索框输入组内的输入框） */
 .home-page .n-input:not(.n-input-group .n-input) {
   display: flex;
-  width: min(76vw, 660px);
+  width: min(80vw, 720px);
   margin-inline: auto;
 }
 
-/* 焦点态：统一光晕（focus-within 兼容 select 内部 input） */
+/* 焦点态：亮边 + 品牌光晕（focus-within 兼容 select 内部 input） */
 .home-page .n-input:focus-within,
 .home-page .n-select:focus-within {
-  box-shadow: var(--focus-ring);
+  box-shadow: var(--focus-ring), var(--glow-primary);
+  border-color: rgba(170, 160, 255, 0.45) !important;
 }
 
 /* ---------- 页面标题：入场动画 ---------- */
-.title {
+/* 全局 h1 自带 14px 顶距光条，这里抵消保持垂直节奏不变 */
+.home-page h1.title {
+  margin-top: -14px;
+  padding-top: var(--space-xl);
   animation: fadeIn 0.8s var(--ease-out) both;
 }
 
-/* ---------- 引擎切换按钮 ---------- */
+/* ---------- 引擎切换按钮：玻璃豆 + 入场级联 + 激活发光 ---------- */
 .typekey {
   border-radius: var(--radius-md);
   backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
@@ -67,12 +72,25 @@
     transform 0.25s var(--ease-out),
     box-shadow 0.25s var(--ease-out),
     border-color 0.25s var(--ease-out);
+  animation: fadeInScale 0.5s var(--ease-out) both;
 }
 
 .typekey:hover {
   transform: translateY(-2px);
   border-color: var(--border-hover);
   box-shadow: var(--shadow-md);
+}
+
+/* 当前激活的引擎按钮：品牌色描边 + 呼吸光 */
+.typekey:has(.n-button--dashed-type) {
+  border-color: rgba(139, 157, 255, 0.55);
+  box-shadow: var(--shadow-sm), 0 0 14px rgba(139, 157, 255, 0.28);
+  animation: activeGlow 2.6s ease-in-out infinite;
+}
+
+@keyframes activeGlow {
+  0%, 100% { box-shadow: var(--shadow-sm), 0 0 10px rgba(139, 157, 255, 0.22); }
+  50%      { box-shadow: var(--shadow-sm), 0 0 18px rgba(139, 157, 255, 0.42); }
 }
 
 /* ---------- 一言卡片：限宽居中 + hover 抬升 ---------- */

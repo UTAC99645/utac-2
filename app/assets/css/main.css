@@ -72,6 +72,11 @@
   /* 焦点环 */
   --focus-ring: 0 0 0 3px rgba(123, 142, 216, 0.35);
 
+  /* 品牌渐变（极光蓝紫，尾端加深保证亮背景可读） */
+  --grad-brand: linear-gradient(120deg, #f2f5ff 0%, #b7c4ff 45%, #6d81f2 100%);
+  --grad-brand-line: linear-gradient(90deg, transparent, rgba(139, 157, 255, 0.65), rgba(99, 102, 241, 0.45), transparent);
+  --glow-primary: 0 0 18px rgba(139, 157, 255, 0.35);
+
   /* 字号层级 */
   --fs-sm: 13px;
   --fs-md: 15px;
@@ -119,7 +124,7 @@ body {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
-/* 全局暗色遮罩：让白色文字在背景图浅色区域始终清晰可读 */
+/* ---------- 全局暗色遮罩：让白色文字在背景图浅色区域始终清晰可读 ---------- */
 body::before {
   content: "";
   position: fixed;
@@ -130,8 +135,39 @@ body::before {
     rgba(15, 20, 50, 0.2) 50%,
     rgba(10, 15, 40, 0.3) 100%
   );
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* ---------- 极光流光层：叠在遮罩上、内容下的氛围光斑 ----------
+   由三团大半径径向光晕缓慢漂移而成，pointer-events 关闭不挡点击，
+   prefers-reduced-motion 时只保留静态光不漂移 */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
+  background:
+    radial-gradient(42vw 42vw at 12% 22%, rgba(99, 102, 241, 0.16), transparent 70%),
+    radial-gradient(36vw 36vw at 88% 18%, rgba(167, 139, 250, 0.12), transparent 70%),
+    radial-gradient(46vw 46vw at 50% 95%, rgba(56, 189, 248, 0.10), transparent 70%);
+  animation: auroraDrift 26s ease-in-out infinite alternate;
+}
+
+@keyframes auroraDrift {
+  0% {
+    background-position: 0% 0%, 100% 0%, 50% 100%;
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    background-position: 6% 4%, 94% 6%, 44% 94%;
+    filter: hue-rotate(14deg);
+  }
+  100% {
+    background-position: 2% 8%, 98% 2%, 56% 90%;
+    filter: hue-rotate(-10deg);
+  }
 }
 
 /* ---------- 应用根容器 ---------- */
@@ -144,6 +180,8 @@ body::before {
    注意：此规则会作用于所有 img 标签，
    若组件内需要不同的图片样式，请使用 scoped style 覆盖
    ---------------------------------------------------------- */
+/* ---------- 图片全局样式 ----------
+   统一质感：柔光描边 + 悬浮阴影（头像等组件内已覆盖者不受影响） */
 img {
   max-width: 100%;
   height: auto;
@@ -151,20 +189,69 @@ img {
   object-fit: cover;
   margin-bottom: var(--space-md);
   box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle);
 }
 
-/* ---------- 标题样式 ---------- */
-title,
-h1 {
+/* ---------- 标题样式：渐变文字 + 底部光条 ----------
+   选择器限定 h1 与 <title> 元素，且排除 404/错误页的 .glitch 故障字，
+   避免破坏其 ::before/::after 故障艺术效果 */
+h1:not(.glitch) {
   font-size: 2.8rem;
-  color: #ffffff;
   text-align: center;
   margin-bottom: var(--space-xl);
   font-weight: 700;
   letter-spacing: 0.08em;
-  text-shadow:
-    0 0 12px rgba(123, 142, 216, 0.5),
-    0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.35;
+  color: transparent;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+}
+
+/* 文字后垫一层柔和暗晕：亮背景上提升对比度
+   （普通元素 + 模糊滤镜，不参与文字渲染，兼容性安全） */
+h1:not(.glitch)::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(72%, 560px);
+  height: 1.7em;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(24, 30, 74, 0.42), transparent 72%);
+  filter: blur(8px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 渐变文字的 fallback：不支持 background-clip:text 时回退纯白 */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1:not(.glitch) {
+    color: #ffffff;
+    background: none;
+    -webkit-text-fill-color: #ffffff;
+    text-shadow: 0 0 12px rgba(123, 142, 216, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* 标题底部光条：淡入 + 悬停时延展呼吸 */
+h1:not(.glitch)::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 2px;
+  margin: 14px auto 0;
+  border-radius: 2px;
+  background: var(--grad-brand-line);
+  transition: width 0.45s var(--ease-out), filter 0.45s var(--ease-out);
+}
+
+h1:not(.glitch):hover::after {
+  width: 150px;
+  filter: drop-shadow(0 0 6px rgba(139, 157, 255, 0.6));
 }
 
 /* ---------- 通用动画 ---------- */
@@ -234,12 +321,16 @@ h1 {
 
 /* ---------- 减少动画偏好：统一关闭 ---------- */
 @media (prefers-reduced-motion: reduce) {
+  body::after {
+    animation: none !important;
+  }
   .title,
   .home-page .n-card-content,
   .home-page .n-card,
   .typekey,
   .trail-dot,
-  .trail-ripple {
+  .trail-ripple,
+  h1:not(.glitch)::after {
     animation: none !important;
     transition: none !important;
   }
