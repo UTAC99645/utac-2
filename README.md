@@ -32,13 +32,13 @@
 ```
 utac-2/
 ├── app/
-│   ├── app.vue                # 根组件（深色主题 / 消息提供器 / 面包屑导航 / 路由视图）
+│   ├── app.vue                # 根组件（深色主题 / 悬浮玻璃导航 / 滚动加深 / 资源预加载）
 │   ├── error.vue              # 全局错误页（深色毛玻璃卡片风格）
 │   ├── pages/
-│   │   ├── index.vue          # 首页（编排层：搜索 / QR / 一言 / 链接预览入口）
+│   │   ├── index.vue          # 首页（编排层：纯 CSS 启动屏 + ClientOnly 搜索 UI / QR / 一言 / 链接预览入口）
 │   │   ├── about.vue          # 关于页（数据来自远程 about.json）
 │   │   ├── docs.vue           # 文档页（工作原理讲解）
-│   │   ├── statistics.vue     # 统计页（引擎概览来自 useEngines，与首页同源）
+│   │   ├── statistics.vue     # 统计页（引擎概览来自 useEngines；访问数据来自 /api/stats 真实统计，失败回退演示数据）
 │   │   └── [...slug].vue      # 兜底 404 页
 │   ├── components/
 │   │   ├── FileViewer.vue     # 链接预览 / 万能文件查看器（编排组件，异步加载）
@@ -65,8 +65,10 @@ utac-2/
 │   ├── addition/
 │   │   ├── searchWay.json     # 主引擎列表（google / bing / duckduckgo / Link）
 │   │   └── searchKey.json     # 扩展功能项（QR）
-│   ├── assets/css/            # 全局样式（main / home / about / link / router / 404 / docs / naive-ui-glass）
-│   └── public/assets/img/     # 图片资源（加载动效、404 背景等）
+│   ├── assets/css/            # 全局样式（main / home / about / link / router / 404 / docs / statistics / naive-ui-glass）
+│   └── public/assets/         # 静态资源（WebP 背景、字体子集、404 背景等）
+├── functions/api/stats.js     # Pages Function：/api/stats（代理 Cloudflare Analytics 真实访问统计）
+├── docs/                      # 项目文档（ARCHITECTURE / DEPLOYMENT / PERFORMANCE / TROUBLESHOOTING）
 ├── nuxt.config.ts
 ├── package.json
 ├── pnpm-lock.yaml
@@ -132,6 +134,21 @@ pnpm preview
 
 新增引擎只需向 JSON 追加条目，下拉选项、快捷按钮、统计页卡片、URL 校验都会自动生效。
 
+## 性能
+
+首屏载荷约 **2.3MB**（背景 WebP 789KB + 自托管字体子集 1.5MB + 代码），启动屏为纯 CSS 零下载。资源红线与优化手法详见 [docs/PERFORMANCE.md](docs/PERFORMANCE.md)。
+
+## 项目文档
+
+| 文档 | 内容 |
+| --- | --- |
+| [AGENTS.md](AGENTS.md) | AI/协作者开发须知：约定、SSR 约束、性能预算、测试策略 |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 架构总览：分层、渲染链路、数据流、样式体系 |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署指南：Cloudflare Pages 配置、/api/stats、发布与回滚流程 |
+| [docs/PERFORMANCE.md](docs/PERFORMANCE.md) | 性能手册：预算、优化手法档案、验证方法 |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | 坑位速查：构建/SSR/样式/接口常见问题处方 |
+| [docs/superpowers/](docs/superpowers/) | 历史设计与实施计划存档 |
+
 ## 文件预览支持格式
 
 链接预览（Link 模式）按 URL 后缀识别类型，识别失败时会嗅探内容（JSON / HTML）：
@@ -156,3 +173,5 @@ pnpm preview
 ## 作者
 
 **UTAC** — [UTAC99645](https://github.com/UTAC99645)
+
+看板猫娘 **Neko** — [About 页](https://utac.top/about/) 第三位成员 喵~ 🐾
